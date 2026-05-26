@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import {
   TrendingUp, TrendingDown, ArrowUpRight, ArrowDownLeft,
   Wallet, RefreshCw, Sparkles, ChevronRight, Calendar,
-  DollarSign, Users, BarChart3, Newspaper, X, Send
+  DollarSign, Users, BarChart3, Newspaper, X, Send, Settings
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -312,6 +312,8 @@ export default function DashboardPage() {
   ]);
   const [aiTyping, setAiTyping] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [showApiKeyInput, setShowApiKeyInput] = useState(false);
+  const [apiKeyInput, setApiKeyInput] = useState("");
 
   const handleSendChatMessage = async () => {
     if (!chatInput.trim() || aiTyping) return;
@@ -330,6 +332,8 @@ export default function DashboardPage() {
 
       const prompt = `Bạn là trợ lý tư vấn tài chính cá nhân của ví điện tử Blackred Wallet. Bạn tên là Blackred AI. Hãy tư vấn cho người dùng thật chuyên nghiệp, lịch sự, ngắn gọn và hữu ích về các mẹo tiết kiệm tiền, tối ưu hóa ngân sách, quản lý chi tiêu. Số dư hiện tại của người dùng là ${balance.toLocaleString("vi-VN")} đ. Chi tiêu tháng này là ${currentMonthCategoryData.totalExpense.toLocaleString("vi-VN")} đ cho các khoản: ${categoryBreakdownStr}. Trả lời thân thiện, ngắn gọn bằng tiếng Việt.\n\nLịch sử trò chuyện:\n${newMsgList.map(m => `${m.role === 'user' ? 'Người dùng' : 'Blackred AI'}: ${m.text}`).join('\n')}\nBlackred AI:`;
 
+      const savedKey = localStorage.getItem("bw_gemini_api_key") || "AIzaSyBrMYCeCUwgAoZrGzuB984ouoGgkHGk8XA";
+
       const attempts = [
         { model: "gemini-1.5-flash", version: "v1beta" },
         { model: "gemini-1.5-flash", version: "v1" },
@@ -342,7 +346,7 @@ export default function DashboardPage() {
       
       for (const att of attempts) {
         try {
-          const res = await fetch(`https://generativelanguage.googleapis.com/${att.version}/models/${att.model}:generateContent?key=AIzaSyBrMYCeCUwgAoZrGzuB984ouoGgkHGk8XA`, {
+          const res = await fetch(`https://generativelanguage.googleapis.com/${att.version}/models/${att.model}:generateContent?key=${savedKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -363,7 +367,11 @@ export default function DashboardPage() {
         }
       }
 
-      const reply = replyText || `Xin lỗi, trợ lý gặp lỗi phản hồi từ Google: "${lastErrorMessage}". Vui lòng kiểm tra lại trạng thái API Key của bạn.`;
+      const reply = replyText || (
+        lastErrorMessage.toLowerCase().includes("leaked") || lastErrorMessage.toLowerCase().includes("not found for api version")
+          ? "API Key mặc định của hệ thống đã bị Google tự động khóa do phát hiện rò rỉ mã nguồn công khai (chính sách bảo mật quét mã tự động). Vui lòng bấm vào biểu tượng bánh răng ⚙️ Cài đặt ở góc trên bên phải khung chat để cấu hình API Key cá nhân từ Google AI Studio (hoàn toàn miễn phí) và tiếp tục trò chuyện nhé!"
+          : `Xin lỗi, trợ lý gặp lỗi phản hồi từ Google: "${lastErrorMessage}". Vui lòng bấm vào biểu tượng ⚙️ ở góc trên bên phải để cấu hình lại API Key.`
+      );
       setChatMessages(prev => [...prev, { role: "ai", text: reply }]);
     } catch (err) {
       setChatMessages(prev => [...prev, { role: "ai", text: "Xin lỗi, hiện tại tôi đang gặp khó khăn kết nối với máy chủ AI. Bạn vui lòng thử lại sau nhé!" }]);
@@ -626,14 +634,40 @@ export default function DashboardPage() {
             borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", height: 380
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-            <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(139,92,246,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Sparkles size={16} style={{ color: "#a78bfa" }} />
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(139,92,246,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Sparkles size={16} style={{ color: "#a78bfa" }} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: 14, fontWeight: 700 }}>AI Tư vấn chi tiêu</h3>
+                <p style={{ fontSize: 11, color: "#6d28d9" }}>Powered by AI (Gemini Pro)</p>
+              </div>
             </div>
-            <div>
-              <h3 style={{ fontSize: 14, fontWeight: 700 }}>AI Tư vấn chi tiêu</h3>
-              <p style={{ fontSize: 11, color: "#6d28d9" }}>Powered by AI (Gemini Pro)</p>
-            </div>
+            
+            <button 
+              onClick={() => {
+                setShowApiKeyInput(!showApiKeyInput);
+                const k = localStorage.getItem("bw_gemini_api_key") || "";
+                setApiKeyInput(k);
+              }}
+              style={{
+                background: "transparent",
+                border: "none",
+                color: "#a78bfa",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 6,
+                borderRadius: "50%",
+                transition: "background 0.2s"
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(139,92,246,0.1)"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+            >
+              <Settings size={16} />
+            </button>
           </div>
 
           {loading ? (
@@ -642,82 +676,160 @@ export default function DashboardPage() {
             </div>
           ) : (
             <>
-              {/* Message scroll container */}
-              <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 10, marginBottom: 12, paddingRight: 6 }}>
-                {chatMessages.map((msg, i) => (
-                  <div key={i} style={{
-                    maxWidth: "85%",
-                    padding: "10px 14px",
-                    borderRadius: msg.role === "user" ? "14px 14px 2px 14px" : "14px 14px 14px 2px",
-                    fontSize: 12,
-                    lineHeight: 1.5,
-                    alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
-                    background: msg.role === "user" ? "rgba(139,92,246,0.15)" : "rgba(255,255,255,0.03)",
-                    border: `1px solid ${msg.role === "user" ? "rgba(139,92,246,0.3)" : "rgba(255,255,255,0.06)"}`,
-                    color: msg.role === "user" ? "#e9d5ff" : "#d1d5db"
-                  }}>
-                    {msg.text}
+              {showApiKeyInput ? (
+                <div style={{
+                  background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(139,92,246,0.15)",
+                  borderRadius: 12,
+                  padding: 16,
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                  flex: 1,
+                  justifyContent: "center"
+                }}>
+                  <h4 style={{ fontSize: 13, fontWeight: 700, color: "white" }}>Cấu hình Gemini API Key</h4>
+                  <p style={{ fontSize: 11, color: "#a1a1aa", lineHeight: 1.4 }}>
+                    API Key mặc định đã bị Google vô hiệu hóa tự động do phát hiện rò rỉ mã nguồn. Vui lòng nhập API Key của bạn để tiếp tục sử dụng.
+                  </p>
+                  <input 
+                    type="password"
+                    value={apiKeyInput}
+                    onChange={e => setApiKeyInput(e.target.value)}
+                    placeholder="Dán Gemini API Key của bạn tại đây..."
+                    style={{
+                      width: "100%",
+                      background: "#161616",
+                      border: "1px solid rgba(139,92,246,0.15)",
+                      borderRadius: 8,
+                      padding: "8px 12px",
+                      color: "white",
+                      fontSize: 12,
+                      outline: "none"
+                    }}
+                  />
+                  <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
+                    <button 
+                      onClick={() => {
+                        localStorage.setItem("bw_gemini_api_key", apiKeyInput.trim());
+                        setShowApiKeyInput(false);
+                        setChatMessages(prev => [
+                          ...prev, 
+                          { role: "ai", text: apiKeyInput.trim() ? "Đã cập nhật API Key cá nhân thành công! Hãy hỏi tôi bất kỳ câu hỏi nào." : "Đã chuyển về sử dụng API Key mặc định của hệ thống." }
+                        ]);
+                      }}
+                      style={{
+                        flex: 1,
+                        background: "linear-gradient(135deg,#8b5cf6,#6d28d9)",
+                        border: "none",
+                        borderRadius: 8,
+                        padding: "8px 0",
+                        color: "white",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        cursor: "pointer"
+                      }}
+                    >
+                      Lưu cấu hình
+                    </button>
+                    <button 
+                      onClick={() => window.open("https://aistudio.google.com/app/apikey", "_blank")}
+                      style={{
+                        flex: 1,
+                        background: "#1a1a1a",
+                        border: "1px solid #2a2a2a",
+                        borderRadius: 8,
+                        padding: "8px 0",
+                        color: "#a78bfa",
+                        fontSize: 11,
+                        fontWeight: 600,
+                        cursor: "pointer"
+                      }}
+                    >
+                      Lấy API Key miễn phí ↗
+                    </button>
                   </div>
-                ))}
-                {aiTyping && (
-                  <div style={{
-                    alignSelf: "flex-start",
-                    padding: "8px 12px",
-                    borderRadius: "14px 14px 14px 2px",
-                    fontSize: 11,
-                    background: "rgba(255,255,255,0.02)",
-                    border: "1px dashed rgba(139,92,246,0.3)",
-                    color: "#a78bfa",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 6
-                  }}>
-                    <div className="pulse-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "#a78bfa" }} />
-                    AI đang phân tích chi tiêu của bạn...
+                </div>
+              ) : (
+                <>
+                  {/* Message scroll container */}
+                  <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 10, marginBottom: 12, paddingRight: 6 }}>
+                    {chatMessages.map((msg, i) => (
+                      <div key={i} style={{
+                        maxWidth: "85%",
+                        padding: "10px 14px",
+                        borderRadius: msg.role === "user" ? "14px 14px 2px 14px" : "14px 14px 14px 2px",
+                        fontSize: 12,
+                        lineHeight: 1.5,
+                        alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
+                        background: msg.role === "user" ? "rgba(139,92,246,0.15)" : "rgba(255,255,255,0.03)",
+                        border: `1px solid ${msg.role === "user" ? "rgba(139,92,246,0.3)" : "rgba(255,255,255,0.06)"}`,
+                        color: msg.role === "user" ? "#e9d5ff" : "#d1d5db"
+                      }}>
+                        {msg.text}
+                      </div>
+                    ))}
+                    {aiTyping && (
+                      <div style={{
+                        alignSelf: "flex-start",
+                        padding: "8px 12px",
+                        borderRadius: "14px 14px 14px 2px",
+                        fontSize: 11,
+                        background: "rgba(255,255,255,0.02)",
+                        border: "1px dashed rgba(139,92,246,0.3)",
+                        color: "#a78bfa",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6
+                      }}>
+                        <div className="pulse-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "#a78bfa" }} />
+                        AI đang phân tích chi tiêu của bạn...
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              {/* Chat Input form */}
-              <div style={{ display: "flex", gap: 8, marginTop: "auto" }}>
-                <input 
-                  value={chatInput} 
-                  onChange={e => setChatInput(e.target.value)} 
-                  onKeyDown={e => { if (e.key === "Enter") handleSendChatMessage(); }}
-                  placeholder="Hỏi trợ lý AI về quản lý chi tiêu..."
-                  style={{
-                    flex: 1,
-                    background: "#161616",
-                    border: "1px solid rgba(139,92,246,0.15)",
-                    borderRadius: 8,
-                    padding: "10px 12px",
-                    color: "white",
-                    fontSize: 12,
-                    outline: "none"
-                  }}
-                />
-                <button 
-                  onClick={handleSendChatMessage} 
-                  disabled={aiTyping}
-                  style={{
-                    background: aiTyping ? "#1f1f1f" : "linear-gradient(135deg,#8b5cf6,#6d28d9)",
-                    border: "none",
-                    borderRadius: 8,
-                    width: 38,
-                    height: 38,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    cursor: aiTyping ? "not-allowed" : "pointer",
-                    color: "white",
-                    transition: "opacity 0.2s"
-                  }}
-                  onMouseEnter={e => { if(!aiTyping) e.currentTarget.style.opacity = 0.9; }}
-                  onMouseLeave={e => { if(!aiTyping) e.currentTarget.style.opacity = 1; }}
-                >
-                  <Send size={14} />
-                </button>
-              </div>
+                  {/* Chat Input form */}
+                  <div style={{ display: "flex", gap: 8, marginTop: "auto" }}>
+                    <input 
+                      value={chatInput} 
+                      onChange={e => setChatInput(e.target.value)} 
+                      onKeyDown={e => { if (e.key === "Enter") handleSendChatMessage(); }}
+                      placeholder="Hỏi trợ lý AI về quản lý chi tiêu..."
+                      style={{
+                        flex: 1,
+                        background: "#161616",
+                        border: "1px solid rgba(139,92,246,0.15)",
+                        borderRadius: 8,
+                        padding: "10px 12px",
+                        color: "white",
+                        fontSize: 12,
+                        outline: "none"
+                      }}
+                    />
+                    <button 
+                      onClick={handleSendChatMessage} 
+                      disabled={aiTyping}
+                      style={{
+                        background: aiTyping ? "#1f1f1f" : "linear-gradient(135deg,#8b5cf6,#6d28d9)",
+                        border: "none",
+                        borderRadius: 8,
+                        width: 38,
+                        height: 38,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: aiTyping ? "not-allowed" : "pointer",
+                        color: "white",
+                        transition: "opacity 0.2s"
+                      }}
+                      onMouseEnter={e => { if(!aiTyping) e.currentTarget.style.opacity = 0.9; }}
+                      onMouseLeave={e => { if(!aiTyping) e.currentTarget.style.opacity = 1; }}
+                    >
+                      <Send size={14} />
+                    </button>
+                  </div>
+                </>
+              )}
             </>
           )}
         </motion.div>
