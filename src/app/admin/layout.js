@@ -2,12 +2,13 @@
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { Users, Settings, Newspaper, LayoutGrid, LogOut, Wallet, ChevronRight, Menu, Shield } from "lucide-react";
+import { Users, Settings, Newspaper, LayoutGrid, LogOut, Wallet, ChevronRight, Menu, Shield, ArrowRightLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const adminNav = [
   { href:"/admin", icon:LayoutGrid, label:"Tổng quan" },
   { href:"/admin/users", icon:Users, label:"Quản lý User" },
+  { href:"/admin/transactions", icon:ArrowRightLeft, label:"Giao dịch" },
   { href:"/admin/services", icon:Settings, label:"Dịch vụ" },
   { href:"/admin/media", icon:Newspaper, label:"Bài viết" },
 ];

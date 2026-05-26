@@ -11,29 +11,265 @@ import {
   ResponsiveContainer, PieChart, Pie, Cell, Legend
 } from "recharts";
 
-const spendingData = [
-  { month: "T1", income: 12000000, expense: 8500000 },
-  { month: "T2", income: 15000000, expense: 10200000 },
-  { month: "T3", income: 11000000, expense: 7800000 },
-  { month: "T4", income: 18000000, expense: 12000000 },
-  { month: "T5", income: 14000000, expense: 9600000 },
-  { month: "T6", income: 16500000, expense: 11000000 },
-];
+const getUserBaseBalance = (email) => {
+  if (!email) return 0;
+  const lower = email.toLowerCase();
+  if (lower === "nva@email.com") return 12500000;
+  if (lower === "ttb@email.com") return 3200000;
+  if (lower === "lvc@email.com") return 0;
+  if (lower === "ptd@email.com") return 8750000;
+  if (lower === "hme@email.com") return 1000000;
+  return 0;
+};
 
-const categoryData = [
-  { name: "Ăn uống", value: 35, color: "#e11d48" },
-  { name: "Di chuyển", value: 20, color: "#f59e0b" },
-  { name: "Mua sắm", value: 25, color: "#3b82f6" },
-  { name: "Giải trí", value: 12, color: "#8b5cf6" },
-  { name: "Khác", value: 8, color: "#22c55e" },
-];
+const parseTxTime = (timeStr) => {
+  if (!timeStr) return new Date();
+  try {
+    const parts = timeStr.trim().split(" ");
+    if (parts.length === 2 && parts[1].includes("/")) {
+      const [hour, minute] = parts[0].split(":");
+      const [day, month, year] = parts[1].split("/");
+      return new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day),
+        Number(hour || 0),
+        Number(minute || 0)
+      );
+    }
+    const d = new Date(timeStr);
+    return isNaN(d.getTime()) ? new Date() : d;
+  } catch (e) {
+    return new Date();
+  }
+};
 
-const recentTx = [
-  { id: 1, type: "receive", name: "Nguyễn Văn A", amount: 500000, time: "10:32", date: "Hôm nay", status: "success" },
-  { id: 2, type: "send", name: "Trần Thị B", amount: -200000, time: "09:15", date: "Hôm nay", status: "success" },
-  { id: 3, type: "receive", name: "Lê Văn C", amount: 1500000, time: "18:45", date: "Hôm qua", status: "success" },
-  { id: 4, type: "send", name: "Phạm Thị D", amount: -750000, time: "14:20", date: "Hôm qua", status: "pending" },
-];
+const getSpendingData = (txs, filter) => {
+  const now = new Date();
+  
+  if (filter === "1d") {
+    const data = [
+      { month: "00-06h", income: 0, expense: 0 },
+      { month: "06-12h", income: 0, expense: 0 },
+      { month: "12-18h", income: 0, expense: 0 },
+      { month: "18-24h", income: 0, expense: 0 },
+    ];
+    
+    txs.forEach(tx => {
+      if (tx.status !== "success") return;
+      const txDate = parseTxTime(tx.time);
+      const diffTime = now.getTime() - txDate.getTime();
+      if (diffTime >= 0 && diffTime <= 24 * 60 * 60 * 1000) {
+        const hour = txDate.getHours();
+        const idx = Math.min(3, Math.floor(hour / 6));
+        if (tx.type === "receive") {
+          data[idx].income += tx.amount;
+        } else if (tx.type === "send") {
+          data[idx].expense += tx.amount;
+        }
+      }
+    });
+    return data;
+  }
+  
+  if (filter === "1w") {
+    const data = [];
+    const weekdays = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(now.getDate() - i);
+      const dateStr = d.toLocaleDateString("vi-VN");
+      data.push({
+        dateStr,
+        month: weekdays[d.getDay()],
+        income: 0,
+        expense: 0
+      });
+    }
+    
+    txs.forEach(tx => {
+      if (tx.status !== "success") return;
+      const txDate = parseTxTime(tx.time);
+      const txDateStr = txDate.toLocaleDateString("vi-VN");
+      const found = data.find(item => item.dateStr === txDateStr);
+      if (found) {
+        if (tx.type === "receive") {
+          found.income += tx.amount;
+        } else if (tx.type === "send") {
+          found.expense += tx.amount;
+        }
+      }
+    });
+    return data;
+  }
+  
+  if (filter === "1m") {
+    const data = [
+      { month: "Tuần 1", income: 0, expense: 0 },
+      { month: "Tuần 2", income: 0, expense: 0 },
+      { month: "Tuần 3", income: 0, expense: 0 },
+      { month: "Tuần 4", income: 0, expense: 0 },
+    ];
+    
+    txs.forEach(tx => {
+      if (tx.status !== "success") return;
+      const txDate = parseTxTime(tx.time);
+      const diffDays = Math.floor((now.getTime() - txDate.getTime()) / (24 * 60 * 60 * 1000));
+      if (diffDays >= 0 && diffDays < 30) {
+        let idx = 3;
+        if (diffDays >= 22) idx = 0;
+        else if (diffDays >= 15) idx = 1;
+        else if (diffDays >= 8) idx = 2;
+        
+        if (tx.type === "receive") {
+          data[idx].income += tx.amount;
+        } else if (tx.type === "send") {
+          data[idx].expense += tx.amount;
+        }
+      }
+    });
+    return data;
+  }
+  
+  // 1 Year (1y)
+  const data = [];
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthNum = d.getMonth() + 1;
+    data.push({
+      year: d.getFullYear(),
+      monthIndex: d.getMonth(),
+      month: `T${monthNum}`,
+      income: 0,
+      expense: 0
+    });
+  }
+  
+  txs.forEach(tx => {
+    if (tx.status !== "success") return;
+    const txDate = parseTxTime(tx.time);
+    const found = data.find(item => item.year === txDate.getFullYear() && item.monthIndex === txDate.getMonth());
+    if (found) {
+      if (tx.type === "receive") {
+        found.income += tx.amount;
+      } else if (tx.type === "send") {
+        found.expense += tx.amount;
+      }
+    }
+  });
+  return data;
+};
+
+const getCategoryData = (txs, filter) => {
+  const now = new Date();
+  
+  let durationMs = 30 * 24 * 60 * 60 * 1000;
+  if (filter === "1d") durationMs = 24 * 60 * 60 * 1000;
+  else if (filter === "1w") durationMs = 7 * 24 * 60 * 60 * 1000;
+  else if (filter === "1m") durationMs = 30 * 24 * 60 * 60 * 1000;
+  else if (filter === "1y") durationMs = 365 * 24 * 60 * 60 * 1000;
+  
+  const categorySums = {
+    "Ăn uống": 0,
+    "Di chuyển": 0,
+    "Mua sắm": 0,
+    "Giải trí": 0,
+    "Hóa đơn": 0,
+    "Khác": 0
+  };
+  
+  let totalExpense = 0;
+  
+  txs.forEach(tx => {
+    if (tx.status !== "success" || tx.type !== "send") return;
+    const txDate = parseTxTime(tx.time);
+    const diffTime = now.getTime() - txDate.getTime();
+    
+    if (diffTime >= 0 && diffTime <= durationMs) {
+      let cat = tx.category || "Khác";
+      if (!categorySums.hasOwnProperty(cat)) {
+        cat = "Khác";
+      }
+      categorySums[cat] += tx.amount;
+      totalExpense += tx.amount;
+    }
+  });
+  
+  const colors = {
+    "Ăn uống": "#e11d48",
+    "Di chuyển": "#f59e0b",
+    "Mua sắm": "#3b82f6",
+    "Giải trí": "#8b5cf6",
+    "Hóa đơn": "#ec4899",
+    "Khác": "#22c55e"
+  };
+  
+  const data = Object.keys(categorySums).map(name => {
+    const val = categorySums[name];
+    const pct = totalExpense > 0 ? Math.round((val / totalExpense) * 100) : 0;
+    return {
+      name,
+      value: pct,
+      amount: val,
+      color: colors[name]
+    };
+  });
+  
+  return {
+    chartData: totalExpense > 0 ? data.filter(d => d.value > 0) : [{ name: "Chưa có chi tiêu", value: 100, color: "#27272a", amount: 0 }],
+    listData: data,
+    totalExpense
+  };
+};
+
+const formatTxDateAndTime = (timeStr) => {
+  if (!timeStr) return { time: "", date: "" };
+  try {
+    const parts = timeStr.trim().split(" ");
+    if (parts.length < 2) return { time: timeStr, date: "" };
+    
+    const timePart = parts[0];
+    const datePart = parts[1];
+    
+    const now = new Date();
+    const nowStr = now.toLocaleDateString("vi-VN");
+    
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toLocaleDateString("vi-VN");
+    
+    let dateDisplay = datePart;
+    if (datePart === nowStr) {
+      dateDisplay = "Hôm nay";
+    } else if (datePart === yesterdayStr) {
+      dateDisplay = "Hôm qua";
+    }
+    
+    return { time: timePart, date: dateDisplay };
+  } catch (e) {
+    return { time: timeStr, date: "" };
+  }
+};
+
+const getMonthlyStats = (txs) => {
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+  
+  let monthlyIncome = 0;
+  let monthlyExpense = 0;
+  
+  txs.forEach(tx => {
+    if (tx.status !== "success") return;
+    const txDate = parseTxTime(tx.time);
+    if (txDate.getMonth() === currentMonth && txDate.getFullYear() === currentYear) {
+      if (tx.type === "receive") monthlyIncome += tx.amount;
+      else if (tx.type === "send") monthlyExpense += tx.amount;
+    }
+  });
+  
+  return { monthlyIncome, monthlyExpense };
+};
 
 const newsData = [
   { id: 1, title: "Ngân hàng Nhà nước điều chỉnh lãi suất tiết kiệm", time: "2 giờ trước", tag: "Kinh tế" },
@@ -53,16 +289,20 @@ const CustomTooltip = ({ active, payload, label }) => {
       <p style={{ color: "#a1a1aa", fontSize: 12, marginBottom: 8 }}>{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ color: p.color, fontSize: 13, fontWeight: 600 }}>
-          {p.name}: {(p.value / 1000000).toFixed(1)}M ₫
+          {p.name}: {p.value.toLocaleString("vi-VN")} ₫
         </p>
       ))}
     </div>
   );
 };
 
+const fmtCleanCurrency = (n) => n.toLocaleString("vi-VN") + " ₫";
+
 export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState("6m");
+  const [timeFilterMonth, setTimeFilterMonth] = useState("1y");
+  const [timeFilterCategory, setTimeFilterCategory] = useState("1m");
+  const [transactions, setTransactions] = useState([]);
   const [user, setUser] = useState(null);
   const [posts, setPosts] = useState([]);
   const [selectedNews, setSelectedNews] = useState(null);
@@ -71,6 +311,7 @@ export default function DashboardPage() {
     { role: "ai", text: "Chào bạn! Tôi là trợ lý tài chính Blackred AI. Bạn cần tôi tư vấn gì về quản lý chi tiêu hay tối ưu hóa dòng tiền hôm nay?" }
   ]);
   const [aiTyping, setAiTyping] = useState(false);
+  const [balance, setBalance] = useState(0);
 
   const handleSendChatMessage = async () => {
     if (!chatInput.trim() || aiTyping) return;
@@ -80,9 +321,14 @@ export default function DashboardPage() {
     const newMsgList = [...chatMessages, { role: "user", text: userText }];
     setChatMessages(newMsgList);
     setAiTyping(true);
-
+ 
     try {
-      const prompt = `Bạn là trợ lý tư vấn tài chính cá nhân của ví điện tử Blackred Wallet. Bạn tên là Blackred AI. Hãy tư vấn cho người dùng thật chuyên nghiệp, lịch sự, ngắn gọn và hữu ích về các mẹo tiết kiệm tiền, tối ưu hóa ngân sách, quản lý chi tiêu. Số dư hiện tại của người dùng là 24.350.000 đ. Chi tiêu tháng này là 11.000.000 đ cho các khoản: Ăn uống (35%), Di chuyển (20%), Mua sắm (25%), Giải trí (12%), Khác (8%). Trả lời thân thiện, ngắn gọn bằng tiếng Việt.\n\nLịch sử trò chuyện:\n${newMsgList.map(m => `${m.role === 'user' ? 'Người dùng' : 'Blackred AI'}: ${m.text}`).join('\n')}\nBlackred AI:`;
+      const currentMonthCategoryData = getCategoryData(transactions, "1m");
+      const categoryBreakdownStr = currentMonthCategoryData.listData
+        .map(c => `${c.name} (${c.value}%)`)
+        .join(", ");
+
+      const prompt = `Bạn là trợ lý tư vấn tài chính cá nhân của ví điện tử Blackred Wallet. Bạn tên là Blackred AI. Hãy tư vấn cho người dùng thật chuyên nghiệp, lịch sự, ngắn gọn và hữu ích về các mẹo tiết kiệm tiền, tối ưu hóa ngân sách, quản lý chi tiêu. Số dư hiện tại của người dùng là ${balance.toLocaleString("vi-VN")} đ. Chi tiêu tháng này là ${currentMonthCategoryData.totalExpense.toLocaleString("vi-VN")} đ cho các khoản: ${categoryBreakdownStr}. Trả lời thân thiện, ngắn gọn bằng tiếng Việt.\n\nLịch sử trò chuyện:\n${newMsgList.map(m => `${m.role === 'user' ? 'Người dùng' : 'Blackred AI'}: ${m.text}`).join('\n')}\nBlackred AI:`;
 
       const attempts = [
         { model: "gemini-1.5-flash", version: "v1beta" },
@@ -126,9 +372,37 @@ export default function DashboardPage() {
     }
   };
 
-  useEffect(() => {
+  const loadUserData = () => {
     const u = localStorage.getItem("bw_user");
-    if (u) setUser(JSON.parse(u));
+    if (!u) return;
+    try {
+      const parsedUser = JSON.parse(u);
+      setUser(parsedUser);
+      if (parsedUser.email) {
+        const emailKey = `bw_transactions_${parsedUser.email}`;
+        const savedTx = localStorage.getItem(emailKey);
+        if (savedTx) {
+          const txs = JSON.parse(savedTx);
+          const sortedTxs = [...txs].sort((a, b) => parseTxTime(b.time) - parseTxTime(a.time));
+          setTransactions(sortedTxs);
+          const base = getUserBaseBalance(parsedUser.email);
+          const dyn = Math.max(0, txs.reduce((acc, tx) => {
+            if (tx.status !== "success") return acc;
+            if (tx.type === "receive") return acc + tx.amount;
+            if (tx.type === "send") return acc - tx.amount;
+            return acc;
+          }, base));
+          setBalance(dyn);
+        } else {
+          setTransactions([]);
+          setBalance(Math.max(0, getUserBaseBalance(parsedUser.email)));
+        }
+      }
+    } catch (e) { /* silent */ }
+  };
+
+  useEffect(() => {
+    loadUserData();
     
     // Load financial news posts
     const saved = localStorage.getItem("bw_posts");
@@ -144,14 +418,27 @@ export default function DashboardPage() {
       setPosts(defaults);
     }
 
+    const handleUpdate = () => {
+      loadUserData();
+    };
+    window.addEventListener("balance_updated", handleUpdate);
+
     setTimeout(() => setLoading(false), 1200);
+
+    return () => {
+      window.removeEventListener("balance_updated", handleUpdate);
+    };
   }, []);
 
+  const { monthlyIncome, monthlyExpense } = getMonthlyStats(transactions);
+  const dynamicSpendingData = getSpendingData(transactions, timeFilterMonth);
+  const { chartData: dynamicCategoryData, listData: categoryLegendData } = getCategoryData(transactions, timeFilterCategory);
+
   const stats = [
-    { label: "Số dư ví", value: "24,350,000 ₫", change: "+12.5%", up: true, icon: Wallet, color: "#e11d48" },
-    { label: "Thu nhập tháng", value: "16,500,000 ₫", change: "+8.2%", up: true, icon: TrendingUp, color: "#22c55e" },
-    { label: "Chi tiêu tháng", value: "11,000,000 ₫", change: "-3.1%", up: false, icon: TrendingDown, color: "#f59e0b" },
-    { label: "Giao dịch", value: "47 GD", change: "+5", up: true, icon: BarChart3, color: "#3b82f6" },
+    { label: "Số dư ví", value: fmtCleanCurrency(balance), change: "+12.5%", up: true, icon: Wallet, color: "#e11d48" },
+    { label: "Thu nhập tháng", value: fmtCleanCurrency(monthlyIncome), change: "+8.2%", up: true, icon: TrendingUp, color: "#22c55e" },
+    { label: "Chi tiêu tháng", value: fmtCleanCurrency(monthlyExpense), change: "-3.1%", up: false, icon: TrendingDown, color: "#f59e0b" },
+    { label: "Giao dịch", value: `${transactions.length} GD`, change: "+5", up: true, icon: BarChart3, color: "#3b82f6" },
   ];
 
   return (
@@ -222,14 +509,19 @@ export default function DashboardPage() {
               <p style={{ fontSize: 12, color: "#71717a", marginTop: 2 }}>Tổng quan dòng tiền</p>
             </div>
             <div style={{ display: "flex", gap: 6 }}>
-              {["3m", "6m", "1y"].map(f => (
-                <button key={f} onClick={() => setFilter(f)} style={{
+              {[
+                { key: "1d", label: "1 ngày" },
+                { key: "1w", label: "1 tuần" },
+                { key: "1m", label: "1 tháng" },
+                { key: "1y", label: "1 năm" }
+              ].map(f => (
+                <button key={f.key} onClick={() => setTimeFilterMonth(f.key)} style={{
                   padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500,
-                  background: filter === f ? "rgba(225,29,72,0.15)" : "#1a1a1a",
-                  border: `1px solid ${filter === f ? "rgba(225,29,72,0.3)" : "#2a2a2a"}`,
-                  color: filter === f ? "#e11d48" : "#71717a", cursor: "pointer"
+                  background: timeFilterMonth === f.key ? "rgba(225,29,72,0.15)" : "#1a1a1a",
+                  border: `1px solid ${timeFilterMonth === f.key ? "rgba(225,29,72,0.3)" : "#2a2a2a"}`,
+                  color: timeFilterMonth === f.key ? "#e11d48" : "#71717a", cursor: "pointer"
                 }}>
-                  {f}
+                  {f.label}
                 </button>
               ))}
             </div>
@@ -238,7 +530,7 @@ export default function DashboardPage() {
             <div className="skeleton" style={{ height: 200 }} />
           ) : (
             <ResponsiveContainer width="100%" height={220}>
-              <AreaChart data={spendingData}>
+              <AreaChart data={dynamicSpendingData}>
                 <defs>
                   <linearGradient id="income" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="0%" stopColor="#22c55e" stopOpacity={0.3} />
@@ -251,7 +543,11 @@ export default function DashboardPage() {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
                 <XAxis dataKey="month" tick={{ fill: "#71717a", fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#71717a", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => `${v/1000000}M`} />
+                <YAxis tick={{ fill: "#71717a", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => {
+                  if (v >= 1000000) return `${v/1000000}M`;
+                  if (v >= 1000) return `${v/1000}K`;
+                  return v;
+                }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="income" name="Thu nhập" stroke="#22c55e" strokeWidth={2} fill="url(#income)" />
                 <Area type="monotone" dataKey="expense" name="Chi tiêu" stroke="#e11d48" strokeWidth={2} fill="url(#expense)" />
@@ -267,16 +563,34 @@ export default function DashboardPage() {
           transition={{ delay: 0.35 }}
           style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 16, padding: 24 }}
         >
-          <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 4 }}>Chi tiêu theo danh mục</h3>
-          <p style={{ fontSize: 12, color: "#71717a", marginBottom: 20 }}>Tháng này</p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
+            <h3 style={{ fontSize: 15, fontWeight: 700 }}>Chi tiêu theo danh mục</h3>
+            <div style={{ display: "flex", gap: 6 }}>
+              {[
+                { key: "1d", label: "1 ngày" },
+                { key: "1w", label: "1 tuần" },
+                { key: "1m", label: "1 tháng" },
+                { key: "1y", label: "1 năm" }
+              ].map(f => (
+                <button key={f.key} onClick={() => setTimeFilterCategory(f.key)} style={{
+                  padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500,
+                  background: timeFilterCategory === f.key ? "rgba(225,29,72,0.15)" : "#1a1a1a",
+                  border: `1px solid ${timeFilterCategory === f.key ? "rgba(225,29,72,0.3)" : "#2a2a2a"}`,
+                  color: timeFilterCategory === f.key ? "#e11d48" : "#71717a", cursor: "pointer"
+                }}>
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
           {loading ? (
             <div className="skeleton" style={{ height: 200 }} />
           ) : (
             <>
               <ResponsiveContainer width="100%" height={160}>
                 <PieChart>
-                  <Pie data={categoryData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value">
-                    {categoryData.map((c, i) => (
+                  <Pie data={dynamicCategoryData} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={3} dataKey="value">
+                    {dynamicCategoryData.map((c, i) => (
                       <Cell key={i} fill={c.color} stroke="none" />
                     ))}
                   </Pie>
@@ -284,7 +598,7 @@ export default function DashboardPage() {
                 </PieChart>
               </ResponsiveContainer>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
-                {categoryData.map((c, i) => (
+                {categoryLegendData.map((c, i) => (
                   <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{ width: 8, height: 8, borderRadius: 2, background: c.color }} />
@@ -413,55 +727,66 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45 }}
-          style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 16, padding: 24 }}
+          style={{
+            background: "#111",
+            border: "1px solid #1f1f1f",
+            borderRadius: 16,
+            padding: 24,
+            display: "flex",
+            flexDirection: "column",
+            height: 380
+          }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
             <Newspaper size={18} style={{ color: "#e11d48" }} />
             <h3 style={{ fontSize: 15, fontWeight: 700 }}>Tin tức tài chính</h3>
           </div>
-          {loading ? (
-            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-              {[1,2,3].map(i => <div key={i} className="skeleton" style={{ height: 60 }} />)}
-            </div>
-          ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {posts.map((n, i) => (
-                <div key={n.id} 
-                  onClick={() => {
-                    if (n.link) {
-                      window.open(n.link, "_blank");
-                    } else {
-                      setSelectedNews(n);
-                    }
-                  }}
-                  style={{ padding: "12px 0", borderBottom: i < posts.length-1 ? "1px solid #1a1a1a" : "none", cursor: "pointer", transition: "transform 0.2s" }}
-                  onMouseEnter={e => e.currentTarget.style.transform = "translateX(4px)"}
-                  onMouseLeave={e => e.currentTarget.style.transform = "none"}
-                >
-                  <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-                    <div style={{ width: 72, height: 50, borderRadius: 8, background: "#161616", overflow: "hidden", border: "1px solid #1f1f1f", flexShrink: 0 }}>
-                      {n.image ? (
-                        <img src={n.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                      ) : (
-                        <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                          <Newspaper size={14} style={{ color: "#222" }} />
-                        </div>
-                      )}
+          
+          <div style={{ flex: 1, overflowY: "auto", paddingRight: 6 }}>
+            {loading ? (
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                {[1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 60 }} />)}
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {posts.map((n, i) => (
+                  <div key={n.id} 
+                    onClick={() => {
+                      if (n.link) {
+                        window.open(n.link, "_blank");
+                      } else {
+                        setSelectedNews(n);
+                      }
+                    }}
+                    style={{ padding: "12px 0", borderBottom: i < posts.length-1 ? "1px solid #1a1a1a" : "none", cursor: "pointer", transition: "transform 0.2s" }}
+                    onMouseEnter={e => e.currentTarget.style.transform = "translateX(4px)"}
+                    onMouseLeave={e => e.currentTarget.style.transform = "none"}
+                  >
+                    <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+                      <div style={{ width: 72, height: 50, borderRadius: 8, background: "#161616", overflow: "hidden", border: "1px solid #1f1f1f", flexShrink: 0 }}>
+                        {n.image ? (
+                          <img src={n.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <Newspaper size={14} style={{ color: "#222" }} />
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <span style={{ fontSize: 9, background: "rgba(225,29,72,0.15)", color: "#e11d48", padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>{n.tag}</span>
+                        <p style={{ fontSize: 13, fontWeight: 500, marginTop: 4, lineHeight: 1.4, color: "#e4e4e7", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</p>
+                        <p style={{ fontSize: 11, color: "#52525b", marginTop: 4 }}>{n.time}</p>
+                      </div>
+                      <ChevronRight size={14} style={{ color: "#3f3f46", flexShrink: 0 }} />
                     </div>
-                    <div style={{ flex: 1, minWidth: 0 }}>
-                      <span style={{ fontSize: 9, background: "rgba(225,29,72,0.15)", color: "#e11d48", padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>{n.tag}</span>
-                      <p style={{ fontSize: 13, fontWeight: 500, marginTop: 4, lineHeight: 1.4, color: "#e4e4e7", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</p>
-                      <p style={{ fontSize: 11, color: "#52525b", marginTop: 4 }}>{n.time}</p>
-                    </div>
-                    <ChevronRight size={14} style={{ color: "#3f3f46", flexShrink: 0 }} />
                   </div>
-                </div>
-              ))}
-              {posts.length === 0 && (
-                <div style={{ textAlign: "center", padding: "20px 0", color: "#52525b", fontSize: 13 }}>Chưa có tin tức tài chính mới</div>
-              )}
-            </div>
-          )}
+                ))}
+                {posts.length === 0 && (
+                  <div style={{ textAlign: "center", padding: "20px 0", color: "#52525b", fontSize: 13 }}>Chưa có tin tức tài chính mới</div>
+                )}
+              </div>
+            )}
+          </div>
         </motion.div>
       </div>
 
@@ -484,39 +809,55 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-            {recentTx.map((tx) => (
-              <div key={tx.id} style={{
-                display: "flex", alignItems: "center", padding: "12px 14px", borderRadius: 10,
-                cursor: "pointer", transition: "background 0.2s"
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
-              >
-                <div style={{
-                  width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                  background: tx.type === "receive" ? "rgba(34,197,94,0.12)" : "rgba(225,29,72,0.12)",
-                  display: "flex", alignItems: "center", justifyContent: "center", marginRight: 14
-                }}>
-                  {tx.type === "receive" ? <ArrowDownLeft size={18} style={{ color: "#22c55e" }} /> : <ArrowUpRight size={18} style={{ color: "#e11d48" }} />}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ fontSize: 14, fontWeight: 600 }}>{tx.name}</p>
-                  <p style={{ fontSize: 12, color: "#52525b" }}>{tx.date} • {tx.time}</p>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <p style={{ fontSize: 14, fontWeight: 700, color: tx.type === "receive" ? "#22c55e" : "#e11d48" }}>
-                    {fmtCurrency(tx.amount)}
-                  </p>
-                  <span style={{
-                    fontSize: 10, padding: "2px 8px", borderRadius: 6, fontWeight: 600,
-                    background: tx.status === "success" ? "rgba(34,197,94,0.12)" : "rgba(245,158,11,0.12)",
-                    color: tx.status === "success" ? "#22c55e" : "#f59e0b"
+            {transactions.slice(0, 5).map((tx) => {
+              const formattedTime = formatTxDateAndTime(tx.time);
+              return (
+                <div key={tx.id} style={{
+                  display: "flex", alignItems: "center", padding: "12px 14px", borderRadius: 10,
+                  cursor: "pointer", transition: "background 0.2s"
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
+                >
+                  <div style={{
+                    width: 40, height: 40, borderRadius: 12, flexShrink: 0,
+                    background: tx.type === "receive" ? "rgba(34,197,94,0.12)" : "rgba(225,29,72,0.12)",
+                    display: "flex", alignItems: "center", justifyContent: "center", marginRight: 14
                   }}>
-                    {tx.status === "success" ? "Thành công" : "Chờ xử lý"}
-                  </span>
+                    {tx.type === "receive" ? <ArrowDownLeft size={18} style={{ color: "#22c55e" }} /> : <ArrowUpRight size={18} style={{ color: "#e11d48" }} />}
+                  </div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 14, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tx.name}</p>
+                    <p style={{ fontSize: 12, color: "#52525b" }}>
+                      {formattedTime.date && `${formattedTime.date} • `}{formattedTime.time}
+                      {tx.category && (
+                        <span style={{ marginLeft: 8, fontSize: 10, background: "rgba(255,255,255,0.06)", color: "#a1a1aa", padding: "2px 6px", borderRadius: 4 }}>
+                          {tx.category}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <div style={{ textAlign: "right", marginLeft: 10, flexShrink: 0 }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: tx.type === "receive" ? "#22c55e" : "#e11d48" }}>
+                      {fmtCurrency(tx.type === "receive" ? tx.amount : -tx.amount)}
+                    </p>
+                    <span style={{
+                      fontSize: 10, padding: "2px 8px", borderRadius: 6, fontWeight: 600,
+                      background: tx.status === "success" ? "rgba(34,197,94,0.12)" : tx.status === "failed" ? "rgba(239,68,68,0.12)" : "rgba(245,158,11,0.12)",
+                      color: tx.status === "success" ? "#22c55e" : tx.status === "failed" ? "#ef4444" : "#f59e0b"
+                    }}>
+                      {tx.status === "success" ? "Thành công" : tx.status === "failed" ? "Thất bại" : "Chờ xử lý"}
+                    </span>
+                  </div>
                 </div>
+              );
+            })}
+            {transactions.length === 0 && (
+              <div style={{ textAlign: "center", padding: "40px 0", color: "#52525b", fontSize: 14 }}>
+                <Wallet size={36} style={{ color: "#222", marginBottom: 10 }} />
+                <p>Chưa có giao dịch gần đây</p>
               </div>
-            ))}
+            )}
           </div>
         )}
       </motion.div>

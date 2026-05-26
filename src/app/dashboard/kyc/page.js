@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Upload, CheckCircle, Clock, AlertCircle, FileText, User, Image, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -13,6 +13,21 @@ export default function KycPage() {
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({ fullname:"", cccd:"", dob:"", frontImg:null, backImg:null });
   const [submitted, setSubmitted] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const loadUser = () => {
+      const u = localStorage.getItem("bw_user");
+      if (u) setUser(JSON.parse(u));
+    };
+    loadUser();
+    window.addEventListener("storage", loadUser);
+    window.addEventListener("kyc_updated", loadUser);
+    return () => {
+      window.removeEventListener("storage", loadUser);
+      window.removeEventListener("kyc_updated", loadUser);
+    };
+  }, []);
 
   const handleFile = (key, e) => {
     const file = e.target.files[0];
@@ -21,22 +36,95 @@ export default function KycPage() {
 
   const handleSubmit = () => {
     if (step < 2) { setStep(s => s + 1); return; }
+    
+    // 1. Cập nhật bw_user hiện tại với trạng thái pending
+    const u = localStorage.getItem("bw_user");
+    let updatedUser = null;
+    if (u) {
+      const parsed = JSON.parse(u);
+      parsed.kyc = false;
+      parsed.kycStatus = "pending";
+      parsed.cccd = form.cccd;
+      parsed.name = form.fullname || parsed.name;
+      parsed.dob = form.dob;
+      parsed.gender = parsed.gender || "Nam";
+      parsed.address = parsed.address || "Chưa cập nhật";
+      
+      localStorage.setItem("bw_user", JSON.stringify(parsed));
+      setUser(parsed);
+      updatedUser = parsed;
+    }
+    
+    // 2. Đồng bộ vào bw_users (UPSERT: thêm mới nếu chưa có, cập nhật nếu đã có)
+    if (updatedUser) {
+      const stored = localStorage.getItem("bw_users");
+      let list = stored ? JSON.parse(stored) : [];
+      const foundIdx = list.findIndex(item => item.email === updatedUser.email);
+      
+      const kycEntry = {
+        kyc: "pending",
+        kycStatus: "pending",
+        cccd: form.cccd,
+        name: form.fullname || updatedUser.name,
+        dob: form.dob,
+        gender: updatedUser.gender || "Nam",
+        address: updatedUser.address || "Chưa cập nhật",
+      };
+
+      if (foundIdx !== -1) {
+        // Cập nhật user đã tồn tại
+        list[foundIdx] = { ...list[foundIdx], ...kycEntry };
+      } else {
+        // Thêm mới user vào danh sách admin
+        list.push({
+          id: "U" + Date.now(),
+          email: updatedUser.email,
+          phone: updatedUser.phone || "Chưa cập nhật",
+          status: "active",
+          balance: "0 ₫",
+          joined: new Date().toLocaleDateString("vi-VN"),
+          ...kycEntry,
+        });
+      }
+      localStorage.setItem("bw_users", JSON.stringify(list));
+    }
+    
+    // 3. Dispatch event để layout cập nhật ngay lập tức
+    window.dispatchEvent(new Event("kyc_updated"));
     setSubmitted(true);
   };
 
-  if (submitted) return (
-    <div style={{ maxWidth:500, margin:"0 auto", textAlign:"center", paddingTop:40 }}>
-      <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:"spring", damping:15}}
-        style={{ width:80, height:80, background:"rgba(245,158,11,0.15)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px" }}>
-        <Clock size={36} style={{ color:"#f59e0b" }} />
-      </motion.div>
-      <h2 style={{ fontSize:22, fontWeight:800, marginBottom:8 }}>Đang xem xét hồ sơ</h2>
-      <p style={{ color:"#71717a", fontSize:14, lineHeight:1.6 }}>
-        Chúng tôi đã nhận được hồ sơ KYC của bạn.<br />
-        Kết quả sẽ được thông báo qua email trong vòng <strong style={{ color:"#f59e0b" }}>1–3 ngày làm việc</strong>.
-      </p>
-    </div>
-  );
+  if (user && user.kyc) {
+    return (
+      <div style={{ maxWidth:500, margin:"0 auto", textAlign:"center", paddingTop:40 }}>
+        <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:"spring", damping:15}}
+          style={{ width:80, height:80, background:"rgba(34,197,94,0.15)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px" }}>
+          <CheckCircle size={36} style={{ color:"#22c55e" }} />
+        </motion.div>
+        <h2 style={{ fontSize:22, fontWeight:800, marginBottom:8, color:"#22c55e" }}>Tài khoản đã xác minh</h2>
+        <p style={{ color:"#71717a", fontSize:14, lineHeight:1.6 }}>
+          Chúc mừng! Tài khoản Blackred Wallet của bạn đã được hoàn tất xác thực danh tính (KYC).<br />
+          Hạn mức giao dịch của bạn đã được nâng cấp lên tối đa và mở khóa đầy đủ tính năng nạp/rút tiền.
+        </p>
+      </div>
+    );
+  }
+
+  if (submitted || (user && user.kycStatus === "pending")) {
+    return (
+      <div style={{ maxWidth:500, margin:"0 auto", textAlign:"center", paddingTop:40 }}>
+        <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:"spring", damping:15}}
+          style={{ width:80, height:80, background:"rgba(245,158,11,0.15)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px" }}>
+          <Clock size={36} style={{ color:"#f59e0b" }} />
+        </motion.div>
+        <h2 style={{ fontSize:22, fontWeight:800, marginBottom:8 }}>Đang xem xét hồ sơ</h2>
+        <p style={{ color:"#71717a", fontSize:14, lineHeight:1.6 }}>
+          Chúng tôi đã nhận được hồ sơ KYC của bạn.<br />
+          Kết quả đang được ban quản trị xem xét. Vui lòng chờ phản hồi trong thời gian sớm nhất!
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div style={{ maxWidth:560 }}>

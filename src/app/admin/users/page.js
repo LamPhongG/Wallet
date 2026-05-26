@@ -1,6 +1,9 @@
 "use client";
-import { useState } from "react";
-import { Search, Shield, ShieldOff, Eye, Filter, ChevronUp, ChevronDown, User, CreditCard, Check } from "lucide-react";
+import { useState, useEffect } from "react";
+import { 
+  Check, X, Search, Eye, User, CreditCard, Lock, Unlock,
+  ArrowDownLeft, ArrowUpRight, History, Clock, CheckCircle2, XCircle
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const mockUsers = [
@@ -14,6 +17,83 @@ const mockUsers = [
 const kycBadge = { verified:{ bg:"rgba(34,197,94,0.12)", color:"#22c55e", text:"Đã KYC" }, pending:{ bg:"rgba(245,158,11,0.12)", color:"#f59e0b", text:"Chờ duyệt" }, none:{ bg:"rgba(100,116,139,0.12)", color:"#94a3b8", text:"Chưa KYC" } };
 const statusBadge = { active:{ bg:"rgba(34,197,94,0.12)", color:"#22c55e", text:"Hoạt động" }, locked:{ bg:"rgba(239,68,68,0.12)", color:"#ef4444", text:"Bị khóa" } };
 
+const getUserBaseBalance = (email) => {
+  if (!email) return 0;
+  const lower = email.toLowerCase();
+  if (lower === "nva@email.com") return 12500000;
+  if (lower === "ttb@email.com") return 3200000;
+  if (lower === "lvc@email.com") return 0;
+  if (lower === "ptd@email.com") return 8750000;
+  if (lower === "hme@email.com") return 1000000;
+  return 0;
+};
+
+const getMockUserEmailByName = (name) => {
+  if (!name) return null;
+  const lower = name.toLowerCase();
+  if (lower.includes("nguyễn văn a")) return "nva@email.com";
+  if (lower.includes("trần thị b")) return "ttb@email.com";
+  if (lower.includes("lê văn c")) return "lvc@email.com";
+  if (lower.includes("phạm thị d")) return "ptd@email.com";
+  if (lower.includes("hoàng minh e")) return "hme@email.com";
+  return null;
+};
+
+// Lấy balance của user - ưu tiên từ bw_user.balance (do syncBalanceToAdmin đã tính chính xác)
+const calcUserBalance = (userEmail) => {
+  try {
+    // Nếu đây là user đang login → lấy balance từ session (do wallets/page sync rồi)
+    const bwUser = localStorage.getItem("bw_user");
+    if (bwUser) {
+      const u = JSON.parse(bwUser);
+      if (u.email === userEmail && u.balance) return u.balance;
+    }
+    // Fallback: đọc từ bw_transactions_{email} nếu có
+    const emailTx = localStorage.getItem(`bw_transactions_${userEmail}`);
+    if (emailTx) {
+      const txs = JSON.parse(emailTx);
+      const base = getUserBaseBalance(userEmail);
+      const total = Math.max(0, txs.reduce((acc, tx) => {
+        if (tx.status !== "success") return acc;
+        if (tx.type === "receive") return acc + tx.amount;
+        if (tx.type === "send") return acc - tx.amount;
+        return acc;
+      }, base));
+      return total.toLocaleString("vi-VN") + " ₫";
+    }
+    return null;
+  } catch { return null; }
+};
+
+// Rút gọn ID để hiển thị: giữ tiền tố + 4 ký tự + ... + 4 ký tự cuối
+const shortId = (id = "") => {
+  if (!id) return "—";
+  if (id.length <= 12) return id;
+  return id.slice(0, 7) + "…" + id.slice(-4);
+};
+
+const parseTxTime = (timeStr) => {
+  if (!timeStr) return new Date();
+  try {
+    const parts = timeStr.trim().split(" ");
+    if (parts.length === 2 && parts[1].includes("/")) {
+      const [hour, minute] = parts[0].split(":");
+      const [day, month, year] = parts[1].split("/");
+      return new Date(
+        Number(year),
+        Number(month) - 1,
+        Number(day),
+        Number(hour || 0),
+        Number(minute || 0)
+      );
+    }
+    const d = new Date(timeStr);
+    return isNaN(d.getTime()) ? new Date() : d;
+  } catch (e) {
+    return new Date();
+  }
+};
+
 export default function AdminUsersPage() {
   const [users, setUsers] = useState(mockUsers);
   const [search, setSearch] = useState("");
@@ -21,21 +101,168 @@ export default function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState(null);
   const [modalTab, setModalTab] = useState("info");
 
-  const handleApproveKyc = (id) => {
-    setUsers(prev => prev.map(u => u.id === id ? { ...u, kyc: "verified" } : u));
-    if (selectedUser && selectedUser.id === id) {
-      setSelectedUser(prev => ({ ...prev, kyc: "verified" }));
+  useEffect(() => {
+    let list = mockUsers;
+    const stored = localStorage.getItem("bw_users");
+    if (stored) {
+      list = JSON.parse(stored);
     }
+
+    // Sync thông tin đầy đủ từ bw_user (user đang login)
+    const userVal = localStorage.getItem("bw_user");
+    if (userVal) {
+      const currentUser = JSON.parse(userVal);
+      const kycState = currentUser.kyc === true || currentUser.kycStatus === "verified"
+        ? "verified"
+        : (currentUser.kycStatus === "pending" ? "pending" : "none");
+
+      const foundIdx = list.findIndex(u => u.email === currentUser.email);
+      const realBalance = calcUserBalance(currentUser.email);
+
+      if (foundIdx === -1) {
+        // Thêm user mới vào danh sách admin
+        const newEntry = {
+          id: currentUser.id || ("U" + Date.now()),
+          name: currentUser.name || "Người dùng",
+          email: currentUser.email,
+          phone: currentUser.phone || "Chưa cập nhật",
+          kyc: kycState,
+          kycStatus: kycState,
+          status: "active",
+          balance: realBalance || "0 ₫",
+          joined: new Date().toLocaleDateString("vi-VN"),
+          cccd: currentUser.cccd || null,
+          dob: currentUser.dob || null,
+          gender: currentUser.gender || "Nam",
+          address: currentUser.address || "Chưa cập nhật",
+        };
+        list.push(newEntry);
+        localStorage.setItem("bw_users", JSON.stringify(list));
+      } else {
+        // Luôn đồng bộ toàn bộ thông tin mới nhất
+        list[foundIdx] = {
+          ...list[foundIdx],
+          kyc: kycState,
+          kycStatus: kycState,
+          name: currentUser.name || list[foundIdx].name,
+          phone: currentUser.phone || list[foundIdx].phone,
+          cccd: currentUser.cccd || list[foundIdx].cccd,
+          dob: currentUser.dob || list[foundIdx].dob,
+          gender: currentUser.gender || list[foundIdx].gender,
+          address: currentUser.address || list[foundIdx].address,
+          // Chỉ cập nhật balance nếu tính được từ giao dịch thực
+          balance: realBalance || list[foundIdx].balance,
+        };
+        localStorage.setItem("bw_users", JSON.stringify(list));
+      }
+    } else {
+      if (!stored) {
+        localStorage.setItem("bw_users", JSON.stringify(mockUsers));
+      }
+    }
+
+    // Tính balance thực cho từng user: ưu tiên từ calcUserBalance, fallback giữ nguyên
+    list = list.map(u => {
+      const real = calcUserBalance(u.email);
+      if (real) return { ...u, balance: real };
+      // Nếu không có transaction data, giữ nguyên balance từ bw_users
+      return u;
+    });
+
+    setUsers(list);
+  }, []);
+
+  // Lắng nghe event balance_updated từ admin/transactions khi duyệt lệnh
+  useEffect(() => {
+    const handleBalanceUpdate = () => {
+      // Đọc lại bw_users từ localStorage và cập nhật React state ngay
+      const stored = localStorage.getItem("bw_users");
+      if (stored) {
+        const freshList = JSON.parse(stored).map(u => {
+          const real = calcUserBalance(u.email);
+          return real ? { ...u, balance: real } : u;
+        });
+        setUsers(freshList);
+      }
+    };
+
+    window.addEventListener("balance_updated", handleBalanceUpdate);
+    return () => window.removeEventListener("balance_updated", handleBalanceUpdate);
+  }, []);
+
+  const handleApproveKyc = (id) => {
+    const targetUser = users.find(u => u.id === id);
+    if (!targetUser) return;
+
+    // 1. Cập nhật bw_users
+    const updatedUsers = users.map(u =>
+      u.id === id ? { ...u, kyc: "verified", kycStatus: "verified" } : u
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem("bw_users", JSON.stringify(updatedUsers));
+
+    // 2. Luôn cập nhật bw_user theo email (dù admin có đang đăng nhập hay không)
+    const loggedInUserVal = localStorage.getItem("bw_user");
+    if (loggedInUserVal) {
+      const loggedInUser = JSON.parse(loggedInUserVal);
+      if (loggedInUser.email === targetUser.email) {
+        loggedInUser.kyc = true;
+        loggedInUser.kycStatus = "verified";
+        localStorage.setItem("bw_user", JSON.stringify(loggedInUser));
+        // Dispatch event nếu user đang mở tab khác
+        window.dispatchEvent(new Event("kyc_updated"));
+      }
+    }
+
+    // 3. Cập nhật selectedUser trong modal
+    if (selectedUser && selectedUser.id === id) {
+      setSelectedUser(prev => ({ ...prev, kyc: "verified", kycStatus: "verified" }));
+    }
+
+    alert(`✅ Đã duyệt KYC cho ${targetUser.name || targetUser.email}!\nUser sẽ thấy trạng thái "Đã KYC" ngay khi reload trang.`);
+  };
+
+  const handleRejectKyc = (id) => {
+    const targetUser = users.find(u => u.id === id);
+    if (!targetUser) return;
+
+    const updatedUsers = users.map(u =>
+      u.id === id ? { ...u, kyc: "none", kycStatus: "rejected" } : u
+    );
+    setUsers(updatedUsers);
+    localStorage.setItem("bw_users", JSON.stringify(updatedUsers));
+
+    // Cập nhật bw_user nếu đang login
+    const loggedInUserVal = localStorage.getItem("bw_user");
+    if (loggedInUserVal) {
+      const loggedInUser = JSON.parse(loggedInUserVal);
+      if (loggedInUser.email === targetUser.email) {
+        loggedInUser.kyc = false;
+        loggedInUser.kycStatus = "rejected";
+        localStorage.setItem("bw_user", JSON.stringify(loggedInUser));
+        window.dispatchEvent(new Event("kyc_updated"));
+      }
+    }
+
+    if (selectedUser && selectedUser.id === id) {
+      setSelectedUser(prev => ({ ...prev, kyc: "none", kycStatus: "rejected" }));
+    }
+
+    alert(`❌ Đã từ chối KYC của ${targetUser.name || targetUser.email}.`);
   };
 
   const handleToggleLock = (id) => {
-    setUsers(prev => prev.map(u => {
+    const updatedUsers = users.map(u => {
       if (u.id === id) {
         const newStatus = u.status === "active" ? "locked" : "active";
         return { ...u, status: newStatus };
       }
       return u;
-    }));
+    });
+    
+    setUsers(updatedUsers);
+    localStorage.setItem("bw_users", JSON.stringify(updatedUsers));
+
     if (selectedUser && selectedUser.id === id) {
       setSelectedUser(prev => ({ ...prev, status: prev.status === "active" ? "locked" : "active" }));
     }
@@ -90,7 +317,19 @@ export default function AdminUsersPage() {
             onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
           >
-            <span style={{ fontSize:12, color:"#52525b", fontFamily:"monospace" }}>{u.id}</span>
+            <span
+              title={u.id}
+              onClick={() => { navigator.clipboard?.writeText(u.id); }}
+              style={{
+                fontSize:11, color:"#52525b", fontFamily:"monospace",
+                cursor:"copy", overflow:"hidden", textOverflow:"ellipsis",
+                whiteSpace:"nowrap", display:"block", maxWidth:76,
+                borderRadius:4, padding:"2px 4px",
+                transition:"background 0.15s"
+              }}
+              onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.06)"}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+            >{shortId(u.id)}</span>
             <div>
               <p style={{ fontSize:13, fontWeight:600 }}>{u.name}</p>
               <p style={{ fontSize:11, color:"#52525b" }}>{u.phone}</p>
@@ -117,7 +356,7 @@ export default function AdminUsersPage() {
       {selectedUser && (
         <div onClick={() => setSelectedUser(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
           <motion.div initial={{scale:0.95,opacity:0}} animate={{scale:1,opacity:1}} onClick={e => e.stopPropagation()}
-            style={{ background:"#0d0d0d", border:"1px solid #222", borderRadius:20, padding:28, width:"100%", maxWidth:modalTab === "cccd" && selectedUser.cccd ? 760 : 450, transition: "max-width 0.3s ease" }}>
+            style={{ background:"#0d0d0d", border:"1px solid #222", borderRadius:20, padding:28, width:"100%", maxWidth: modalTab === "cccd" && selectedUser.cccd ? 760 : modalTab === "tx" ? 600 : 450, transition: "max-width 0.3s ease" }}>
             
             <h3 style={{ fontSize:16, fontWeight:700, marginBottom:16, color: "white" }}>Chi tiết tài khoản: {selectedUser.name}</h3>
 
@@ -138,6 +377,14 @@ export default function AdminUsersPage() {
                 display:"flex", alignItems:"center", gap:6, transition:"all 0.25s"
               }}>
                 <CreditCard size={14} /> Hồ sơ CCCD
+              </button>
+              <button onClick={() => setModalTab("tx")} style={{
+                background:"none", border:"none", padding:"8px 4px", fontSize:13, fontWeight:600,
+                color: modalTab === "tx" ? "#e11d48" : "#52525b", cursor:"pointer",
+                borderBottom: modalTab === "tx" ? "2px solid #e11d48" : "2px solid transparent",
+                display:"flex", alignItems:"center", gap:6, transition:"all 0.25s"
+              }}>
+                <History size={14} /> Lịch sử GD
               </button>
             </div>
 
@@ -305,28 +552,150 @@ export default function AdminUsersPage() {
               </div>
             )}
 
+            {/* Tab 3: Transaction History */}
+            {modalTab === "tx" && (() => {
+              // Ưu tiên 1: key riêng của user (bw_transactions_{email})
+              const emailKey = `bw_transactions_${selectedUser.email}`;
+              const perUserRaw = localStorage.getItem(emailKey);
+
+              let txList = [];
+              if (perUserRaw) {
+                // Có key riêng → dùng trực tiếp (đã được lọc theo email khi lưu)
+                txList = JSON.parse(perUserRaw);
+              } else {
+                // Fallback: lọc từ pool chung theo userEmail tag hoặc tên khớp mock user
+                const globalRaw = localStorage.getItem("bw_transactions");
+                if (globalRaw) {
+                  const allTxs = JSON.parse(globalRaw);
+                  txList = allTxs.filter(tx => {
+                    if (tx.userEmail) return tx.userEmail === selectedUser.email;
+                    const mockEmail = getMockUserEmailByName(tx.name);
+                    return mockEmail === selectedUser.email;
+                  });
+                }
+              }
+
+              // Sắp xếp thời gian từ mới nhất -> cũ nhất
+              txList = [...txList].sort((a, b) => parseTxTime(b.time) - parseTxTime(a.time));
+
+              const fmtCur = (n) => Number(n).toLocaleString("vi-VN") + " ₫";
+              return (
+                <div>
+                  {/* Summary stats */}
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:8, marginBottom:16 }}>
+                    {[
+                      { label:"Tổng GD", val: txList.length, color:"#3b82f6" },
+                      { label:"Thành công", val: txList.filter(t=>t.status==="success").length, color:"#22c55e" },
+                      { label:"Chờ duyệt", val: txList.filter(t=>t.status==="pending").length, color:"#f59e0b" }
+                    ].map(s => (
+                      <div key={s.label} style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:10, padding:"10px 14px", textAlign:"center" }}>
+                        <p style={{ fontSize:20, fontWeight:900, color: s.color }}>{s.val}</p>
+                        <p style={{ fontSize:11, color:"#52525b", marginTop:2 }}>{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Transaction list */}
+                  <div style={{ display:"flex", flexDirection:"column", gap:6, maxHeight:340, overflowY:"auto", paddingRight:4 }}>
+                    {txList.length === 0 ? (
+                      <div style={{ textAlign:"center", padding:"30px 0", color:"#52525b" }}>
+                        <History size={28} style={{ marginBottom:8, opacity:0.3 }} />
+                        <p style={{ fontSize:13 }}>Không có lịch sử giao dịch</p>
+                      </div>
+                    ) : txList.map((tx, i) => (
+                      <div key={tx.id || i} style={{
+                        display:"flex", alignItems:"center", gap:12,
+                        padding:"10px 12px", background:"#111",
+                        border:"1px solid #1a1a1a", borderRadius:10
+                      }}>
+                        {/* Type icon */}
+                        <div style={{
+                          width:34, height:34, borderRadius:8, flexShrink:0,
+                          background: tx.type==="receive" ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
+                          display:"flex", alignItems:"center", justifyContent:"center"
+                        }}>
+                          {tx.type==="receive"
+                            ? <ArrowDownLeft size={16} style={{color:"#22c55e"}} />
+                            : <ArrowUpRight size={16} style={{color:"#ef4444"}} />
+                          }
+                        </div>
+
+                        {/* Info */}
+                        <div style={{ flex:1, minWidth:0 }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                            <p style={{ fontSize:12, fontWeight:600, color:"white", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{tx.name}</p>
+                            {tx.category && (
+                              <span style={{ fontSize:9, background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:4, padding:"0 4px", color:"#a1a1aa", fontWeight:500 }}>
+                                {tx.category}
+                              </span>
+                            )}
+                          </div>
+                          <p style={{ fontSize:10, color:"#52525b", marginTop:1 }}>{tx.id} • {tx.time}</p>
+                        </div>
+
+                        {/* Amount + Status */}
+                        <div style={{ textAlign:"right", flexShrink:0 }}>
+                          <p style={{ fontSize:13, fontWeight:700, color: tx.type==="receive" ? "#22c55e" : "#ef4444" }}>
+                            {tx.type==="receive" ? "+" : "-"}{fmtCur(tx.amount)}
+                          </p>
+                          <span style={{
+                            fontSize:10, padding:"1px 7px", borderRadius:5, fontWeight:600, display:"inline-block", marginTop:3,
+                            background: tx.status==="success" ? "rgba(34,197,94,0.1)" : tx.status==="pending" ? "rgba(245,158,11,0.1)" : "rgba(239,68,68,0.1)",
+                            color: tx.status==="success" ? "#22c55e" : tx.status==="pending" ? "#f59e0b" : "#ef4444"
+                          }}>
+                            {tx.status==="success" ? "Thành công" : tx.status==="pending" ? "Chờ duyệt" : "Thất bại"}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
             {/* Bottom Actions */}
             <div style={{ display:"flex", gap:10, marginTop:24, flexWrap:"wrap" }}>
-              {selectedUser.kyc === "pending" && (
-                <button
-                  onClick={() => handleApproveKyc(selectedUser.id)}
-                  style={{
-                    flex: "1 1 100%",
-                    background: "rgba(34,197,94,0.15)",
-                    border: "1px solid rgba(34,197,94,0.3)",
-                    color: "#22c55e",
-                    borderRadius: 8,
-                    padding: "10px 14px",
-                    fontWeight: 700,
-                    fontSize: 13,
-                    cursor: "pointer",
-                    transition: "all 0.2s"
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = "rgba(34,197,94,0.25)"}
-                  onMouseLeave={e => e.currentTarget.style.background = "rgba(34,197,94,0.15)"}
-                >
-                  Xác nhận KYC
-                </button>
+              {(selectedUser.kyc === "pending" || selectedUser.kycStatus === "pending") && (
+                <>
+                  <button
+                    onClick={() => handleApproveKyc(selectedUser.id)}
+                    style={{
+                      flex: 1,
+                      background: "rgba(34,197,94,0.15)",
+                      border: "1px solid rgba(34,197,94,0.3)",
+                      color: "#22c55e",
+                      borderRadius: 8,
+                      padding: "10px 14px",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = "rgba(34,197,94,0.25)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "rgba(34,197,94,0.15)"}
+                  >
+                    ✅ Duyệt KYC
+                  </button>
+                  <button
+                    onClick={() => handleRejectKyc(selectedUser.id)}
+                    style={{
+                      flex: 1,
+                      background: "rgba(239,68,68,0.12)",
+                      border: "1px solid rgba(239,68,68,0.25)",
+                      color: "#ef4444",
+                      borderRadius: 8,
+                      padding: "10px 14px",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: "pointer",
+                      transition: "all 0.2s"
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = "rgba(239,68,68,0.25)"}
+                    onMouseLeave={e => e.currentTarget.style.background = "rgba(239,68,68,0.12)"}
+                  >
+                    ❌ Từ chối KYC
+                  </button>
+                </>
               )}
               <button
                 onClick={() => handleToggleLock(selectedUser.id)}

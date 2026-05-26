@@ -5,7 +5,7 @@ import Link from "next/link";
 import {
   Wallet, LayoutDashboard, CreditCard, Gift, Settings,
   Bell, ChevronDown, User, Shield, LogOut, Menu, X,
-  AlertTriangle, TrendingUp
+  AlertTriangle, TrendingUp, CheckCircle, Check, Clock
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -15,12 +15,6 @@ const navItems = [
   { href: "/dashboard/offers", icon: Gift, label: "Ưu đãi" },
 ];
 
-const mockNotifications = [
-  { id: 1, title: "Nhận tiền thành công", desc: "+500,000 ₫ từ Nguyễn Văn A", time: "2 phút trước", read: false },
-  { id: 2, title: "Bảo mật tài khoản", desc: "Cập nhật thông tin KYC để tăng hạn mức", time: "1 giờ trước", read: false },
-  { id: 3, title: "Chuyển tiền thành công", desc: "-200,000 ₫ sang Trần Thị B", time: "Hôm qua", read: true },
-];
-
 export default function DashboardLayout({ children }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -28,7 +22,200 @@ export default function DashboardLayout({ children }) {
   const [showNotif, setShowNotif] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const unreadCount = mockNotifications.filter(n => !n.read).length;
+
+  // Notification states & hooks
+  const [readNotifIds, setReadNotifIds] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("bw_read_notif_ids");
+      if (saved) return JSON.parse(saved);
+    }
+    return [];
+  });
+  const [notifFilter, setNotifFilter] = useState("all");
+  const [userTxs, setUserTxs] = useState([]);
+  const [newsPosts, setNewsPosts] = useState([]);
+
+  useEffect(() => {
+    if (!user?.email) return;
+    
+    const loadData = () => {
+      // Load Transactions
+      const savedTxs = localStorage.getItem(`bw_transactions_${user.email}`);
+      if (savedTxs) {
+        setUserTxs(JSON.parse(savedTxs));
+      } else {
+        setUserTxs([]);
+      }
+
+      // Load News
+      const savedNews = localStorage.getItem("bw_posts");
+      if (savedNews) {
+        setNewsPosts(JSON.parse(savedNews).filter(p => p.active));
+      } else {
+        setNewsPosts([
+          { 
+            id: 1, 
+            title: "Ngân hàng Nhà nước điều chỉnh lãi suất tiết kiệm", 
+            time: "2 giờ trước", 
+            tag: "Kinh tế", 
+            content: "Ngân hàng Nhà nước vừa công bố điều chỉnh khung lãi suất tiền gửi tiết kiệm áp dụng cho các tổ chức tín dụng. Động thái này nhằm định hướng dòng vốn hiệu quả vào sản xuất kinh doanh, đồng thời kiểm soát lạm phát ổn định trong nước."
+          },
+          { 
+            id: 2, 
+            title: "Thanh toán không tiền mặt tăng 40% trong năm 2025", 
+            time: "5 giờ trước", 
+            tag: "Fintech", 
+            content: "Báo cáo mới nhất của cơ quan quản lý tài chính cho thấy làn sóng chuyển đổi số đang bùng nổ mạnh mẽ tại Việt Nam. Khối lượng giao dịch không dùng tiền mặt qua ví điện tử và chuyển khoản ngân hàng ghi nhận mức tăng trưởng kỷ lục."
+          },
+          { 
+            id: 3, 
+            title: "AI tài chính: xu hướng quản lý chi tiêu thông minh", 
+            time: "1 ngày trước", 
+            tag: "Công nghệ", 
+            content: "Các chuyên gia Fintech đánh giá trợ lý trí tuệ nhân tạo (AI) đang định hình lại thói quen tích lũy tài sản và theo dõi ngân sách cá nhân của thế hệ trẻ. Công nghệ phân tích dự báo giúp tối ưu hóa chi phí hàng tháng tối đa."
+          }
+        ]);
+      }
+    };
+
+    loadData();
+    
+    window.addEventListener("storage", loadData);
+    window.addEventListener("kyc_updated", loadData);
+    return () => {
+      window.removeEventListener("storage", loadData);
+      window.removeEventListener("kyc_updated", loadData);
+    };
+  }, [user, pathname]);
+
+  const notifications = (() => {
+    const list = [];
+
+    // 1. Add KYC Notification
+    const isKycVerified = user?.kyc === true || user?.kyc === "verified" || user?.kycStatus === "verified";
+    const isKycPending = !isKycVerified && (user?.kycStatus === "pending" || user?.kyc === "pending");
+    const isKycRejected = !isKycVerified && !isKycPending && (user?.kycStatus === "rejected" || user?.kyc === "rejected");
+
+    if (isKycVerified) {
+      list.push({
+        id: "kyc_verified",
+        title: "Xác thực KYC thành công ✅",
+        desc: "Tài khoản của bạn đã được kích hoạt đầy đủ các tính năng nạp/rút/chuyển tiền.",
+        time: "Hệ thống",
+        type: "kyc"
+      });
+    } else if (isKycPending) {
+      list.push({
+        id: "kyc_pending",
+        title: "Đang chờ duyệt KYC ⏳",
+        desc: "Hồ sơ xác minh danh tính của bạn đang được ban quản trị xét duyệt.",
+        time: "Hệ thống",
+        type: "kyc"
+      });
+    } else if (isKycRejected) {
+      list.push({
+        id: "kyc_rejected",
+        title: "Hồ sơ KYC bị từ chối ❌",
+        desc: "Thông tin xác thực không trùng khớp hoặc mờ. Vui lòng gửi lại hồ sơ chính xác.",
+        time: "Hệ thống",
+        type: "kyc"
+      });
+    } else {
+      list.push({
+        id: "kyc_needed",
+        title: "Yêu cầu xác thực danh tính (KYC) ⚠️",
+        desc: "Nhấp để gửi hồ sơ căn cước công dân nhằm tăng hạn mức và bảo mật ví.",
+        time: "Hệ thống",
+        type: "kyc"
+      });
+    }
+
+    // 2. Add Transaction Notifications
+    userTxs.forEach(tx => {
+      let title = "";
+      let desc = "";
+      const fmtAmt = tx.amount.toLocaleString("vi-VN") + " ₫";
+
+      if (tx.type === "deposit") {
+        if (tx.status === "success") {
+          title = "Nạp tiền thành công 💳";
+          desc = `Đã cộng ${fmtAmt} vào ví qua ngân hàng liên kết.`;
+        } else if (tx.status === "pending") {
+          title = "Yêu cầu nạp tiền đang xử lý ⏳";
+          desc = `Hệ thống đang xác minh giao dịch nạp ${fmtAmt}.`;
+        } else {
+          title = "Nạp tiền thất bại ❌";
+          desc = `Giao dịch nạp ${fmtAmt} đã bị hủy bỏ hoặc từ chối.`;
+        }
+      } else if (tx.type === "withdraw") {
+        if (tx.status === "success") {
+          title = "Rút tiền thành công 🏦";
+          desc = `Đã rút ${fmtAmt} về tài khoản ngân hàng của bạn.`;
+        } else if (tx.status === "pending") {
+          title = "Yêu cầu rút tiền đang chờ duyệt ⏳";
+          desc = `Yêu cầu rút ${fmtAmt} đang đợi Admin phê duyệt.`;
+        } else {
+          title = "Rút tiền thất bại ❌";
+          desc = `Yêu cầu rút ${fmtAmt} bị từ chối bởi hệ thống.`;
+        }
+      } else if (tx.type === "send") {
+        if (tx.status === "success") {
+          title = "Chuyển tiền thành công 💸";
+          desc = `Đã gửi ${fmtAmt} tới người nhận.`;
+        } else if (tx.status === "pending") {
+          title = "Yêu cầu chuyển tiền đang chờ duyệt ⏳";
+          desc = `Yêu cầu chuyển ${fmtAmt} đang được xử lý.`;
+        } else {
+          title = "Chuyển tiền thất bại ❌";
+          desc = `Giao dịch chuyển ${fmtAmt} không thành công.`;
+        }
+      } else if (tx.type === "receive") {
+        title = "Nhận tiền thành công 📥";
+        desc = `Bạn nhận được ${fmtAmt} từ đối tác.`;
+      }
+
+      list.push({
+        id: `tx_${tx.id}_${tx.status}`,
+        title,
+        desc,
+        time: tx.time,
+        type: "transaction"
+      });
+    });
+
+    // 3. Add News Notifications
+    newsPosts.forEach(post => {
+      const contentText = post.content || "";
+      list.push({
+        id: `news_${post.id}`,
+        title: `📰 [${post.tag || "Tin tức"}] ${post.title || ""}`,
+        desc: contentText.length > 70 ? contentText.slice(0, 70) + "..." : contentText,
+        time: post.time || "Vừa xong",
+        type: "news"
+      });
+    });
+
+    return list.map(item => ({
+      ...item,
+      read: readNotifIds.includes(item.id)
+    }));
+  })();
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+
+  const handleMarkAsRead = (id) => {
+    if (!readNotifIds.includes(id)) {
+      const updated = [...readNotifIds, id];
+      setReadNotifIds(updated);
+      localStorage.setItem("bw_read_notif_ids", JSON.stringify(updated));
+    }
+  };
+
+  const filteredNotifs = notifications.filter(n => {
+    if (notifFilter === "unread") return !n.read;
+    if (notifFilter === "read") return n.read;
+    return true;
+  });
 
   useEffect(() => {
     const token = localStorage.getItem("bw_token");
@@ -40,7 +227,24 @@ export default function DashboardLayout({ children }) {
     }
     if (!token) { router.replace("/login"); return; }
     if (userData) setUser(JSON.parse(userData));
-  }, [router]);
+
+    const handleStorageChange = () => {
+      const u = localStorage.getItem("bw_user");
+      if (u) setUser(JSON.parse(u));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("kyc_updated", handleStorageChange);
+    window.addEventListener("balance_updated", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("kyc_updated", handleStorageChange);
+      window.removeEventListener("balance_updated", handleStorageChange);
+    };
+  }, [router, pathname]);
+
+  // Helper: chuẩn hoá trạng thái KYC
+  const isKycVerified = user?.kyc === true || user?.kyc === "verified" || user?.kycStatus === "verified";
+  const isKycPending = !isKycVerified && (user?.kycStatus === "pending" || user?.kyc === "pending");
 
   const handleLogout = () => {
     localStorage.removeItem("bw_token");
@@ -158,21 +362,50 @@ export default function DashboardLayout({ children }) {
             </h2>
           </div>
 
-          {/* KYC Alert */}
-          {user && !user.kyc && (
-            <button
-              onClick={() => router.push("/dashboard/kyc")}
-              style={{
+          {/* KYC Status Badge */}
+          {user && (
+            isKycVerified ? (
+              // ✅ Đã KYC - hiện badge xanh
+              <div style={{
                 display: "flex", alignItems: "center", gap: 6,
-                background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)",
-                borderRadius: 8, padding: "6px 12px", color: "#f59e0b",
-                cursor: "pointer", fontSize: 12, fontWeight: 600
-              }}
-            >
-              <AlertTriangle size={14} />
-              <span className="hidden sm:inline">Xác thực danh tính</span>
-              <span className="sm:hidden">KYC</span>
-            </button>
+                background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)",
+                borderRadius: 8, padding: "6px 12px", color: "#22c55e",
+                fontSize: 12, fontWeight: 600
+              }}>
+                <CheckCircle size={14} />
+                <span className="hidden sm:inline">Đã xác thực KYC</span>
+              </div>
+            ) : isKycPending ? (
+              // ⏳ Đang chờ duyệt
+              <button
+                onClick={() => router.push("/dashboard/kyc")}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)",
+                  borderRadius: 8, padding: "6px 12px", color: "#f59e0b",
+                  cursor: "pointer", fontSize: 12, fontWeight: 600
+                }}
+              >
+                <Clock size={14} style={{ animation: "pulse 2s infinite" }} />
+                <span className="hidden sm:inline">Đang chờ duyệt KYC</span>
+                <span className="sm:hidden">Pending</span>
+              </button>
+            ) : (
+              // ⚠️ Chưa KYC - hiện cảnh báo
+              <button
+                onClick={() => router.push("/dashboard/kyc")}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)",
+                  borderRadius: 8, padding: "6px 12px", color: "#f59e0b",
+                  cursor: "pointer", fontSize: 12, fontWeight: 600
+                }}
+              >
+                <AlertTriangle size={14} />
+                <span className="hidden sm:inline">Xác thực danh tính</span>
+                <span className="sm:hidden">KYC</span>
+              </button>
+            )
           )}
 
           {/* Notifications */}
@@ -208,29 +441,68 @@ export default function DashboardLayout({ children }) {
                     borderRadius: 14, boxShadow: "0 20px 60px rgba(0,0,0,0.5)", zIndex: 100, overflow: "hidden"
                   }}
                 >
-                  <div style={{ padding: "16px 20px", borderBottom: "1px solid #1a1a1a", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ padding: "16px 20px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <h3 style={{ fontSize: 14, fontWeight: 700 }}>Thông báo</h3>
                     {unreadCount > 0 && <span style={{ fontSize: 11, background: "rgba(225,29,72,0.15)", color: "#e11d48", padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>{unreadCount} mới</span>}
                   </div>
-                  {mockNotifications.map((n) => (
-                    <div key={n.id} style={{
-                      padding: "14px 20px", borderBottom: "1px solid #1a1a1a",
-                      background: !n.read ? "rgba(225,29,72,0.04)" : "transparent",
-                      cursor: "pointer", transition: "background 0.2s"
-                    }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = !n.read ? "rgba(225,29,72,0.04)" : "transparent"; }}
-                    >
-                      <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                        {!n.read && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#e11d48", marginTop: 6, flexShrink: 0 }} />}
-                        <div style={{ flex: 1 }}>
-                          <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{n.title}</p>
-                          <p style={{ fontSize: 12, color: "#71717a" }}>{n.desc}</p>
-                          <p style={{ fontSize: 11, color: "#3f3f46", marginTop: 4 }}>{n.time}</p>
-                        </div>
+
+                  {/* Filter Pills */}
+                  <div style={{ display: "flex", gap: 6, padding: "4px 20px 12px", borderBottom: "1px solid #1a1a1a" }}>
+                    {[
+                      { id: "all", label: "Tất cả" },
+                      { id: "unread", label: "Chưa xem" },
+                      { id: "read", label: "Đã xem" },
+                    ].map(f => (
+                      <button 
+                        key={f.id} 
+                        onClick={(e) => { e.stopPropagation(); setNotifFilter(f.id); }}
+                        style={{
+                          padding: "4px 10px", borderRadius: 20, fontSize: 11, fontWeight: 500,
+                          background: notifFilter === f.id ? "rgba(225,29,72,0.15)" : "#161616",
+                          border: `1px solid ${notifFilter === f.id ? "rgba(225,29,72,0.4)" : "#222"}`,
+                          color: notifFilter === f.id ? "#e11d48" : "#71717a",
+                          cursor: "pointer", transition: "all 0.2s"
+                        }}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Notification List */}
+                  <div style={{ maxHeight: 280, overflowY: "auto" }}>
+                    {filteredNotifs.length === 0 ? (
+                      <div style={{ padding: "30px 20px", textAlign: "center", color: "#71717a" }}>
+                        <p style={{ fontSize: 12 }}>Không có thông báo nào</p>
                       </div>
-                    </div>
-                  ))}
+                    ) : (
+                      filteredNotifs.map((n) => (
+                        <div key={n.id} 
+                          onClick={() => handleMarkAsRead(n.id)}
+                          style={{
+                            padding: "14px 20px", borderBottom: "1px solid #1a1a1a",
+                            background: !n.read ? "rgba(225,29,72,0.04)" : "transparent",
+                            cursor: "pointer", transition: "background 0.2s"
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+                          onMouseLeave={(e) => { 
+                            // Lấy trạng thái read mới nhất của notification để set background tương ứng khi hover out
+                            const latest = notifications.find(x => x.id === n.id);
+                            e.currentTarget.style.background = (latest && !latest.read) ? "rgba(225,29,72,0.04)" : "transparent"; 
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                            {!n.read && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#e11d48", marginTop: 6, flexShrink: 0 }} />}
+                            <div style={{ flex: 1 }}>
+                              <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{n.title}</p>
+                              <p style={{ fontSize: 12, color: "#71717a" }}>{n.desc}</p>
+                              <p style={{ fontSize: 11, color: "#3f3f46", marginTop: 4 }}>{n.time}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -274,15 +546,39 @@ export default function DashboardLayout({ children }) {
                     <p style={{ fontSize: 11, color: "#52525b" }}>{user?.email}</p>
                   </div>
                   {[
-                    { icon: Shield, label: "Xác thực KYC", href: "/dashboard/kyc" },
-                    { icon: User, label: "Thông tin cá nhân", href: "/dashboard/profile" },
-                  ].map(({ icon: Icon, label, href }) => (
+                    isKycVerified
+                      ? { icon: CheckCircle, label: "Đã KYC ✓", href: "/dashboard/kyc", status: "verified" }
+                      : isKycPending
+                        ? { icon: Clock, label: "Đang chờ duyệt KYC", href: "/dashboard/kyc", status: "pending" }
+                        : { icon: Shield, label: "Xác thực KYC", href: "/dashboard/kyc", status: "none" },
+                    { icon: User, label: "Thông tin cá nhân", href: "/dashboard/profile", status: "none" },
+                  ].map(({ icon: Icon, label, href, status }) => (
                     <Link key={href} href={href} style={{ textDecoration: "none" }} onClick={() => setShowUserMenu(false)}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 16px", color: "#a1a1aa", fontSize: 13, cursor: "pointer", transition: "all 0.2s" }}
-                        onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.color = "#fff"; }}
-                        onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#a1a1aa"; }}
+                      <div style={{
+                        display: "flex", alignItems: "center", gap: 10, padding: "11px 16px",
+                        color: status === "verified" ? "#22c55e" : status === "pending" ? "#f59e0b" : "#a1a1aa", fontSize: 13, cursor: "pointer", transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                        if (status === "none") e.currentTarget.style.color = "#fff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = "transparent";
+                        if (status === "none") e.currentTarget.style.color = "#a1a1aa";
+                      }}
                       >
-                        <Icon size={15} /> {label}
+                        <Icon size={15} style={{ color: status === "verified" ? "#22c55e" : status === "pending" ? "#f59e0b" : undefined }} />
+                        <span style={{ fontWeight: status !== "none" ? 600 : 400, flex: 1 }}>{label}</span>
+                        {status === "verified" && (
+                          <div style={{ display: "inline-flex", background: "#22c55e", borderRadius: "50%", width: 16, height: 16, alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                            <Check size={9} color="white" style={{ strokeWidth: 3 }} />
+                          </div>
+                        )}
+                        {status === "pending" && (
+                          <div style={{ display: "inline-flex", background: "rgba(245,158,11,0.12)", borderRadius: "50%", width: 14, height: 14, alignItems: "center", justifyContent: "center" }}>
+                            <Clock size={8} color="#f59e0b" />
+                          </div>
+                        )}
                       </div>
                     </Link>
                   ))}

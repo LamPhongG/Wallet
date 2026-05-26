@@ -10,6 +10,29 @@ const ADMIN_ACCOUNTS = [
   { email: "manager@blackred.com", password: "Manager@123", name: "Manager",      role: "manager" },
 ];
 
+const getUserBaseBalance = (email) => {
+  if (!email) return 0;
+  const lower = email.toLowerCase();
+  if (lower === "nva@email.com") return 12500000;
+  if (lower === "ttb@email.com") return 3200000;
+  if (lower === "lvc@email.com") return 0;
+  if (lower === "ptd@email.com") return 8750000;
+  if (lower === "hme@email.com") return 1000000;
+  return 0;
+};
+
+const getMockUserEmailByName = (name) => {
+  if (!name) return null;
+  const lower = name.toLowerCase();
+  if (lower.includes("nguyễn văn a")) return "nva@email.com";
+  if (lower.includes("trần thị b")) return "ttb@email.com";
+  if (lower.includes("lê văn c")) return "lvc@email.com";
+  if (lower.includes("phạm thị d")) return "ptd@email.com";
+  if (lower.includes("hoàng minh e")) return "hme@email.com";
+  return null;
+};
+
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -51,11 +74,100 @@ export default function LoginPage() {
         localStorage.removeItem("bw_admin_token");
         localStorage.removeItem("bw_admin");
         localStorage.setItem("bw_token", "demo_token_123");
-        localStorage.setItem("bw_user", JSON.stringify({ 
-          email: email.toLowerCase(), 
-          name: "Người dùng", 
-          kyc: false 
-        }));
+
+        // ↳ Tìm user trong danh sách đã lưu để phục hồi trạng thái KYC và data cũ
+        const storedUsers = localStorage.getItem("bw_users");
+        let userRecord = null;
+        if (storedUsers) {
+          const userList = JSON.parse(storedUsers);
+          userRecord = userList.find(u => u.email === email.toLowerCase());
+        }
+
+        let sessionUser;
+        if (userRecord) {
+          // User đã tồn tại: khôi phục đầy đủ data
+          sessionUser = {
+            email: userRecord.email,
+            name: userRecord.name || "Người dùng",
+            kyc: userRecord.kyc === "verified" ? true : false,
+            kycStatus: userRecord.kyc === "pending" ? "pending" : (userRecord.kyc === "verified" ? "verified" : undefined),
+            cccd: userRecord.cccd || undefined,
+            dob: userRecord.dob || undefined,
+            gender: userRecord.gender || undefined,
+            address: userRecord.address || undefined,
+            phone: userRecord.phone || undefined,
+          };
+          // Xóa các field undefined
+          Object.keys(sessionUser).forEach(k => sessionUser[k] === undefined && delete sessionUser[k]);
+        } else {
+          // User mới: tạo mới và thêm vào danh sách
+          sessionUser = {
+            email: email.toLowerCase(),
+            name: "Người dùng",
+            kyc: false
+          };
+          // Thêm vào bw_users nếu chưa có
+          const currentList = storedUsers ? JSON.parse(storedUsers) : [];
+          currentList.push({
+            id: "U" + Date.now(),
+            name: sessionUser.name,
+            email: sessionUser.email,
+            phone: "Chưa cập nhật",
+            kyc: "none",
+            status: "active",
+            balance: "0 ₫",
+            joined: new Date().toLocaleDateString("vi-VN"),
+            cccd: null, dob: null, gender: null, address: null
+          });
+          localStorage.setItem("bw_users", JSON.stringify(currentList));
+        }
+
+        localStorage.setItem("bw_user", JSON.stringify(sessionUser));
+
+        // Sync bw_transactions_{email} và balance vào bw_users ngay khi login
+        // Đảm bảo admin luôn tìm được user qua key này
+        try {
+          const txRaw = localStorage.getItem("bw_transactions");
+          const emailKey = `bw_transactions_${sessionUser.email}`;
+          
+          let userTxs = [];
+          const storedUserTxs = localStorage.getItem(emailKey);
+          if (storedUserTxs) {
+            userTxs = JSON.parse(storedUserTxs);
+          } else {
+            // Chưa có key riêng → khởi tạo bằng cách lọc từ pool chung
+            if (txRaw) {
+              const allTxs = JSON.parse(txRaw);
+              userTxs = allTxs.filter(tx => {
+                if (tx.userEmail) return tx.userEmail === sessionUser.email;
+                const mockEmail = getMockUserEmailByName(tx.name);
+                return mockEmail === sessionUser.email;
+              });
+            }
+            localStorage.setItem(emailKey, JSON.stringify(userTxs));
+          }
+
+          // Tính balance thực và cập nhật bw_users
+          const base = getUserBaseBalance(sessionUser.email);
+          const newBalance = Math.max(0, userTxs.reduce((acc, tx) => {
+            if (tx.status !== "success") return acc;
+            if (tx.type === "receive") return acc + tx.amount;
+            if (tx.type === "send") return acc - tx.amount;
+            return acc;
+          }, base));
+          const balanceStr = newBalance.toLocaleString("vi-VN") + " ₫";
+
+          const bwUsersRaw = localStorage.getItem("bw_users");
+          if (bwUsersRaw) {
+            const bwUsersList = JSON.parse(bwUsersRaw);
+            const idx = bwUsersList.findIndex(u => u.email === sessionUser.email);
+            if (idx !== -1) {
+              bwUsersList[idx].balance = balanceStr;
+              localStorage.setItem("bw_users", JSON.stringify(bwUsersList));
+            }
+          }
+        } catch(e) { /* silent */ }
+
         router.push("/dashboard");
       }
     }, 1500);

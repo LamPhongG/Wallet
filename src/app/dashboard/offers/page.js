@@ -1,15 +1,16 @@
 "use client";
 import { useState } from "react";
-import { Gift, Tag, Clock, ChevronRight, Flame, Star } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Gift, Tag, Clock, ChevronRight, Flame } from "lucide-react";
 import { motion } from "framer-motion";
 
 const vouchers = [
-  { id:1, title:"Giảm 50K phí chuyển tiền", desc:"Áp dụng cho giao dịch từ 500K", exp:"31/12/2025", tag:"Chuyển tiền", hot:true, discount:"50K" },
-  { id:2, title:"Hoàn tiền 2% mua sắm", desc:"Tối đa 200K/tháng", exp:"30/06/2025", tag:"Mua sắm", hot:false, discount:"2%" },
-  { id:3, title:"Miễn phí rút tiền lần đầu", desc:"Áp dụng tài khoản mới", exp:"15/07/2025", tag:"Rút tiền", hot:true, discount:"FREE" },
-  { id:4, title:"Tặng 100K khi giới thiệu bạn", desc:"Khi bạn bè hoàn thành KYC", exp:"31/12/2025", tag:"Referral", hot:false, discount:"100K" },
-  { id:5, title:"Ưu đãi nạp tiền cuối tuần", desc:"Nạp từ 1 triệu, nhận thêm 20K", exp:"Hàng tuần", tag:"Nạp tiền", hot:true, discount:"20K" },
-  { id:6, title:"Giảm 30K bill điện nước", desc:"Thanh toán hóa đơn qua ví", exp:"30/06/2025", tag:"Hóa đơn", hot:false, discount:"30K" },
+  { id:1, code:"CHUYENTIEN50", title:"Giảm 50K phí chuyển tiền", desc:"Áp dụng cho giao dịch từ 500K", exp:"31/12/2025", tag:"Chuyển tiền", hot:true, discount:"50K" },
+  { id:2, code:"MUASAM2", title:"Hoàn tiền 2% mua sắm", desc:"Tối đa 200K/tháng", exp:"30/06/2025", tag:"Mua sắm", hot:false, discount:"2%" },
+  { id:3, code:"FREERUT", title:"Miễn phí rút tiền lần đầu", desc:"Áp dụng tài khoản mới", exp:"15/07/2025", tag:"Rút tiền", hot:true, discount:"FREE" },
+  { id:4, code:"REF100K", title:"Tặng 100K khi giới thiệu bạn", desc:"Khi bạn bè hoàn thành KYC", exp:"31/12/2025", tag:"Referral", hot:false, discount:"100K" },
+  { id:5, code:"NAP20K", title:"Ưu đãi nạp tiền cuối tuần", desc:"Nạp từ 1 triệu, nhận thêm 20K", exp:"Hàng tuần", tag:"Nạp tiền", hot:true, discount:"20K" },
+  { id:6, code:"BILL30", title:"Giảm 30K bill điện nước", desc:"Thanh toán hóa đơn qua ví", exp:"30/06/2025", tag:"Hóa đơn", hot:false, discount:"30K" },
 ];
 
 const tagColors = {
@@ -18,9 +19,18 @@ const tagColors = {
 };
 
 export default function OffersPage() {
+  const router = useRouter();
   const [activeTag, setActiveTag] = useState("Tất cả");
   const tags = ["Tất cả", ...Object.keys(tagColors)];
   const filtered = activeTag === "Tất cả" ? vouchers : vouchers.filter(v => v.tag === activeTag);
+
+  const handleUseVoucher = (v) => {
+    let modalType = "transfer";
+    if (v.tag === "Rút tiền") modalType = "withdraw";
+    else if (v.tag === "Nạp tiền") modalType = "deposit";
+    
+    router.push(`/dashboard/wallets?promo=${v.code}&modal=${modalType}`);
+  };
 
   return (
     <div style={{ maxWidth:900 }}>
@@ -45,6 +55,7 @@ export default function OffersPage() {
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px, 1fr))", gap:16 }}>
         {filtered.map((v, i) => (
           <motion.div key={v.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*0.07}}
+            onClick={() => handleUseVoucher(v)}
             style={{
               background:"#111", border:`1px solid ${v.hot ? "rgba(225,29,72,0.25)" : "#1f1f1f"}`,
               borderRadius:16, overflow:"hidden", cursor:"pointer", transition:"all 0.25s", position:"relative"
