@@ -332,7 +332,7 @@ export default function DashboardPage() {
 
       const prompt = `Bạn là trợ lý tư vấn tài chính cá nhân của ví điện tử Blackred Wallet. Bạn tên là Blackred AI. Hãy tư vấn cho người dùng thật chuyên nghiệp, lịch sự, ngắn gọn và hữu ích về các mẹo tiết kiệm tiền, tối ưu hóa ngân sách, quản lý chi tiêu. Số dư hiện tại của người dùng là ${balance.toLocaleString("vi-VN")} đ. Chi tiêu tháng này là ${currentMonthCategoryData.totalExpense.toLocaleString("vi-VN")} đ cho các khoản: ${categoryBreakdownStr}. Trả lời thân thiện, ngắn gọn bằng tiếng Việt.\n\nLịch sử trò chuyện:\n${newMsgList.map(m => `${m.role === 'user' ? 'Người dùng' : 'Blackred AI'}: ${m.text}`).join('\n')}\nBlackred AI:`;
 
-      const savedKey = localStorage.getItem("bw_gemini_api_key") || "AIzaSyBrMYCeCUwgAoZrGzuB984ouoGgkHGk8XA";
+      const savedKey = localStorage.getItem("bw_gemini_api_key") || "YOUR_GEMINI_API_KEY";
 
       const attempts = [
         { model: "gemini-1.5-flash", version: "v1beta" },
