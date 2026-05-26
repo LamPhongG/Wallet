@@ -10,7 +10,7 @@ import { QRCodeCanvas as QRCode } from "qrcode.react";
 
 const BANKS = ["Vietcombank","Techcombank","BIDV","VietinBank","Agribank","MB Bank","VPBank","TPBank","ACB","Sacombank"];
 
-const VOUCHERS = [
+const VOUCHERS_FALLBACK = [
   { id:1, code:"CHUYENTIEN50", title:"Giảm 50K phí chuyển tiền", desc:"Áp dụng cho giao dịch từ 500K", exp:"31/12/2025", tag:"Chuyển tiền", hot:true, discount:"50K", value: 50000, minAmount: 500000 },
   { id:2, code:"MUASAM2", title:"Hoàn tiền 2% mua sắm", desc:"Tối đa 200K/tháng", exp:"30/06/2025", tag:"Mua sắm", hot:false, discount:"2%", value: 0.02, isPercent: true },
   { id:3, code:"FREERUT", title:"Miễn phí rút tiền lần đầu", desc:"Áp dụng tài khoản mới", exp:"15/07/2025", tag:"Rút tiền", hot:true, discount:"FREE", value: 10000 },
@@ -164,6 +164,24 @@ export default function WalletsPage() {
   const [appliedVoucher, setAppliedVoucher] = useState(null);
   const [showPromoSelector, setShowPromoSelector] = useState(false);
   const [activePromoTab, setActivePromoTab] = useState("Tất cả");
+  const [voucherList, setVoucherList] = useState(VOUCHERS_FALLBACK);
+
+  // Load vouchers từ admin localStorage
+  const loadVouchers = () => {
+    try {
+      const saved = localStorage.getItem("bw_admin_vouchers");
+      if (saved) {
+        const all = JSON.parse(saved);
+        // Normalize: admin dùng field 'type', offers dùng 'tag'
+        const active = all.filter(v => v.active !== false).map(v => ({
+          ...v,
+          tag: v.type || v.tag || "Khác"
+        }));
+        setVoucherList(active.length > 0 ? active : VOUCHERS_FALLBACK);
+      }
+    } catch { /* fallback */ }
+  };
+
 
   const calculateDiscount = (amountVal, v) => {
     if (!v) return 0;
@@ -196,7 +214,7 @@ export default function WalletsPage() {
       showToast("Vui lòng nhập mã ưu đãi!", "error");
       return;
     }
-    const v = VOUCHERS.find(x => x.code.toUpperCase() === promoCode.trim().toUpperCase());
+    const v = voucherList.find(x => x.code.toUpperCase() === promoCode.trim().toUpperCase());
     if (!v) {
       showToast("Mã ưu đãi không hợp lệ hoặc đã hết hạn!", "error");
       return;
@@ -267,6 +285,13 @@ export default function WalletsPage() {
   };
 
   useEffect(() => {
+    loadVouchers();
+    // Lắng nghe admin cập nhật voucher (cùng tab)
+    window.addEventListener("bw_vouchers_updated", loadVouchers);
+    // Lắng nghe cross-tab
+    const storageHandler = (e) => { if (e.key === "bw_admin_vouchers") loadVouchers(); };
+    window.addEventListener("storage", storageHandler);
+
     const bwUser = localStorage.getItem("bw_user");
     const currentEmail = bwUser ? JSON.parse(bwUser).email : null;
     if (currentEmail) setUserEmail(currentEmail);
@@ -301,7 +326,9 @@ export default function WalletsPage() {
     // Sync balance lên admin ngay khi wallet page load
     if (currentEmail) syncBalanceToAdmin(txs, currentEmail);
 
-    const savedBanks = localStorage.getItem("bw_linked_banks");
+    // Load ngân hàng theo từng user riêng biệt
+    const bankKey = currentEmail ? `bw_linked_banks_${currentEmail}` : "bw_linked_banks";
+    const savedBanks = localStorage.getItem(bankKey);
     if (savedBanks) {
       const parsedBanks = JSON.parse(savedBanks);
       setLinkedBanks(parsedBanks);
@@ -318,13 +345,18 @@ export default function WalletsPage() {
       if (modalParam) {
         setModal(modalParam);
         if (promo) {
-          const v = VOUCHERS.find(x => x.code.toUpperCase() === promo.toUpperCase());
+          // Đọc vouchers từ localStorage hoặc fallback
+          const savedVouchers = (() => {
+            try {
+              const s = localStorage.getItem("bw_admin_vouchers");
+              return s ? JSON.parse(s).filter(v => v.active !== false) : VOUCHERS_FALLBACK;
+            } catch { return VOUCHERS_FALLBACK; }
+          })();
+          const v = savedVouchers.find(x => x.code.toUpperCase() === promo.toUpperCase());
           if (v) {
             setPromoCode(v.code);
             setAppliedVoucher(v);
-            setTimeout(() => {
-              showToast(`Tự động áp dụng ưu đãi: ${v.code}!`);
-            }, 900);
+            setTimeout(() => { showToast(`Tự động áp dụng ưu đãi: ${v.code}!`); }, 900);
           }
         }
       }
@@ -386,7 +418,8 @@ export default function WalletsPage() {
     };
     const updatedBanks = [...linkedBanks, newBank];
     setLinkedBanks(updatedBanks);
-    localStorage.setItem("bw_linked_banks", JSON.stringify(updatedBanks));
+    const bankKey = userEmail ? `bw_linked_banks_${userEmail}` : "bw_linked_banks";
+    localStorage.setItem(bankKey, JSON.stringify(updatedBanks));
     setSelectedBankId(newBank.id);
     setBankForm({ bank:"", account:"", owner:"" });
     showToast("Liên kết ngân hàng thành công!");
@@ -1186,7 +1219,7 @@ export default function WalletsPage() {
 
                       {/* List of Vouchers */}
                       <div style={{ flex:1, overflowY:"auto", display:"flex", flexDirection:"column", gap:10 }}>
-                        {VOUCHERS.filter(v => activePromoTab === "Tất cả" || v.tag === activePromoTab).map(v => {
+                        {voucherList.filter(v => activePromoTab === "Tất cả" || v.tag === activePromoTab || v.type === activePromoTab).map(v => {
                           const isApplicable = !v.minAmount || (Number(txForm.amount) || 0) >= v.minAmount;
                           return (
                             <div 
@@ -1286,7 +1319,8 @@ export default function WalletsPage() {
                               onClick={() => {
                                 const updated = linkedBanks.filter(x => x.id !== b.id);
                                 setLinkedBanks(updated);
-                                localStorage.setItem("bw_linked_banks", JSON.stringify(updated));
+                                const bankKey = userEmail ? `bw_linked_banks_${userEmail}` : "bw_linked_banks";
+                                localStorage.setItem(bankKey, JSON.stringify(updated));
                                 if (selectedBankId === b.id) setSelectedBankId(updated[0]?.id || "");
                                 showToast("Đã xoá liên kết ngân hàng!");
                               }}

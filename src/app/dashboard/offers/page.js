@@ -1,17 +1,10 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Gift, Tag, Clock, ChevronRight, Flame } from "lucide-react";
+import { Clock, ChevronRight, Flame } from "lucide-react";
 import { motion } from "framer-motion";
 
-const vouchers = [
-  { id:1, code:"CHUYENTIEN50", title:"Giảm 50K phí chuyển tiền", desc:"Áp dụng cho giao dịch từ 500K", exp:"31/12/2025", tag:"Chuyển tiền", hot:true, discount:"50K" },
-  { id:2, code:"MUASAM2", title:"Hoàn tiền 2% mua sắm", desc:"Tối đa 200K/tháng", exp:"30/06/2025", tag:"Mua sắm", hot:false, discount:"2%" },
-  { id:3, code:"FREERUT", title:"Miễn phí rút tiền lần đầu", desc:"Áp dụng tài khoản mới", exp:"15/07/2025", tag:"Rút tiền", hot:true, discount:"FREE" },
-  { id:4, code:"REF100K", title:"Tặng 100K khi giới thiệu bạn", desc:"Khi bạn bè hoàn thành KYC", exp:"31/12/2025", tag:"Referral", hot:false, discount:"100K" },
-  { id:5, code:"NAP20K", title:"Ưu đãi nạp tiền cuối tuần", desc:"Nạp từ 1 triệu, nhận thêm 20K", exp:"Hàng tuần", tag:"Nạp tiền", hot:true, discount:"20K" },
-  { id:6, code:"BILL30", title:"Giảm 30K bill điện nước", desc:"Thanh toán hóa đơn qua ví", exp:"30/06/2025", tag:"Hóa đơn", hot:false, discount:"30K" },
-];
+const STORAGE_KEY = "bw_admin_vouchers";
 
 const tagColors = {
   "Chuyển tiền":"#e11d48","Mua sắm":"#3b82f6","Rút tiền":"#22c55e",
@@ -21,14 +14,39 @@ const tagColors = {
 export default function OffersPage() {
   const router = useRouter();
   const [activeTag, setActiveTag] = useState("Tất cả");
+  const [vouchers, setVouchers] = useState([]);
+
+  const loadVouchers = () => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try {
+        const all = JSON.parse(saved);
+        // Chỉ hiển thị voucher đang Bật (active: true)
+        setVouchers(all.filter(v => v.active !== false));
+      } catch { setVouchers([]); }
+    }
+  };
+
+  useEffect(() => {
+    loadVouchers();
+    // Lắng nghe khi admin cập nhật voucher
+    const handler = () => loadVouchers();
+    window.addEventListener("bw_vouchers_updated", handler);
+    // Cũng lắng nghe storage event (khác tab)
+    window.addEventListener("storage", (e) => { if (e.key === STORAGE_KEY) loadVouchers(); });
+    return () => {
+      window.removeEventListener("bw_vouchers_updated", handler);
+    };
+  }, []);
+
   const tags = ["Tất cả", ...Object.keys(tagColors)];
-  const filtered = activeTag === "Tất cả" ? vouchers : vouchers.filter(v => v.tag === activeTag);
+  const filtered = activeTag === "Tất cả" ? vouchers : vouchers.filter(v => v.type === activeTag || v.tag === activeTag);
 
   const handleUseVoucher = (v) => {
+    const type = v.type || v.tag || "";
     let modalType = "transfer";
-    if (v.tag === "Rút tiền") modalType = "withdraw";
-    else if (v.tag === "Nạp tiền") modalType = "deposit";
-    
+    if (type === "Rút tiền") modalType = "withdraw";
+    else if (type === "Nạp tiền") modalType = "deposit";
     router.push(`/dashboard/wallets?promo=${v.code}&modal=${modalType}`);
   };
 
@@ -52,45 +70,58 @@ export default function OffersPage() {
       </div>
 
       {/* Voucher grid */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px, 1fr))", gap:16 }}>
-        {filtered.map((v, i) => (
-          <motion.div key={v.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*0.07}}
-            onClick={() => handleUseVoucher(v)}
-            style={{
-              background:"#111", border:`1px solid ${v.hot ? "rgba(225,29,72,0.25)" : "#1f1f1f"}`,
-              borderRadius:16, overflow:"hidden", cursor:"pointer", transition:"all 0.25s", position:"relative"
-            }}
-            whileHover={{ y:-4, boxShadow:"0 12px 32px rgba(0,0,0,0.4)" }}
-          >
-            {v.hot && (
-              <div style={{ position:"absolute", top:12, right:12, display:"flex", alignItems:"center", gap:4, background:"rgba(225,29,72,0.15)", border:"1px solid rgba(225,29,72,0.3)", borderRadius:6, padding:"3px 8px" }}>
-                <Flame size={11} style={{ color:"#e11d48" }} />
-                <span style={{ fontSize:10, fontWeight:700, color:"#e11d48" }}>HOT</span>
-              </div>
-            )}
-            {/* Discount badge */}
-            <div style={{ background:`linear-gradient(135deg, ${tagColors[v.tag]}22, ${tagColors[v.tag]}0a)`, padding:"20px 20px 16px", borderBottom:"1px dashed #2a2a2a" }}>
-              <div style={{ fontSize:32, fontWeight:900, color: tagColors[v.tag] }}>{v.discount}</div>
-              <p style={{ fontSize:15, fontWeight:700, marginTop:4, color:"#f4f4f5" }}>{v.title}</p>
-            </div>
-            <div style={{ padding:"14px 20px" }}>
-              <p style={{ fontSize:12, color:"#71717a", marginBottom:12 }}>{v.desc}</p>
-              <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-                <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                  <span style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:`${tagColors[v.tag]}18`, color:tagColors[v.tag], fontWeight:600 }}>{v.tag}</span>
-                  <div style={{ display:"flex", alignItems:"center", gap:4, color:"#52525b" }}>
-                    <Clock size={11} />
-                    <span style={{ fontSize:11 }}>HSD: {v.exp}</span>
+      {filtered.length === 0 ? (
+        <div style={{ textAlign:"center", padding:"60px 0", color:"#52525b", fontSize:14 }}>
+          <p style={{ fontSize:40, marginBottom:12 }}>🎟️</p>
+          <p>Chưa có ưu đãi nào{activeTag !== "Tất cả" ? ` cho mục "${activeTag}"` : ""}.</p>
+        </div>
+      ) : (
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill, minmax(280px, 1fr))", gap:16 }}>
+          {filtered.map((v, i) => {
+            const type = v.type || v.tag || "Khác";
+            const color = tagColors[type] || "#71717a";
+            return (
+              <motion.div key={v.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*0.07}}
+                onClick={() => handleUseVoucher(v)}
+                style={{
+                  background:"#111", border:`1px solid ${v.hot ? "rgba(225,29,72,0.25)" : "#1f1f1f"}`,
+                  borderRadius:16, overflow:"hidden", cursor:"pointer", transition:"all 0.25s", position:"relative"
+                }}
+                whileHover={{ y:-4, boxShadow:"0 12px 32px rgba(0,0,0,0.4)" }}
+              >
+                {v.hot && (
+                  <div style={{ position:"absolute", top:12, right:12, display:"flex", alignItems:"center", gap:4, background:"rgba(225,29,72,0.15)", border:"1px solid rgba(225,29,72,0.3)", borderRadius:6, padding:"3px 8px" }}>
+                    <Flame size={11} style={{ color:"#e11d48" }} />
+                    <span style={{ fontSize:10, fontWeight:700, color:"#e11d48" }}>HOT</span>
+                  </div>
+                )}
+                {/* Discount badge */}
+                <div style={{ background:`linear-gradient(135deg, ${color}22, ${color}0a)`, padding:"20px 20px 16px", borderBottom:"1px dashed #2a2a2a" }}>
+                  <div style={{ fontSize:32, fontWeight:900, color }}>{v.discount}</div>
+                  <p style={{ fontSize:15, fontWeight:700, marginTop:4, color:"#f4f4f5" }}>{v.title || v.code}</p>
+                </div>
+                <div style={{ padding:"14px 20px" }}>
+                  <p style={{ fontSize:12, color:"#71717a", marginBottom:12 }}>{v.desc || ""}</p>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+                      <span style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:`${color}18`, color, fontWeight:600 }}>{type}</span>
+                      {v.exp && (
+                        <div style={{ display:"flex", alignItems:"center", gap:4, color:"#52525b" }}>
+                          <Clock size={11} />
+                          <span style={{ fontSize:11 }}>HSD: {v.exp}</span>
+                        </div>
+                      )}
+                    </div>
+                    <button style={{ background:"none", border:"none", cursor:"pointer", color, display:"flex", alignItems:"center", gap:2, fontSize:12, fontWeight:600 }}>
+                      Dùng <ChevronRight size={12} />
+                    </button>
                   </div>
                 </div>
-                <button style={{ background:"none", border:"none", cursor:"pointer", color: tagColors[v.tag], display:"flex", alignItems:"center", gap:2, fontSize:12, fontWeight:600 }}>
-                  Dùng <ChevronRight size={12} />
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }

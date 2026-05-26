@@ -332,17 +332,29 @@ export default function DashboardPage() {
 
       const prompt = `Bạn là trợ lý tư vấn tài chính cá nhân của ví điện tử Blackred Wallet. Bạn tên là Blackred AI. Hãy tư vấn cho người dùng thật chuyên nghiệp, lịch sự, ngắn gọn và hữu ích về các mẹo tiết kiệm tiền, tối ưu hóa ngân sách, quản lý chi tiêu. Số dư hiện tại của người dùng là ${balance.toLocaleString("vi-VN")} đ. Chi tiêu tháng này là ${currentMonthCategoryData.totalExpense.toLocaleString("vi-VN")} đ cho các khoản: ${categoryBreakdownStr}. Trả lời thân thiện, ngắn gọn bằng tiếng Việt.\n\nLịch sử trò chuyện:\n${newMsgList.map(m => `${m.role === 'user' ? 'Người dùng' : 'Blackred AI'}: ${m.text}`).join('\n')}\nBlackred AI:`;
 
-      const savedKey = localStorage.getItem("bw_gemini_api_key") || "YOUR_GEMINI_API_KEY";
+      let savedKey = localStorage.getItem("bw_gemini_api_key") || "";
+
+      if (!savedKey) {
+        setAiTyping(false);
+        setShowApiKeyInput(true);
+        setApiKeyInput("");
+        setChatMessages(prev => [...prev, { 
+          role: "ai", 
+          text: "🔑 Vui lòng cấu hình Gemini API Key cá nhân để sử dụng tính năng AI. Nhấn vào ⚙️ ở góc trên bên phải khung chat, sau đó lấy key miễn phí tại aistudio.google.com."
+        }]);
+        return;
+      }
 
       const attempts = [
         { model: "gemini-1.5-flash", version: "v1beta" },
         { model: "gemini-1.5-flash", version: "v1" },
-        { model: "gemini-pro", version: "v1beta" },
+        { model: "gemini-2.0-flash", version: "v1beta" },
         { model: "gemini-2.5-flash", version: "v1beta" },
-        { model: "gemini-1.5-pro", version: "v1beta" }
+        { model: "gemini-pro", version: "v1beta" }
       ];
       let replyText = "";
       let lastErrorMessage = "";
+      let keyInvalid = false;
       
       for (const att of attempts) {
         try {
@@ -361,18 +373,38 @@ export default function DashboardPage() {
           } else {
             const errData = await res.json().catch(() => ({}));
             lastErrorMessage = errData?.error?.message || `HTTP ${res.status}`;
+            const errLower = lastErrorMessage.toLowerCase();
+            // Phát hiện lỗi key không hợp lệ / hết hạn dựa trên message cụ thể
+            const isKeyError = res.status === 401
+              || errLower.includes("api key not valid")
+              || errLower.includes("api_key_invalid")
+              || errLower.includes("invalid api key")
+              || errLower.includes("expired")
+              || errLower.includes("api key expired");
+            if (isKeyError) {
+              keyInvalid = true;
+              break;
+            }
+            // status 400 không phải key error → có thể là model không tồn tại, thử model tiếp theo
           }
         } catch (e) {
           lastErrorMessage = e.message || "Network Error";
         }
       }
 
-      const reply = replyText || (
-        lastErrorMessage.toLowerCase().includes("leaked") || lastErrorMessage.toLowerCase().includes("not found for api version")
-          ? "API Key mặc định của hệ thống đã bị Google tự động khóa do phát hiện rò rỉ mã nguồn công khai (chính sách bảo mật quét mã tự động). Vui lòng bấm vào biểu tượng bánh răng ⚙️ Cài đặt ở góc trên bên phải khung chat để cấu hình API Key cá nhân từ Google AI Studio (hoàn toàn miễn phí) và tiếp tục trò chuyện nhé!"
-          : `Xin lỗi, trợ lý gặp lỗi phản hồi từ Google: "${lastErrorMessage}". Vui lòng bấm vào biểu tượng ⚙️ ở góc trên bên phải để cấu hình lại API Key.`
-      );
-      setChatMessages(prev => [...prev, { role: "ai", text: reply }]);
+      if (keyInvalid) {
+        // Key hết hạn → xóa và mở settings
+        localStorage.removeItem("bw_gemini_api_key");
+        setShowApiKeyInput(true);
+        setApiKeyInput("");
+        setChatMessages(prev => [...prev, { 
+          role: "ai", 
+          text: "🔑 API Key của bạn đã hết hạn hoặc không hợp lệ. Vui lòng nhập API Key mới trong khung bên dưới (lấy miễn phí tại aistudio.google.com)."
+        }]);
+      } else {
+        const reply = replyText || `Xin lỗi, tôi đang gặp sự cố kết nối. Vui lòng thử lại sau. (${lastErrorMessage})`;
+        setChatMessages(prev => [...prev, { role: "ai", text: reply }]);
+      }
     } catch (err) {
       setChatMessages(prev => [...prev, { role: "ai", text: "Xin lỗi, hiện tại tôi đang gặp khó khăn kết nối với máy chủ AI. Bạn vui lòng thử lại sau nhé!" }]);
     } finally {
@@ -690,7 +722,7 @@ export default function DashboardPage() {
                 }}>
                   <h4 style={{ fontSize: 13, fontWeight: 700, color: "white" }}>Cấu hình Gemini API Key</h4>
                   <p style={{ fontSize: 11, color: "#a1a1aa", lineHeight: 1.4 }}>
-                    API Key mặc định đã bị Google vô hiệu hóa tự động do phát hiện rò rỉ mã nguồn. Vui lòng nhập API Key của bạn để tiếp tục sử dụng.
+                    Nhập Gemini API Key cá nhân của bạn để sử dụng tính năng AI tư vấn. API Key được lưu hoàn toàn trên thiết bị của bạn, không gửi đi đâu cả.
                   </p>
                   <input 
                     type="password"
@@ -711,12 +743,17 @@ export default function DashboardPage() {
                   <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
                     <button 
                       onClick={() => {
-                        localStorage.setItem("bw_gemini_api_key", apiKeyInput.trim());
-                        setShowApiKeyInput(false);
-                        setChatMessages(prev => [
-                          ...prev, 
-                          { role: "ai", text: apiKeyInput.trim() ? "Đã cập nhật API Key cá nhân thành công! Hãy hỏi tôi bất kỳ câu hỏi nào." : "Đã chuyển về sử dụng API Key mặc định của hệ thống." }
-                        ]);
+                        const trimmedKey = apiKeyInput.trim();
+                        if (trimmedKey) {
+                          localStorage.setItem("bw_gemini_api_key", trimmedKey);
+                          setShowApiKeyInput(false);
+                          setChatMessages(prev => [
+                            ...prev,
+                            { role: "ai", text: "✅ Đã lưu API Key thành công! Bây giờ bạn có thể hỏi tôi bất kỳ điều gì về tài chính." }
+                          ]);
+                        } else {
+                          alert("Vui lòng nhập API Key hợp lệ!");
+                        }
                       }}
                       style={{
                         flex: 1,
