@@ -290,8 +290,8 @@ const fmtCurrency = (n) => {
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 10, padding: "12px 16px" }}>
-      <p style={{ color: "#a1a1aa", fontSize: 12, marginBottom: 8 }}>{label}</p>
+    <div style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 10, padding: "12px 16px" }}>
+      <p style={{ color: "var(--text-secondary)", fontSize: 12, marginBottom: 8 }}>{label}</p>
       {payload.map((p, i) => (
         <p key={i} style={{ color: p.color, fontSize: 13, fontWeight: 600 }}>
           {p.name}: {p.value.toLocaleString("vi-VN")} ₫
@@ -490,7 +490,7 @@ export default function DashboardPage() {
         <h1 style={{ fontSize: 22, fontWeight: 800, marginBottom: 4 }}>
           Xin chào, {user?.name || "bạn"} 👋
         </h1>
-        <p style={{ color: "#71717a", fontSize: 14 }}>
+        <p style={{ color: "var(--text-secondary)", fontSize: 14 }}>
           Đây là tổng quan tài chính của bạn hôm nay, {new Date().toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "long" })}
         </p>
       </motion.div>
@@ -504,7 +504,7 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.08, duration: 0.4 }}
             style={{
-              background: "#111", border: "1px solid #1f1f1f",
+              background: "var(--bg-card)", border: "1px solid var(--border)",
               borderRadius: 16, padding: 20, position: "relative", overflow: "hidden"
             }}
           >
@@ -517,7 +517,7 @@ export default function DashboardPage() {
             ) : (
               <>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
-                  <p style={{ fontSize: 13, color: "#71717a" }}>{s.label}</p>
+                  <p style={{ fontSize: 13, color: "var(--text-secondary)" }}>{s.label}</p>
                   <div style={{ width: 36, height: 36, borderRadius: 10, background: `${s.color}20`, display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <s.icon size={18} style={{ color: s.color }} />
                   </div>
@@ -526,7 +526,7 @@ export default function DashboardPage() {
                 <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                   {s.up ? <TrendingUp size={12} style={{ color: "#22c55e" }} /> : <TrendingDown size={12} style={{ color: "#ef4444" }} />}
                   <span style={{ fontSize: 12, color: s.up ? "#22c55e" : "#ef4444", fontWeight: 600 }}>{s.change}</span>
-                  <span style={{ fontSize: 12, color: "#52525b" }}>so với tháng trước</span>
+                  <span style={{ fontSize: 12, color: "var(--text-muted)" }}>so với tháng trước</span>
                 </div>
                 {/* background accent */}
                 <div style={{ position: "absolute", bottom: -20, right: -20, width: 80, height: 80, borderRadius: "50%", background: `${s.color}08` }} />
@@ -543,12 +543,12 @@ export default function DashboardPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3 }}
-          style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 16, padding: 24 }}
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, padding: 24 }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
             <div>
               <h3 style={{ fontSize: 15, fontWeight: 700 }}>Thu chi theo tháng</h3>
-              <p style={{ fontSize: 12, color: "#71717a", marginTop: 2 }}>Tổng quan dòng tiền</p>
+              <p style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 2 }}>Tổng quan dòng tiền</p>
             </div>
             <div style={{ display: "flex", gap: 6 }}>
               {[
@@ -583,9 +583,9 @@ export default function DashboardPage() {
                     <stop offset="100%" stopColor="#2563eb" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
-                <XAxis dataKey="month" tick={{ fill: "#71717a", fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: "#71717a", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => {
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <XAxis dataKey="month" tick={{ fill: "var(--text-secondary)", fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: "var(--text-secondary)", fontSize: 11 }} axisLine={false} tickLine={false} tickFormatter={v => {
                   if (v >= 1000000) return `${v/1000000}M`;
                   if (v >= 1000) return `${v/1000}K`;
                   return v;
@@ -603,7 +603,7 @@ export default function DashboardPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.35 }}
-          style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 16, padding: 24 }}
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, padding: 24 }}
         >
           <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 20 }}>
             <h3 style={{ fontSize: 15, fontWeight: 700 }}>Chi tiêu theo danh mục</h3>
@@ -636,7 +636,7 @@ export default function DashboardPage() {
                       <Cell key={i} fill={c.color} stroke="none" />
                     ))}
                   </Pie>
-                  <Tooltip formatter={(v) => `${v}%`} contentStyle={{ background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 8 }} />
+                  <Tooltip formatter={(v) => `${v}%`} contentStyle={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 8 }} />
                 </PieChart>
               </ResponsiveContainer>
               <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
@@ -644,7 +644,7 @@ export default function DashboardPage() {
                   <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <div style={{ width: 8, height: 8, borderRadius: 2, background: c.color }} />
-                      <span style={{ fontSize: 12, color: "#a1a1aa" }}>{c.name}</span>
+                      <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{c.name}</span>
                     </div>
                     <span style={{ fontSize: 12, fontWeight: 600 }}>{c.value}%</span>
                   </div>
@@ -663,19 +663,19 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           style={{
-            background: "linear-gradient(135deg, #0d0612 0%, #120810 100%)",
-            border: "1px solid rgba(139,92,246,0.2)",
+            background: "linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)",
+            border: "1px solid rgba(37,99,235,0.15)",
             borderRadius: 16, padding: 24, display: "flex", flexDirection: "column", height: 380
           }}
         >
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(139,92,246,0.2)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Sparkles size={16} style={{ color: "#a78bfa" }} />
+              <div style={{ width: 32, height: 32, borderRadius: 8, background: "rgba(37,99,235,0.1)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Sparkles size={16} style={{ color: "var(--primary)" }} />
               </div>
               <div>
                 <h3 style={{ fontSize: 14, fontWeight: 700 }}>AI Tư vấn chi tiêu</h3>
-                <p style={{ fontSize: 11, color: "#6d28d9" }}>Powered by AI (Gemini Pro)</p>
+                <p style={{ fontSize: 11, color: "var(--primary-dark)" }}>Powered by AI (Gemini Pro)</p>
               </div>
             </div>
             
@@ -688,7 +688,7 @@ export default function DashboardPage() {
               style={{
                 background: "transparent",
                 border: "none",
-                color: "#a78bfa",
+                color: "var(--primary)",
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -713,7 +713,7 @@ export default function DashboardPage() {
               {showApiKeyInput ? (
                 <div style={{
                   background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(139,92,246,0.15)",
+                  border: "1px solid var(--border)",
                   borderRadius: 12,
                   padding: 16,
                   display: "flex",
@@ -723,7 +723,7 @@ export default function DashboardPage() {
                   justifyContent: "center"
                 }}>
                   <h4 style={{ fontSize: 13, fontWeight: 700, color: "white" }}>Cấu hình Gemini API Key</h4>
-                  <p style={{ fontSize: 11, color: "#a1a1aa", lineHeight: 1.4 }}>
+                  <p style={{ fontSize: 11, color: "var(--text-secondary)", lineHeight: 1.4 }}>
                     Nhập Gemini API Key cá nhân của bạn để sử dụng tính năng AI tư vấn. API Key được lưu hoàn toàn trên thiết bị của bạn, không gửi đi đâu cả.
                   </p>
                   <input 
@@ -733,8 +733,8 @@ export default function DashboardPage() {
                     placeholder="Dán Gemini API Key của bạn tại đây..."
                     style={{
                       width: "100%",
-                      background: "#161616",
-                      border: "1px solid rgba(139,92,246,0.15)",
+                      background: "var(--bg-card2)",
+                      border: "1px solid var(--border)",
                       borderRadius: 8,
                       padding: "8px 12px",
                       color: "white",
@@ -775,11 +775,11 @@ export default function DashboardPage() {
                       onClick={() => window.open("https://aistudio.google.com/app/apikey", "_blank")}
                       style={{
                         flex: 1,
-                        background: "#1a1a1a",
-                        border: "1px solid #2a2a2a",
+                        background: "var(--bg-card2)",
+                        border: "1px solid var(--border)",
                         borderRadius: 8,
                         padding: "8px 0",
-                        color: "#a78bfa",
+                        color: "var(--primary)",
                         fontSize: 11,
                         fontWeight: 600,
                         cursor: "pointer"
@@ -802,8 +802,8 @@ export default function DashboardPage() {
                         lineHeight: 1.5,
                         alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
                         background: msg.role === "user" ? "rgba(139,92,246,0.15)" : "rgba(255,255,255,0.03)",
-                        border: `1px solid ${msg.role === "user" ? "rgba(139,92,246,0.3)" : "rgba(255,255,255,0.06)"}`,
-                        color: msg.role === "user" ? "#e9d5ff" : "#d1d5db"
+                        border: "1px solid var(--border)",
+                        color: msg.role === "user" ? "var(--primary)" : "var(--text-primary)"
                       }}>
                         {msg.text}
                       </div>
@@ -816,7 +816,7 @@ export default function DashboardPage() {
                         fontSize: 11,
                         background: "rgba(255,255,255,0.02)",
                         border: "1px dashed rgba(139,92,246,0.3)",
-                        color: "#a78bfa",
+                        color: "var(--primary)",
                         display: "flex",
                         alignItems: "center",
                         gap: 6
@@ -836,8 +836,8 @@ export default function DashboardPage() {
                       placeholder="Hỏi trợ lý AI về quản lý chi tiêu..."
                       style={{
                         flex: 1,
-                        background: "#161616",
-                        border: "1px solid rgba(139,92,246,0.15)",
+                        background: "var(--bg-card2)",
+                        border: "1px solid var(--border)",
                         borderRadius: 8,
                         padding: "10px 12px",
                         color: "white",
@@ -849,7 +849,7 @@ export default function DashboardPage() {
                       onClick={handleSendChatMessage} 
                       disabled={aiTyping}
                       style={{
-                        background: aiTyping ? "#1f1f1f" : "linear-gradient(135deg,#8b5cf6,#6d28d9)",
+                        background: aiTyping ? "var(--border)" : "linear-gradient(135deg,#2563eb,#1d4ed8)",
                         border: "none",
                         borderRadius: 8,
                         width: 38,
@@ -879,8 +879,8 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45 }}
           style={{
-            background: "#111",
-            border: "1px solid #1f1f1f",
+            background: "var(--bg-card)",
+            border: "1px solid var(--border)",
             borderRadius: 16,
             padding: 24,
             display: "flex",
@@ -914,7 +914,7 @@ export default function DashboardPage() {
                     onMouseLeave={e => e.currentTarget.style.transform = "none"}
                   >
                     <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-                      <div style={{ width: 72, height: 50, borderRadius: 8, background: "#161616", overflow: "hidden", border: "1px solid #1f1f1f", flexShrink: 0 }}>
+                      <div style={{ width: 72, height: 50, borderRadius: 8, background: "var(--bg-card2)", overflow: "hidden", border: "1px solid var(--border)", flexShrink: 0 }}>
                         {n.image ? (
                           <img src={n.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                         ) : (
@@ -926,14 +926,14 @@ export default function DashboardPage() {
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <span style={{ fontSize: 9, background: "rgba(37,99,235,0.15)", color: "#2563eb", padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>{n.tag}</span>
                         <p style={{ fontSize: 13, fontWeight: 500, marginTop: 4, lineHeight: 1.4, color: "#e4e4e7", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</p>
-                        <p style={{ fontSize: 11, color: "#52525b", marginTop: 4 }}>{n.time}</p>
+                        <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>{n.time}</p>
                       </div>
-                      <ChevronRight size={14} style={{ color: "#3f3f46", flexShrink: 0 }} />
+                      <ChevronRight size={14} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
                     </div>
                   </div>
                 ))}
                 {posts.length === 0 && (
-                  <div style={{ textAlign: "center", padding: "20px 0", color: "#52525b", fontSize: 13 }}>Chưa có tin tức tài chính mới</div>
+                  <div style={{ textAlign: "center", padding: "20px 0", color: "var(--text-muted)", fontSize: 13 }}>Chưa có tin tức tài chính mới</div>
                 )}
               </div>
             )}
@@ -946,7 +946,7 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 16, padding: 24 }}
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 16, padding: 24 }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <h3 style={{ fontSize: 15, fontWeight: 700 }}>Giao dịch gần đây</h3>
@@ -979,10 +979,10 @@ export default function DashboardPage() {
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 14, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tx.name}</p>
-                    <p style={{ fontSize: 12, color: "#52525b" }}>
+                    <p style={{ fontSize: 12, color: "var(--text-muted)" }}>
                       {formattedTime.date && `${formattedTime.date} • `}{formattedTime.time}
                       {tx.category && (
-                        <span style={{ marginLeft: 8, fontSize: 10, background: "rgba(255,255,255,0.06)", color: "#a1a1aa", padding: "2px 6px", borderRadius: 4 }}>
+                        <span style={{ marginLeft: 8, fontSize: 10, background: "rgba(255,255,255,0.06)", color: "var(--text-secondary)", padding: "2px 6px", borderRadius: 4 }}>
                           {tx.category}
                         </span>
                       )}
@@ -1004,7 +1004,7 @@ export default function DashboardPage() {
               );
             })}
             {transactions.length === 0 && (
-              <div style={{ textAlign: "center", padding: "40px 0", color: "#52525b", fontSize: 14 }}>
+              <div style={{ textAlign: "center", padding: "40px 0", color: "var(--text-muted)", fontSize: 14 }}>
                 <Wallet size={36} style={{ color: "#222", marginBottom: 10 }} />
                 <p>Chưa có giao dịch gần đây</p>
               </div>
@@ -1019,10 +1019,10 @@ export default function DashboardPage() {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedNews(null)}
             style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 16, backdropFilter: "blur(8px)" }}>
             <motion.div initial={{ y: 50, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 50, opacity: 0 }} onClick={e => e.stopPropagation()}
-              style={{ background: "#0d0d0d", border: "1px solid #222", borderRadius: 24, width: "100%", maxWidth: 550, overflow: "hidden", position: "relative" }}>
+              style={{ background: "var(--bg-dark)", border: "1px solid #222", borderRadius: 24, width: "100%", maxWidth: 550, overflow: "hidden", position: "relative" }}>
               
               {/* Cover Image banner */}
-              <div style={{ height: 220, position: "relative", background: "#161616", borderBottom: "1px solid #1a1a1a" }}>
+              <div style={{ height: 220, position: "relative", background: "var(--bg-card2)", borderBottom: "1px solid var(--border)" }}>
                 {selectedNews.image ? (
                   <img src={selectedNews.image} alt={selectedNews.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
@@ -1046,7 +1046,7 @@ export default function DashboardPage() {
 
               {/* Text body container */}
               <div style={{ padding: "24px 28px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, color: "#71717a", fontSize: 12, marginBottom: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, color: "var(--text-secondary)", fontSize: 12, marginBottom: 12 }}>
                   <Calendar size={13} />
                   <span>Đăng {selectedNews.time}</span>
                   <span>•</span>
@@ -1057,7 +1057,7 @@ export default function DashboardPage() {
                   {selectedNews.title}
                 </h3>
 
-                <div style={{ maxHeight: 200, overflowY: "auto", color: "#a1a1aa", fontSize: 13, lineHeight: 1.7, paddingRight: 6 }}>
+                <div style={{ maxHeight: 200, overflowY: "auto", color: "var(--text-secondary)", fontSize: 13, lineHeight: 1.7, paddingRight: 6 }}>
                   {selectedNews.content ? (
                     selectedNews.content.split("\n").map((p, idx) => (
                       <p key={idx} style={{ marginBottom: 14 }}>{p}</p>
@@ -1067,7 +1067,7 @@ export default function DashboardPage() {
                   )}
                 </div>
 
-                <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid #1a1a1a", display: "flex", justifyContent: "flex-end" }}>
+                <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid var(--border)", display: "flex", justifyContent: "flex-end" }}>
                   <button onClick={() => setSelectedNews(null)} 
                     style={{ background: "linear-gradient(135deg,#2563eb,#1d4ed8)", color: "white", border: "none", borderRadius: 10, padding: "10px 24px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
                   >

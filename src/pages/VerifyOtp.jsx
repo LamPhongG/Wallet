@@ -68,7 +68,7 @@ export default function VerifyOtpPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#0a0a0a" }}>
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "var(--bg-dark)" }}>
       <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
         <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 700, height: 700, background: "radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 70%)", borderRadius: "50%" }} />
       </div>
@@ -83,35 +83,35 @@ export default function VerifyOtpPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            style={{ textAlign: "center", background: "#111", border: "1px solid #1f1f1f", borderRadius: 20, padding: 48 }}
+            style={{ textAlign: "center", background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 20, padding: 48 }}
           >
             <div style={{ width: 80, height: 80, background: "rgba(34,197,94,0.15)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
               <CheckCircle size={40} style={{ color: "#22c55e" }} />
             </div>
             <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>Xác thực thành công!</h2>
-            <p style={{ color: "#71717a", fontSize: 14 }}>Tài khoản của bạn đã được kích hoạt. Đang chuyển hướng...</p>
+            <p style={{ color: "var(--text-secondary)", fontSize: 14 }}>Tài khoản của bạn đã được kích hoạt. Đang chuyển hướng...</p>
           </motion.div>
         ) : (
           <>
             {/* Back button */}
             <button
               onClick={() => navigate(-1)}
-              style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", color: "#71717a", cursor: "pointer", fontSize: 14, marginBottom: 24 }}
+              style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", color: "var(--text-secondary)", cursor: "pointer", fontSize: 14, marginBottom: 24 }}
             >
               <ArrowLeft size={16} /> Quay lại
             </button>
 
             {/* Card */}
-            <div style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 20, padding: 40, textAlign: "center" }}>
+            <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 20, padding: 40, textAlign: "center" }}>
               {/* Icon */}
               <div style={{ width: 72, height: 72, background: "linear-gradient(135deg, rgba(37,99,235,0.2), rgba(29,78,216,0.1))", border: "1px solid rgba(37,99,235,0.2)", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
                 <Mail size={32} style={{ color: "#2563eb" }} />
               </div>
 
               <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Xác thực Email</h1>
-              <p style={{ color: "#71717a", fontSize: 14, lineHeight: 1.6, marginBottom: 32 }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: 14, lineHeight: 1.6, marginBottom: 32 }}>
                 Chúng tôi đã gửi mã OTP 6 số đến<br />
-                <strong style={{ color: "#a1a1aa" }}>{email}</strong>
+                <strong style={{ color: "var(--text-secondary)" }}>{email}</strong>
               </p>
 
               {/* OTP Inputs */}
@@ -166,7 +166,7 @@ export default function VerifyOtpPage() {
               </button>
 
               {/* Resend */}
-              <div style={{ color: "#52525b", fontSize: 14 }}>
+              <div style={{ color: "var(--text-muted)", fontSize: 14 }}>
                 {canResend ? (
                   <button
                     onClick={handleResend}

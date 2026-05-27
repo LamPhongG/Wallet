@@ -35,13 +35,13 @@ export default function AdminLayout() {
   };
 
   const Sidebar = () => (
-    <aside style={{ width:220, background:"#080808", borderRight:"1px solid #1a1a1a", display:"flex", flexDirection:"column", height:"100%", padding:"20px 12px" }}>
+    <aside style={{ width:220, background: "var(--bg-dark)", borderRight:"1px solid #1a1a1a", display:"flex", flexDirection:"column", height:"100%", padding:"20px 12px" }}>
       <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:32, paddingLeft:8 }}>
         <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", display:"flex", alignItems:"center", justifyContent:"center" }}>
           <Wallet size={16} color="white" />
         </div>
         <div>
-          <span style={{ fontSize:15, fontWeight:800 }}>Black<span style={{ color:"#2563eb" }}>red</span></span>
+          <span style={{ fontSize:15, fontWeight:800 }}>Smart<span style={{ color:"var(--primary)" }}>Wallet</span></span>
           <p style={{ fontSize:10, color:"#2563eb", fontWeight:600 }}>ADMIN</p>
         </div>
       </div>
@@ -103,7 +103,7 @@ export default function AdminLayout() {
 
   return (
     <>
-      <div style={{ display:"flex", height:"100vh", overflow:"hidden", background:"#0a0a0a" }}>
+      <div style={{ display:"flex", height:"100vh", overflow:"hidden", background: "var(--bg-dark)" }}>
         <div className="hidden lg:flex" style={{ flexShrink:0 }}><Sidebar /></div>
 
         <AnimatePresence>
@@ -118,8 +118,8 @@ export default function AdminLayout() {
         </AnimatePresence>
 
         <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-          <header style={{ height:58, background:"rgba(8,8,8,0.95)", backdropFilter:"blur(20px)", borderBottom:"1px solid #1a1a1a", display:"flex", alignItems:"center", padding:"0 20px", gap:12, flexShrink:0 }}>
-            <button onClick={() => setSidebarOpen(true)} className="lg:hidden" style={{ background:"none", border:"none", cursor:"pointer", color:"#a1a1aa" }}>
+          <header style={{ height:58, background:"rgba(8,8,8,0.95)", backdropFilter:"blur(20px)", borderBottom: "1px solid var(--border)", display:"flex", alignItems:"center", padding:"0 20px", gap:12, flexShrink:0 }}>
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden" style={{ background:"none", border:"none", cursor:"pointer", color: "var(--text-secondary)" }}>
               <Menu size={20} />
             </button>
             <div style={{ flex:1 }}>
@@ -129,7 +129,7 @@ export default function AdminLayout() {
             </div>
             <span style={{ fontSize:11, background:"rgba(37,99,235,0.15)", color:"#2563eb", padding:"3px 10px", borderRadius:6, fontWeight:700 }}>ADMIN</span>
             {adminUser && (
-              <div className="hidden sm:flex" style={{ alignItems:"center", gap:8, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"5px 10px 5px 6px" }}>
+              <div className="hidden sm:flex" style={{ alignItems:"center", gap:8, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"5px 10px 5px 6px" }}>
                 <div style={{ width:24, height:24, borderRadius:"50%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                   <Shield size={12} color="white" />
                 </div>
@@ -172,20 +172,20 @@ export default function AdminLayout() {
             <motion.div
               initial={{ scale:0.9, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:0.9, opacity:0 }}
               onClick={(e) => e.stopPropagation()}
-              style={{ background:"#111", border:"1px solid #2a2a2a", borderRadius:18, padding:28, width:"100%", maxWidth:360, textAlign:"center" }}
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:18, padding:28, width:"100%", maxWidth:360, textAlign:"center" }}
             >
               <div style={{ width:56, height:56, borderRadius:"50%", background:"rgba(239,68,68,0.12)", border:"1px solid rgba(239,68,68,0.2)", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 16px" }}>
                 <LogOut size={24} style={{ color:"#ef4444" }} />
               </div>
               <h3 style={{ fontSize:17, fontWeight:700, marginBottom:8 }}>Đăng xuất Admin?</h3>
-              <p style={{ color:"#71717a", fontSize:13, lineHeight:1.6, marginBottom:24 }}>
+              <p style={{ color: "var(--text-secondary)", fontSize:13, lineHeight:1.6, marginBottom:24 }}>
                 Bạn sẽ được chuyển về trang đăng nhập.<br />
                 Phiên làm việc hiện tại sẽ kết thúc.
               </p>
               <div style={{ display:"flex", gap:10 }}>
                 <button
                   onClick={() => setShowLogoutConfirm(false)}
-                  style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", borderRadius:10, padding:"11px", fontWeight:600, fontSize:14, cursor:"pointer" }}
+                  style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius:10, padding:"11px", fontWeight:600, fontSize:14, cursor:"pointer" }}
                 >
                   Huỷ bỏ
                 </button>

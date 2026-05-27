@@ -49,14 +49,14 @@ export default function RegisterPage() {
   const strengthColors = ["", "#ef4444", "#f59e0b", "#3b82f6", "#22c55e"];
 
   const inputStyle = (err) => ({
-    width: "100%", background: "#1a1a1a",
+    width: "100%", background: "var(--bg-card2)",
     border: `1px solid ${err ? "#ef4444" : "#2a2a2a"}`,
     borderRadius: 10, padding: "12px 16px 12px 42px",
     color: "white", fontSize: 14, outline: "none", transition: "all 0.3s"
   });
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#0a0a0a" }}>
+    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "var(--bg-dark)" }}>
       {/* Background */}
       <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
         <div style={{ position: "absolute", top: -100, right: -100, width: 600, height: 600, background: "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)", borderRadius: "50%" }} />
@@ -80,19 +80,19 @@ export default function RegisterPage() {
             <Wallet size={26} color="white" />
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 800 }}>
-            Black<span style={{ color: "#2563eb" }}>red</span> Wallet
+            Smart<span style={{ color: "var(--primary)" }}>Wallet</span> Wallet
           </h1>
-          <p style={{ color: "#71717a", fontSize: 14, marginTop: 4 }}>Tạo tài khoản mới</p>
+          <p style={{ color: "var(--text-secondary)", fontSize: 14, marginTop: 4 }}>Tạo tài khoản mới</p>
         </div>
 
         {/* Form Card */}
-        <div style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 20, padding: 32 }}>
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 20, padding: 32 }}>
           <form onSubmit={handleRegister} style={{ display: "flex", flexDirection: "column", gap: 18 }}>
             {/* Email */}
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "#a1a1aa" }}>Email</label>
+              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "var(--text-secondary)" }}>Email</label>
               <div style={{ position: "relative" }}>
-                <Mail size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#52525b" }} />
+                <Mail size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
                 <input
                   type="email"
                   placeholder="example@email.com"
@@ -108,9 +108,9 @@ export default function RegisterPage() {
 
             {/* Password */}
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "#a1a1aa" }}>Mật khẩu</label>
+              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "var(--text-secondary)" }}>Mật khẩu</label>
               <div style={{ position: "relative" }}>
-                <Lock size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#52525b" }} />
+                <Lock size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
                 <input
                   type={showPass ? "text" : "password"}
                   placeholder="Tối thiểu 8 ký tự"
@@ -120,7 +120,7 @@ export default function RegisterPage() {
                   onFocus={(e) => { e.target.style.borderColor = "#2563eb"; }}
                   onBlur={(e) => { e.target.style.borderColor = errors.password ? "#ef4444" : "#2a2a2a"; }}
                 />
-                <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#52525b" }}>
+                <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
@@ -140,9 +140,9 @@ export default function RegisterPage() {
 
             {/* Confirm Password */}
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "#a1a1aa" }}>Xác nhận mật khẩu</label>
+              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "var(--text-secondary)" }}>Xác nhận mật khẩu</label>
               <div style={{ position: "relative" }}>
-                <Lock size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#52525b" }} />
+                <Lock size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
                 <input
                   type={showConfirm ? "text" : "password"}
                   placeholder="Nhập lại mật khẩu"
@@ -152,7 +152,7 @@ export default function RegisterPage() {
                   onFocus={(e) => { e.target.style.borderColor = "#2563eb"; }}
                   onBlur={(e) => { e.target.style.borderColor = errors.confirmPassword ? "#ef4444" : "#2a2a2a"; }}
                 />
-                <button type="button" onClick={() => setShowConfirm(!showConfirm)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#52525b" }}>
+                <button type="button" onClick={() => setShowConfirm(!showConfirm)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}>
                   {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
                 {form.confirmPassword && form.password === form.confirmPassword && (
@@ -184,7 +184,7 @@ export default function RegisterPage() {
           </form>
         </div>
 
-        <p style={{ textAlign: "center", marginTop: 20, color: "#52525b", fontSize: 14 }}>
+        <p style={{ textAlign: "center", marginTop: 20, color: "var(--text-muted)", fontSize: 14 }}>
           Đã có tài khoản?{" "}
           <Link to="/login" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>Đăng nhập</Link>
         </p>

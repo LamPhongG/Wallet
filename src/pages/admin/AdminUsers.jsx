@@ -261,16 +261,16 @@ export default function AdminUsersPage() {
       <div style={{ display:"flex", alignItems:"center", justifycontent:"space-between", marginBottom:20, flexWrap:"wrap", gap:12 }}>
         <div>
           <h1 style={{ fontSize:18, fontWeight:800, marginBottom:2 }}>Quản lý người dùng</h1>
-          <p style={{ color:"#71717a", fontSize:13 }}>{users.length} người dùng</p>
+          <p style={{ color: "var(--text-secondary)", fontSize:13 }}>{users.length} người dùng</p>
         </div>
       </div>
 
       {/* Filters */}
       <div style={{ display:"flex", gap:10, marginBottom:20, flexWrap:"wrap" }}>
         <div style={{ position:"relative", flex:1, minWidth:200 }}>
-          <Search size={14} style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color:"#52525b" }} />
+          <Search size={14} style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color: "var(--text-muted)" }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Tìm theo tên, email, ID..."
-            style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"9px 12px 9px 34px", color:"white", fontSize:13, outline:"none" }} />
+            style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"9px 12px 9px 34px", color:"white", fontSize:13, outline:"none" }} />
         </div>
         <div style={{ display:"flex", gap:6 }}>
           {[{v:"all",l:"Tất cả"},{v:"verified",l:"Đã KYC"},{v:"pending",l:"Chờ duyệt"},{v:"none",l:"Chưa KYC"}].map(f => (
@@ -285,17 +285,17 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Table */}
-      <div style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:14, overflow:"hidden" }}>
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:14, overflow:"hidden" }}>
         {/* Header */}
-        <div style={{ display:"grid", gridTemplateColumns:"80px 1fr 1fr 100px 100px 120px 80px", gap:0, padding:"12px 16px", borderBottom:"1px solid #1f1f1f", background:"#0d0d0d" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"80px 1fr 1fr 100px 100px 120px 80px", gap:0, padding:"12px 16px", borderBottom:"1px solid #1f1f1f", background: "var(--bg-dark)" }}>
           {["ID","Tên","Email","KYC","Trạng thái","Số dư","Hành động"].map(h => (
-            <span key={h} style={{ fontSize:11, fontWeight:700, color:"#52525b", textTransform:"uppercase", letterSpacing:"0.5px" }}>{h}</span>
+            <span key={h} style={{ fontSize:11, fontWeight:700, color: "var(--text-muted)", textTransform:"uppercase", letterSpacing:"0.5px" }}>{h}</span>
           ))}
         </div>
 
         {filtered.map((u, i) => (
           <motion.div key={u.id} initial={{opacity:0}} animate={{opacity:1}} transition={{delay:i*0.04}}
-            style={{ display:"grid", gridTemplateColumns:"80px 1fr 1fr 100px 100px 120px 80px", gap:0, padding:"14px 16px", borderBottom:"1px solid #1a1a1a", alignItems:"center", transition:"background 0.2s" }}
+            style={{ display:"grid", gridTemplateColumns:"80px 1fr 1fr 100px 100px 120px 80px", gap:0, padding:"14px 16px", borderBottom: "1px solid var(--border)", alignItems:"center", transition:"background 0.2s" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
           >
@@ -303,7 +303,7 @@ export default function AdminUsersPage() {
               title={u.id}
               onClick={() => { navigator.clipboard?.writeText(u.id); }}
               style={{
-                fontSize:11, color:"#52525b", fontFamily:"monospace",
+                fontSize:11, color: "var(--text-muted)", fontFamily:"monospace",
                 cursor:"copy", overflow:"hidden", textOverflow:"ellipsis",
                 whiteSpace:"nowrap", display:"block", maxWidth:76,
                 borderRadius:4, padding:"2px 4px",
@@ -314,9 +314,9 @@ export default function AdminUsersPage() {
             >{shortId(u.id)}</span>
             <div>
               <p style={{ fontSize:13, fontWeight:600 }}>{u.name}</p>
-              <p style={{ fontSize:11, color:"#52525b" }}>{u.phone}</p>
+              <p style={{ fontSize:11, color: "var(--text-muted)" }}>{u.phone}</p>
             </div>
-            <span style={{ fontSize:13, color:"#a1a1aa" }}>{u.email}</span>
+            <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{u.email}</span>
             <span style={{ ...kycBadge[u.kyc], fontSize:11, padding:"3px 8px", borderRadius:6, fontWeight:600, display:"inline-block" }}>
               {kycBadge[u.kyc].text}
             </span>
@@ -324,13 +324,13 @@ export default function AdminUsersPage() {
               {statusBadge[u.status].text}
             </span>
             <span style={{ fontSize:13, fontWeight:600 }}>{u.balance}</span>
-            <button onClick={() => { setSelectedUser(u); setModalTab("info"); }} style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:6, padding:"6px 10px", color:"#a1a1aa", cursor:"pointer", display:"flex", alignItems:"center", gap:4, fontSize:12 }}>
+            <button onClick={() => { setSelectedUser(u); setModalTab("info"); }} style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:6, padding:"6px 10px", color: "var(--text-secondary)", cursor:"pointer", display:"flex", alignItems:"center", gap:4, fontSize:12 }}>
               <Eye size={13} />Chi tiết
             </button>
           </motion.div>
         ))}
         {filtered.length === 0 && (
-          <div style={{ textAlign:"center", padding:40, color:"#52525b" }}>Không tìm thấy người dùng</div>
+          <div style={{ textAlign:"center", padding:40, color: "var(--text-muted)" }}>Không tìm thấy người dùng</div>
         )}
       </div>
 
@@ -339,12 +339,12 @@ export default function AdminUsersPage() {
         {selectedUser && (
           <div onClick={() => setSelectedUser(null)} style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.8)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
             <motion.div initial={{scale:0.95,opacity:0}} animate={{scale:1,opacity:1}} onClick={e => e.stopPropagation()}
-              style={{ background:"#0d0d0d", border:"1px solid #222", borderRadius:20, padding:28, width:"100%", maxWidth: modalTab === "cccd" && selectedUser.cccd ? 760 : modalTab === "tx" ? 600 : 450, transition: "max-width 0.3s ease" }}>
+              style={{ background: "var(--bg-dark)", border:"1px solid #222", borderRadius:20, padding:28, width:"100%", maxWidth: modalTab === "cccd" && selectedUser.cccd ? 760 : modalTab === "tx" ? 600 : 450, transition: "max-width 0.3s ease" }}>
               
               <h3 style={{ fontSize:16, fontWeight:700, marginBottom:16, color: "white" }}>Chi tiết tài khoản: {selectedUser.name}</h3>
 
               {/* Tabs Selector */}
-              <div style={{ display:"flex", borderBottom:"1px solid #1a1a1a", marginBottom:20, gap:16 }}>
+              <div style={{ display:"flex", borderBottom: "1px solid var(--border)", marginBottom:20, gap:16 }}>
                 <button onClick={() => setModalTab("info")} style={{
                   background:"none", border:"none", padding:"8px 4px", fontSize:13, fontWeight:600,
                   color: modalTab === "info" ? "#2563eb" : "#52525b", cursor:"pointer",
@@ -375,8 +375,8 @@ export default function AdminUsersPage() {
               {modalTab === "info" && (
                 <div>
                   {Object.entries({ "ID":selectedUser.id, "Email":selectedUser.email, "SĐT":selectedUser.phone, "KYC":kycBadge[selectedUser.kyc].text, "Trạng thái":statusBadge[selectedUser.status].text, "Số dư":selectedUser.balance, "Ngày tham gia":selectedUser.joined }).map(([k,v]) => (
-                    <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom:"1px solid #1a1a1a" }}>
-                      <span style={{ fontSize:13, color:"#71717a" }}>{k}</span>
+                    <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom: "1px solid var(--border)" }}>
+                      <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{k}</span>
                       <span style={{ fontSize:13, fontWeight:600, color: "white" }}>{v}</span>
                     </div>
                   ))}
@@ -387,14 +387,14 @@ export default function AdminUsersPage() {
               {modalTab === "cccd" && (
                 <div>
                   {!selectedUser.cccd ? (
-                    <div style={{ textAlign: "center", padding: "30px 10px", color: "#52525b" }}>
+                    <div style={{ textAlign: "center", padding: "30px 10px", color: "var(--text-muted)" }}>
                       <CreditCard size={32} style={{ marginBottom: 12, opacity: 0.3 }} />
                       <p style={{ fontSize: 13 }}>Người dùng chưa cập nhật thông tin CCCD hoặc chưa yêu cầu duyệt KYC.</p>
                     </div>
                   ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
                       {/* CCCD details */}
-                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, background: "#111", padding: 16, borderRadius: 12, border: "1px solid #1a1a1a" }}>
+                      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, background: "var(--bg-card)", padding: 16, borderRadius: 12, border: "1px solid var(--border)" }}>
                         {[
                           { k: "Số CCCD", v: selectedUser.cccd },
                           { k: "Họ và tên", v: selectedUser.name.toUpperCase() },
@@ -403,7 +403,7 @@ export default function AdminUsersPage() {
                           { k: "Địa chỉ thường trú", v: selectedUser.address }
                         ].map(item => (
                           <div key={item.k} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                            <span style={{ fontSize: 11, color: "#52525b", textTransform: "uppercase" }}>{item.k}</span>
+                            <span style={{ fontSize: 11, color: "var(--text-muted)", textTransform: "uppercase" }}>{item.k}</span>
                             <span style={{ fontSize: 13, fontWeight: 700, color: "white" }}>{item.v}</span>
                           </div>
                         ))}
@@ -411,7 +411,7 @@ export default function AdminUsersPage() {
 
                       {/* Styled citizen card mockups (Front & Back) */}
                       <div>
-                        <p style={{ fontSize: 12, fontWeight: 700, color: "#71717a", marginBottom: 10, textTransform: "uppercase" }}>Hình ảnh đối chiếu (CCCD gắn chíp)</p>
+                        <p style={{ fontSize: 12, fontWeight: 700, color: "var(--text-secondary)", marginBottom: 10, textTransform: "uppercase" }}>Hình ảnh đối chiếu (CCCD gắn chíp)</p>
                         
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
                           {/* CCCD Front side */}
@@ -567,9 +567,9 @@ export default function AdminUsersPage() {
                         { label:"Thành công", val: txList.filter(t=>t.status==="success").length, color:"#22c55e" },
                         { label:"Chờ duyệt", val: txList.filter(t=>t.status==="pending").length, color:"#f59e0b" }
                       ].map(s => (
-                        <div key={s.label} style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:10, padding:"10px 14px", textAlign:"center" }}>
+                        <div key={s.label} style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:10, padding:"10px 14px", textAlign:"center" }}>
                           <p style={{ fontSize:20, fontWeight:900, color: s.color }}>{s.val}</p>
-                          <p style={{ fontSize:11, color:"#52525b", marginTop:2 }}>{s.label}</p>
+                          <p style={{ fontSize:11, color: "var(--text-muted)", marginTop:2 }}>{s.label}</p>
                         </div>
                       ))}
                     </div>
@@ -577,15 +577,15 @@ export default function AdminUsersPage() {
                     {/* Transaction list */}
                     <div style={{ display:"flex", flexDirection:"column", gap:6, maxHeight:340, overflowY:"auto", paddingRight:4 }}>
                       {txList.length === 0 ? (
-                        <div style={{ textAlign:"center", padding:"30px 0", color:"#52525b" }}>
+                        <div style={{ textAlign:"center", padding:"30px 0", color: "var(--text-muted)" }}>
                           <History size={28} style={{ marginBottom:8, opacity:0.3 }} />
                           <p style={{ fontSize:13 }}>Không có lịch sử giao dịch</p>
                         </div>
                       ) : txList.map((tx, i) => (
                         <div key={tx.id || i} style={{
                           display:"flex", alignItems:"center", gap:12,
-                          padding:"10px 12px", background:"#111",
-                          border:"1px solid #1a1a1a", borderRadius:10
+                          padding:"10px 12px", background: "var(--bg-card)",
+                          border: "1px solid var(--border)", borderRadius:10
                         }}>
                           <div style={{
                             width:34, height:34, borderRadius:8, flexShrink:0,
@@ -602,12 +602,12 @@ export default function AdminUsersPage() {
                             <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                               <p style={{ fontSize:12, fontWeight:600, color:"white", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{tx.name}</p>
                               {tx.category && (
-                                <span style={{ fontSize:9, background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:4, padding:"0 4px", color:"#a1a1aa", fontWeight:500 }}>
+                                <span style={{ fontSize:9, background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:4, padding:"0 4px", color: "var(--text-secondary)", fontWeight:500 }}>
                                   {tx.category}
                                 </span>
                               )}
                             </div>
-                            <p style={{ fontSize:10, color:"#52525b", marginTop:1 }}>{tx.id} • {tx.time}</p>
+                            <p style={{ fontSize:10, color: "var(--text-muted)", marginTop:1 }}>{tx.id} • {tx.time}</p>
                           </div>
 
                           <div style={{ textAlign:"right", flexShrink:0 }}>
@@ -690,7 +690,7 @@ export default function AdminUsersPage() {
                 >
                   {selectedUser.status === "active" ? "Khóa tài khoản" : "Mở khóa tài khoản"}
                 </button>
-                <button onClick={() => setSelectedUser(null)} style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", borderRadius:8, padding:"10px", fontWeight:600, fontSize:13, cursor:"pointer" }}>
+                <button onClick={() => setSelectedUser(null)} style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius:8, padding:"10px", fontWeight:600, fontSize:13, cursor:"pointer" }}>
                   Đóng
                 </button>
               </div>

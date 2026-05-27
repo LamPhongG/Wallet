@@ -132,32 +132,32 @@ export default function AdminMedia() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 18, fontWeight: 800, marginBottom: 2 }}>Quản lý Bài viết</h1>
-          <p style={{ color: "#71717a", fontSize: 13 }}>{posts.length} bài viết tin tức tài chính đang hoạt động</p>
+          <p style={{ color: "var(--text-secondary)", fontSize: 13 }}>{posts.length} bài viết tin tức tài chính đang hoạt động</p>
         </div>
         <button onClick={openAdd} style={{ display: "flex", alignItems: "center", gap: 6, background: "linear-gradient(135deg,#2563eb,#1d4ed8)", color: "white", border: "none", borderRadius: 8, padding: "9px 16px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
           <Plus size={14} /> Viết bài mới
         </button>
       </div>
 
-      <div style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 14, overflow: "hidden" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "80px 1.5fr 130px 110px 100px 90px", padding: "12px 18px", borderBottom: "1px solid #1f1f1f", background: "#0d0d0d", alignItems: "center" }}>
+      <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "80px 1.5fr 130px 110px 100px 90px", padding: "12px 18px", borderBottom: "1px solid var(--border)", background: "var(--bg-dark)", alignItems: "center" }}>
           {["Ảnh bìa", "Tiêu đề bài viết", "Chuyên mục", "Thời gian", "Hiển thị", ""].map(h => (
-            <span key={h} style={{ fontSize: 11, fontWeight: 700, color: "#52525b", textTransform: "uppercase" }}>{h}</span>
+            <span key={h} style={{ fontSize: 11, fontWeight: 700, color: "var(--text-muted)", textTransform: "uppercase" }}>{h}</span>
           ))}
         </div>
 
         {posts.length === 0 ? (
-          <div style={{ textAlign: "center", padding: 40, color: "#52525b" }}>Không có bài viết nào</div>
+          <div style={{ textAlign: "center", padding: 40, color: "var(--text-muted)" }}>Không có bài viết nào</div>
         ) : (
           posts.map((p, i) => (
             <motion.div key={p.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.04 }}
-              style={{ display: "grid", gridTemplateColumns: "80px 1.5fr 130px 110px 100px 90px", padding: "14px 18px", borderBottom: "1px solid #1a1a1a", alignItems: "center" }}>
-              <div style={{ width: 50, height: 34, borderRadius: 6, background: "#1f1f1f", overflow: "hidden", border: "1px solid #2a2a2a" }}>
+              style={{ display: "grid", gridTemplateColumns: "80px 1.5fr 130px 110px 100px 90px", padding: "14px 18px", borderBottom: "1px solid var(--border)", alignItems: "center" }}>
+              <div style={{ width: 50, height: 34, borderRadius: 6, background: "var(--bg-card2)", overflow: "hidden", border: "1px solid var(--border)" }}>
                 {p.image ? (
                   <img src={p.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                 ) : (
                   <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Newspaper size={12} style={{ color: "#52525b" }} />
+                    <Newspaper size={12} style={{ color: "var(--text-muted)" }} />
                   </div>
                 )}
               </div>
@@ -172,7 +172,7 @@ export default function AdminMedia() {
               <span style={{ fontSize: 11, background: "rgba(37,99,235,0.12)", color: "#2563eb", padding: "3px 8px", borderRadius: 6, fontWeight: 600, display: "inline-block", width: "fit-content" }}>
                 {p.tag}
               </span>
-              <span style={{ fontSize: 12, color: "#71717a" }}>{p.time}</span>
+              <span style={{ fontSize: 12, color: "var(--text-secondary)" }}>{p.time}</span>
               <button onClick={() => toggleActive(p.id)} style={{
                 fontSize: 11, padding: "3px 8px", borderRadius: 6, fontWeight: 600, cursor: "pointer", border: "none", width: "fit-content",
                 background: p.active ? "rgba(34,197,94,0.12)" : "rgba(100,116,139,0.12)",
@@ -181,7 +181,7 @@ export default function AdminMedia() {
                 {p.active ? "Hiển thị" : "Ẩn"}
               </button>
               <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
-                <button onClick={() => openEdit(p)} style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 6, width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#71717a" }}>
+                <button onClick={() => openEdit(p)} style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 6, width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--text-secondary)" }}>
                   <Pencil size={12} />
                 </button>
                 <button onClick={() => handleDelete(p.id)} style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 6, width: 28, height: 28, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#ef4444" }}>
@@ -197,46 +197,46 @@ export default function AdminMedia() {
       <AnimatePresence>
         {showModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowModal(false)}
-            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+            style={{ position: "fixed", inset: 0, background: "rgba(15,23,42,0.3)", zIndex: 200, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
             <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.95, opacity: 0 }} onClick={e => e.stopPropagation()}
-              style={{ background: "#0d0d0d", border: "1px solid #222", borderRadius: 20, padding: 28, width: "100%", maxWidth: 840, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28 }}>
+              style={{ background: "var(--bg-dark)", border: "1px solid #222", borderRadius: 20, padding: 28, width: "100%", maxWidth: 840, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 28 }}>
               
               {/* Left Column: Form Editor */}
-              <div style={{ borderRight: "1px solid #1a1a1a", paddingRight: 24 }}>
+              <div style={{ borderRight: "1px solid var(--border)", paddingRight: 24 }}>
                 <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 18, color: "white" }}>
                   {editItem ? "Sửa bài viết" : "Viết bài tin tức mới"}
                 </h3>
                 
                 <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                   <div>
-                    <label style={{ fontSize: 12, color: "#a1a1aa", display: "block", marginBottom: 6 }}>Tiêu đề bài viết</label>
+                    <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>Tiêu đề bài viết</label>
                     <input value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} placeholder="Nhập tiêu đề tin tức..."
-                      style={{ width: "100%", background: "#161616", border: "1px solid #2a2a2a", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }} />
+                      style={{ width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }} />
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                     <div>
-                      <label style={{ fontSize: 12, color: "#a1a1aa", display: "block", marginBottom: 6 }}>Chuyên mục</label>
+                      <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>Chuyên mục</label>
                       <select value={form.tag} onChange={e => setForm(p => ({ ...p, tag: e.target.value }))}
-                        style={{ width: "100%", background: "#161616", border: "1px solid #2a2a2a", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }}>
+                        style={{ width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }}>
                         {["Kinh tế", "Fintech", "Công nghệ", "Đầu tư", "Thị trường"].map(tag => (
                           <option key={tag} value={tag}>{tag}</option>
                         ))}
                       </select>
                     </div>
                     <div>
-                      <label style={{ fontSize: 12, color: "#a1a1aa", display: "block", marginBottom: 6 }}>Thời gian hiển thị</label>
+                      <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>Thời gian hiển thị</label>
                       <input value={form.time} onChange={e => setForm(p => ({ ...p, time: e.target.value }))} placeholder="VD: Vừa xong"
-                        style={{ width: "100%", background: "#161616", border: "1px solid #2a2a2a", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }} />
+                        style={{ width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }} />
                     </div>
                   </div>
 
                   <div>
-                    <label style={{ fontSize: 12, color: "#a1a1aa", display: "block", marginBottom: 6 }}>Hình ảnh bài viết</label>
+                    <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>Hình ảnh bài viết</label>
                     <div style={{ display: "flex", gap: 10 }}>
                       <input value={form.image} onChange={e => setForm(p => ({ ...p, image: e.target.value }))} placeholder="URL hình ảnh (picsum, unsplash...)"
-                        style={{ flex: 1, background: "#161616", border: "1px solid #2a2a2a", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }} />
-                      <label style={{ background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 8, padding: "10px 14px", color: "#a1a1aa", cursor: "pointer", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
+                        style={{ flex: 1, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }} />
+                      <label style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 14px", color: "var(--text-secondary)", cursor: "pointer", fontSize: 13, display: "flex", alignItems: "center", gap: 6 }}>
                         <Upload size={14} /> Upload
                         <input type="file" accept="image/*" style={{ display: "none" }} onChange={handleImageUpload} />
                       </label>
@@ -244,20 +244,20 @@ export default function AdminMedia() {
                   </div>
 
                   <div>
-                    <label style={{ fontSize: 12, color: "#a1a1aa", display: "block", marginBottom: 6 }}>Đường link chuyển tiếp (Không bắt buộc)</label>
+                    <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>Đường link chuyển tiếp (Không bắt buộc)</label>
                     <input value={form.link} onChange={e => setForm(p => ({ ...p, link: e.target.value }))} placeholder="VD: https://vnexpress.net/... (khi click sẽ chuyển tới link này)"
-                      style={{ width: "100%", background: "#161616", border: "1px solid #2a2a2a", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }} />
+                      style={{ width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none" }} />
                   </div>
 
                   <div>
-                    <label style={{ fontSize: 12, color: "#a1a1aa", display: "block", marginBottom: 6 }}>Nội dung chi tiết bài viết</label>
+                    <label style={{ fontSize: 12, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>Nội dung chi tiết bài viết</label>
                     <textarea value={form.content} onChange={e => setForm(p => ({ ...p, content: e.target.value }))} placeholder="Viết nội dung bài viết chi tiết ở đây..." rows={4}
-                      style={{ width: "100%", background: "#161616", border: "1px solid #2a2a2a", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none", resize: "none", lineHeight: 1.5 }} />
+                      style={{ width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 8, padding: "10px 12px", color: "white", fontSize: 13, outline: "none", resize: "none", lineHeight: 1.5 }} />
                   </div>
                 </div>
 
                 <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
-                  <button onClick={() => setShowModal(false)} style={{ flex: 1, background: "#1a1a1a", border: "1px solid #2a2a2a", color: "#a1a1aa", borderRadius: 8, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Huỷ</button>
+                  <button onClick={() => setShowModal(false)} style={{ flex: 1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius: 8, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Huỷ</button>
                   <button onClick={handleSave} style={{ flex: 2, background: "linear-gradient(135deg,#2563eb,#1d4ed8)", color: "white", border: "none", borderRadius: 8, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
                     {editItem ? "Cập nhật" : "Đăng bài viết"}
                   </button>
@@ -269,13 +269,13 @@ export default function AdminMedia() {
                 <div>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 18 }}>
                     <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e", boxShadow: "0 0 8px #22c55e" }} />
-                    <h3 style={{ fontSize: 13, fontWeight: 700, color: "#71717a", textTransform: "uppercase", letterSpacing: "0.5px" }}>XEM TRƯỚC BÀI VIẾT (LIVE PREVIEW)</h3>
+                    <h3 style={{ fontSize: 13, fontWeight: 700, color: "var(--text-secondary)", textTransform: "uppercase", letterSpacing: "0.5px" }}>XEM TRƯỚC BÀI VIẾT (LIVE PREVIEW)</h3>
                   </div>
 
                   {/* Dynamic user news card simulation */}
-                  <div style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 14, overflow: "hidden", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
+                  <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: 14, overflow: "hidden", boxShadow: "0 10px 30px rgba(0,0,0,0.5)" }}>
                     {/* Simulated image header */}
-                    <div style={{ height: 140, background: "#1a1a1a", position: "relative", overflow: "hidden" }}>
+                    <div style={{ height: 140, background: "var(--bg-card2)", position: "relative", overflow: "hidden" }}>
                       {form.image ? (
                         <img src={form.image} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                       ) : (
@@ -294,12 +294,12 @@ export default function AdminMedia() {
                         <h4 style={{ fontSize: 14, fontWeight: 700, color: "white", lineHeight: 1.4, margin: 0 }}>
                           {form.title || "Tiêu đề bài viết mẫu sẽ hiển thị tại đây"}
                         </h4>
-                        <ChevronRight size={16} style={{ color: "#3f3f46", flexShrink: 0, marginTop: 2 }} />
+                        <ChevronRight size={16} style={{ color: "var(--text-muted)", flexShrink: 0, marginTop: 2 }} />
                       </div>
-                      <p style={{ fontSize: 11, color: "#52525b", marginTop: 6 }}>{form.time}</p>
+                      <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 6 }}>{form.time}</p>
                       
                       {/* Short simulated body copy */}
-                      <p style={{ fontSize: 12, color: "#a1a1aa", marginTop: 10, lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                      <p style={{ fontSize: 12, color: "var(--text-secondary)", marginTop: 10, lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
                         {form.content || "Nội dung chi tiết bài viết do admin soạn thảo sẽ tự động xuất hiện tại phần xem chi tiết của người dùng khi nhấp chọn bài viết..."}
                       </p>
                     </div>
@@ -307,8 +307,8 @@ export default function AdminMedia() {
                 </div>
 
                 <div style={{ background: "rgba(255,255,255,0.02)", border: "1px dashed rgba(255,255,255,0.08)", borderRadius: 10, padding: 14 }}>
-                  <p style={{ fontSize: 11, color: "#71717a", lineHeight: 1.5 }}>
-                    📝 <strong style={{ color: "#a1a1aa" }}>Gợi ý:</strong> Kiểm tra kỹ tiêu đề và nội dung hiển thị bên trên. Đối với bài viết có gắn link chuyển tiếp, khi user click vào thẻ tin tức sẽ tự động mở trang mới thay vì hiển thị nội dung đọc.
+                  <p style={{ fontSize: 11, color: "var(--text-secondary)", lineHeight: 1.5 }}>
+                    📝 <strong style={{ color: "var(--text-secondary)" }}>Gợi ý:</strong> Kiểm tra kỹ tiêu đề và nội dung hiển thị bên trên. Đối với bài viết có gắn link chuyển tiếp, khi user click vào thẻ tin tức sẽ tự động mở trang mới thay vì hiển thị nội dung đọc.
                   </p>
                 </div>
               </div>

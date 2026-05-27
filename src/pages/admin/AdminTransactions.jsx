@@ -228,7 +228,7 @@ export default function AdminTransactions() {
       {/* Header and overview */}
       <div>
         <h1 style={{ fontSize:24, fontWeight:800, color:"white", marginBottom:6 }}>📋 Quản lý giao dịch</h1>
-        <p style={{ color:"#71717a", fontSize:14 }}>Phê duyệt và theo dõi các yêu cầu nạp tiền, rút tiền, chuyển tiền từ phía người dùng</p>
+        <p style={{ color: "var(--text-secondary)", fontSize:14 }}>Phê duyệt và theo dõi các yêu cầu nạp tiền, rút tiền, chuyển tiền từ phía người dùng</p>
       </div>
 
       {/* Quick stats cards */}
@@ -247,12 +247,12 @@ export default function AdminTransactions() {
               animate={{ opacity:1, y:0 }}
               transition={{ delay: idx * 0.05 }}
               style={{
-                background:"#111", border:"1px solid #1f1f1f", borderRadius:16, padding:20,
+                background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:16, padding:20,
                 position:"relative", overflow:"hidden"
               }}
             >
               <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", marginBottom:12 }}>
-                <span style={{ fontSize:13, color:"#71717a", fontWeight:500 }}>{item.label}</span>
+                <span style={{ fontSize:13, color: "var(--text-secondary)", fontWeight:500 }}>{item.label}</span>
                 <div style={{ width:38, height:38, borderRadius:10, background:`${item.color}15`, border:`1px solid ${item.color}30`, display:"flex", alignItems:"center", justifyContent:"center" }}>
                   <Icon size={18} style={{ color: item.color }} />
                 </div>
@@ -266,7 +266,7 @@ export default function AdminTransactions() {
                   </span>
                 )}
               </div>
-              <p style={{ fontSize:11, color:"#52525b", marginTop:6 }}>{item.desc}</p>
+              <p style={{ fontSize:11, color: "var(--text-muted)", marginTop:6 }}>{item.desc}</p>
             </motion.div>
           );
         })}
@@ -277,23 +277,23 @@ export default function AdminTransactions() {
         initial={{ opacity:0 }}
         animate={{ opacity:1 }}
         transition={{ delay:0.2 }}
-        style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:18, padding:24 }}
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:18, padding:24 }}
       >
         {/* Filters */}
         <div style={{ display:"flex", gap:12, marginBottom:20, flexWrap:"wrap", alignItems:"center" }}>
           {/* Search box */}
           <div style={{ position:"relative", flex:1, minWidth:240 }}>
-            <Search size={15} style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color:"#52525b" }} />
+            <Search size={15} style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color: "var(--text-muted)" }} />
             <input 
               value={search} 
               onChange={e => setSearch(e.target.value)} 
               placeholder="Tìm theo Mã GD, tên user, nội dung..." 
-              style={{ width:"100%", background:"#161616", border:"1px solid #2a2a2a", borderRadius:10, padding:"10px 14px 10px 36px", color:"white", fontSize:13, outline:"none" }} 
+              style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"10px 14px 10px 36px", color:"white", fontSize:13, outline:"none" }} 
             />
           </div>
           
           {/* Status filter */}
-          <div style={{ display:"flex", gap:4, background:"#161616", border:"1px solid #2a2a2a", borderRadius:10, padding:3 }}>
+          <div style={{ display:"flex", gap:4, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:3 }}>
             {[
               { v: "all", l: "Tất cả" },
               { v: "pending", l: "Chờ xử lý" },
@@ -316,7 +316,7 @@ export default function AdminTransactions() {
           </div>
 
           {/* Type filter */}
-          <div style={{ display:"flex", gap:4, background:"#161616", border:"1px solid #2a2a2a", borderRadius:10, padding:3 }}>
+          <div style={{ display:"flex", gap:4, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:3 }}>
             {[
               { v: "all", l: "Mọi loại GD" },
               { v: "receive", l: "Nạp tiền" },
@@ -349,7 +349,7 @@ export default function AdminTransactions() {
                 onClick={() => setSelectedTx(tx)}
                 style={{
                   display:"flex", alignItems:"center", justify:"space-between", padding:"14px 18px",
-                  background:"#161616", border:"1px solid #1f1f1f", borderRadius:12,
+                  background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:12,
                   cursor:"pointer", transition:"all 0.2s"
                 }}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "#1a1a1a"; }}
@@ -371,12 +371,12 @@ export default function AdminTransactions() {
                 <div style={{ flex:1, minWidth:0, marginRight:16 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
                     <span style={{ fontSize:13, fontWeight:700, color:"white" }}>{tx.name}</span>
-                    <span style={{ fontSize:10, color:"#52525b" }}>•</span>
-                    <span style={{ fontSize:11, color:"#71717a", fontFamily:"monospace" }}>{tx.id}</span>
-                    <span style={{ fontSize:10, color:"#52525b" }}>•</span>
-                    <span style={{ fontSize:11, color:"#52525b" }}>{tx.time}</span>
+                    <span style={{ fontSize:10, color: "var(--text-muted)" }}>•</span>
+                    <span style={{ fontSize:11, color: "var(--text-secondary)", fontFamily:"monospace" }}>{tx.id}</span>
+                    <span style={{ fontSize:10, color: "var(--text-muted)" }}>•</span>
+                    <span style={{ fontSize:11, color: "var(--text-muted)" }}>{tx.time}</span>
                   </div>
-                  <p style={{ fontSize:12, color:"#a1a1aa", marginTop:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
+                  <p style={{ fontSize:12, color: "var(--text-secondary)", marginTop:4, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>
                     Ghi chú: {tx.note || "—"}
                   </p>
                 </div>
@@ -437,8 +437,8 @@ export default function AdminTransactions() {
           )}
 
           {!loading && filtered.length === 0 && (
-            <div style={{ textAlign:"center", padding:"40px 0", color:"#52525b" }}>
-              <AlertCircle size={32} style={{ margin:"0 auto 12px", color:"#3f3f46" }} />
+            <div style={{ textAlign:"center", padding:"40px 0", color: "var(--text-muted)" }}>
+              <AlertCircle size={32} style={{ margin:"0 auto 12px", color: "var(--text-muted)" }} />
               <p style={{ fontSize:14 }}>Không tìm thấy giao dịch phù hợp</p>
             </div>
           )}
@@ -456,18 +456,18 @@ export default function AdminTransactions() {
             <motion.div 
               initial={{ scale:0.9, opacity:0 }} animate={{ scale:1, opacity:1 }} exit={{ scale:0.9, opacity:0 }}
               onClick={e => e.stopPropagation()}
-              style={{ background:"#111", border:"1px solid #2a2a2a", borderRadius:18, padding:28, width:"100%", maxWidth:450, position:"relative" }}
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:18, padding:28, width:"100%", maxWidth:450, position:"relative" }}
             >
               <button 
                 onClick={() => setSelectedTx(null)} 
-                style={{ position:"absolute", top:16, right:16, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, width:32, height:32, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#71717a" }}
+                style={{ position:"absolute", top:16, right:16, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, width:32, height:32, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color: "var(--text-secondary)" }}
               >
                 <X size={16} />
               </button>
 
               <h3 style={{ fontSize:18, fontWeight:700, marginBottom:20, color:"white" }}>Chi tiết yêu cầu giao dịch</h3>
 
-              <div style={{ background:"#161616", borderRadius:12, padding:20, marginBottom:20, textAlign:"center", border:"1px solid #1f1f1f" }}>
+              <div style={{ background: "var(--bg-card2)", borderRadius:12, padding:20, marginBottom:20, textAlign:"center", border: "1px solid var(--border)" }}>
                 <p style={{ fontSize:32, fontWeight:900, color: selectedTx.type === "receive" ? "#22c55e" : "#ef4444" }}>
                   {selectedTx.type === "receive" ? "+" : "-"}{fmtCurrency(selectedTx.amount)}
                 </p>
@@ -489,8 +489,8 @@ export default function AdminTransactions() {
                   { label:"Thời gian tạo", value:selectedTx.time },
                   { label:"Ghi chú / Nội dung", value:selectedTx.note || "—" }
                 ].map(r => (
-                  <div key={r.label} style={{ display:"flex", justifyContent:"space-between", padding:"12px 0", borderBottom:"1px solid #1a1a1a" }}>
-                    <span style={{ fontSize:13, color:"#71717a" }}>{r.label}</span>
+                  <div key={r.label} style={{ display:"flex", justifyContent:"space-between", padding:"12px 0", borderBottom: "1px solid var(--border)" }}>
+                    <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{r.label}</span>
                     <span style={{ fontSize:13, fontWeight:600, color:"white", fontFamily: r.font || "inherit" }}>{r.value}</span>
                   </div>
                 ))}

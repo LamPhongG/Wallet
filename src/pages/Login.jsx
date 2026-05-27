@@ -171,7 +171,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: "#0a0a0a" }}>
+    <div className="min-h-screen flex" style={{ background: "var(--bg-dark)" }}>
       {/* Left Panel - Branding */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
@@ -205,7 +205,7 @@ export default function LoginPage() {
             <Wallet size={22} color="white" />
           </div>
           <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.5px" }}>
-            Black<span style={{ color: "#2563eb" }}>red</span>
+            Smart<span style={{ color: "var(--primary)" }}>Wallet</span>
           </span>
         </div>
 
@@ -225,7 +225,7 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            style={{ color: "#71717a", fontSize: 16, lineHeight: 1.7, maxWidth: 400 }}
+            style={{ color: "var(--text-secondary)", fontSize: 16, lineHeight: 1.7, maxWidth: 400 }}
           >
             Ví điện tử SmartWallet giúp bạn theo dõi chi tiêu, chuyển tiền tức thì, 
             và nhận gợi ý tài chính thông minh từ AI.
@@ -246,13 +246,13 @@ export default function LoginPage() {
                 style={{ display: "flex", alignItems: "center", gap: 12 }}
               >
                 <span style={{ fontSize: 20 }}>{f.icon}</span>
-                <span style={{ color: "#a1a1aa", fontSize: 14 }}>{f.text}</span>
+                <span style={{ color: "var(--text-secondary)", fontSize: 14 }}>{f.text}</span>
               </motion.div>
             ))}
           </div>
         </div>
 
-        <div className="relative z-10" style={{ color: "#3f3f46", fontSize: 13 }}>
+        <div className="relative z-10" style={{ color: "var(--text-muted)", fontSize: 13 }}>
           © 2025 SmartWallet Wallet. All rights reserved.
         </div>
       </motion.div>
@@ -263,7 +263,7 @@ export default function LoginPage() {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
         className="flex-1 flex items-center justify-center p-8"
-        style={{ background: "#0d0d0d" }}
+        style={{ background: "var(--bg-dark)" }}
       >
         <div style={{ width: "100%", maxWidth: 420 }}>
           {/* Mobile logo */}
@@ -276,12 +276,12 @@ export default function LoginPage() {
               <Wallet size={20} color="white" />
             </div>
             <span style={{ fontSize: 20, fontWeight: 800 }}>
-              Black<span style={{ color: "#2563eb" }}>red</span>
+              Smart<span style={{ color: "var(--primary)" }}>Wallet</span>
             </span>
           </div>
 
           <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>Đăng nhập</h2>
-          <p style={{ color: "#71717a", marginBottom: 32, fontSize: 14 }}>
+          <p style={{ color: "var(--text-secondary)", marginBottom: 32, fontSize: 14 }}>
             Chưa có tài khoản?{" "}
             <Link to="/register" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>
               Đăng ký ngay
@@ -305,18 +305,18 @@ export default function LoginPage() {
           <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {/* Email */}
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "#a1a1aa" }}>
+              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "var(--text-secondary)" }}>
                 Email
               </label>
               <div style={{ position: "relative" }}>
-                <Mail size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#52525b" }} />
+                <Mail size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
                 <input
                   type="email"
                   placeholder="example@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   style={{
-                    width: "100%", background: "#1a1a1a", border: "1px solid #2a2a2a",
+                    width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)",
                     borderRadius: 10, padding: "12px 16px 12px 42px",
                     color: "white", fontSize: 14, outline: "none", transition: "all 0.3s"
                   }}
@@ -328,18 +328,18 @@ export default function LoginPage() {
 
             {/* Password */}
             <div>
-              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "#a1a1aa" }}>
+              <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 8, color: "var(--text-secondary)" }}>
                 Mật khẩu
               </label>
               <div style={{ position: "relative" }}>
-                <Lock size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "#52525b" }} />
+                <Lock size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
                 <input
                   type={showPass ? "text" : "password"}
                   placeholder="Nhập mật khẩu"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   style={{
-                    width: "100%", background: "#1a1a1a", border: "1px solid #2a2a2a",
+                    width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)",
                     borderRadius: 10, padding: "12px 42px 12px 42px",
                     color: "white", fontSize: 14, outline: "none", transition: "all 0.3s"
                   }}
@@ -349,7 +349,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
-                  style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#52525b" }}
+                  style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
                 >
                   {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -387,7 +387,7 @@ export default function LoginPage() {
 
           <div style={{ marginTop: 32, padding: "16px", background: "rgba(37,99,235,0.05)", border: "1px solid rgba(37,99,235,0.15)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10 }}>
             <Shield size={16} style={{ color: "#2563eb", flexShrink: 0 }} />
-            <p style={{ fontSize: 12, color: "#71717a", lineHeight: 1.5 }}>
+            <p style={{ fontSize: 12, color: "var(--text-secondary)", lineHeight: 1.5 }}>
               Dữ liệu của bạn được mã hóa và bảo mật bởi tiêu chuẩn ngân hàng SSL/TLS 256-bit.
             </p>
           </div>

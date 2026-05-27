@@ -52,7 +52,7 @@ export default function OffersPage() {
     <div style={{ maxWidth:900 }}>
       <div style={{ marginBottom:24 }}>
         <h1 style={{ fontSize:22, fontWeight:800, marginBottom:4 }}>🎁 Ưu đãi & Voucher</h1>
-        <p style={{ color:"#71717a", fontSize:14 }}>Các ưu đãi độc quyền dành riêng cho thành viên SmartWallet</p>
+        <p style={{ color: "var(--text-secondary)", fontSize:14 }}>Các ưu đãi độc quyền dành riêng cho thành viên SmartWallet</p>
       </div>
 
       {/* Tags filter */}
@@ -69,7 +69,7 @@ export default function OffersPage() {
 
       {/* Voucher grid */}
       {filtered.length === 0 ? (
-        <div style={{ textAlign:"center", padding:"60px 0", color:"#52525b", fontSize:14 }}>
+        <div style={{ textAlign:"center", padding:"60px 0", color: "var(--text-muted)", fontSize:14 }}>
           <p style={{ fontSize:40, marginBottom:12 }}>🎟️</p>
           <p>Chưa có ưu đãi nào{activeTag !== "Tất cả" ? ` cho mục "${activeTag}"` : ""}.</p>
         </div>
@@ -82,7 +82,7 @@ export default function OffersPage() {
               <motion.div key={v.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*0.07}}
                 onClick={() => handleUseVoucher(v)}
                 style={{
-                  background:"#111", border:`1px solid ${v.hot ? "rgba(37,99,235,0.25)" : "#1f1f1f"}`,
+                  background: "var(--bg-card)", border:`1px solid ${v.hot ? "rgba(37,99,235,0.25)" : "#1f1f1f"}`,
                   borderRadius:16, overflow:"hidden", cursor:"pointer", transition:"all 0.25s", position:"relative"
                 }}
                 whileHover={{ y:-4, boxShadow:"0 12px 32px rgba(0,0,0,0.4)" }}
@@ -99,12 +99,12 @@ export default function OffersPage() {
                   <p style={{ fontSize:15, fontWeight:700, marginTop:4, color:"#f4f4f5" }}>{v.title || v.code}</p>
                 </div>
                 <div style={{ padding:"14px 20px" }}>
-                  <p style={{ fontSize:12, color:"#71717a", marginBottom:12 }}>{v.desc || ""}</p>
+                  <p style={{ fontSize:12, color: "var(--text-secondary)", marginBottom:12 }}>{v.desc || ""}</p>
                   <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                       <span style={{ fontSize:10, padding:"3px 8px", borderRadius:6, background:`${color}18`, color, fontWeight:600 }}>{type}</span>
                       {v.exp && (
-                        <div style={{ display:"flex", alignItems:"center", gap:4, color:"#52525b" }}>
+                        <div style={{ display:"flex", alignItems:"center", gap:4, color: "var(--text-muted)" }}>
                           <Clock size={11} />
                           <span style={{ fontSize:11 }}>HSD: {v.exp}</span>
                         </div>

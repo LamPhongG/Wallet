@@ -79,7 +79,7 @@ export default function AdminServices() {
       <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20, flexWrap:"wrap", gap:12 }}>
         <div>
           <h1 style={{ fontSize:18, fontWeight:800, marginBottom:2 }}>Quản lý dịch vụ</h1>
-          <p style={{ color:"#71717a", fontSize:13 }}>Voucher, phí giao dịch và danh mục chi tiêu</p>
+          <p style={{ color: "var(--text-secondary)", fontSize:13 }}>Voucher, phí giao dịch và danh mục chi tiêu</p>
         </div>
         {tab === "voucher" && (
           <button onClick={openAdd} style={{ display:"flex", alignItems:"center", gap:6, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:8, padding:"9px 16px", fontWeight:600, fontSize:13, cursor:"pointer" }}>
@@ -104,23 +104,23 @@ export default function AdminServices() {
 
       {/* VOUCHER TAB */}
       {tab === "voucher" && (
-        <div style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:14, overflow:"hidden" }}>
-          <div style={{ display:"grid", gridTemplateColumns:"1fr 90px 90px 110px 100px 80px 80px", padding:"11px 16px", borderBottom:"1px solid #1f1f1f", background:"#0d0d0d" }}>
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:14, overflow:"hidden" }}>
+          <div style={{ display:"grid", gridTemplateColumns:"1fr 90px 90px 110px 100px 80px 80px", padding:"11px 16px", borderBottom:"1px solid #1f1f1f", background: "var(--bg-dark)" }}>
             {["Mã code","Giảm giá","Loại","HSD","Tiêu đề","Trạng thái",""].map(h => (
-              <span key={h} style={{ fontSize:11, fontWeight:700, color:"#52525b", textTransform:"uppercase" }}>{h}</span>
+              <span key={h} style={{ fontSize:11, fontWeight:700, color: "var(--text-muted)", textTransform:"uppercase" }}>{h}</span>
             ))}
           </div>
           {vouchers.map((v, i) => (
             <motion.div key={v.id} initial={{opacity:0}} animate={{opacity:1}} transition={{delay:i*0.05}}
-              style={{ display:"grid", gridTemplateColumns:"1fr 90px 90px 110px 100px 80px 80px", padding:"13px 16px", borderBottom:"1px solid #1a1a1a", alignItems:"center", gap:4 }}>
+              style={{ display:"grid", gridTemplateColumns:"1fr 90px 90px 110px 100px 80px 80px", padding:"13px 16px", borderBottom: "1px solid var(--border)", alignItems:"center", gap:4 }}>
               <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                 <span style={{ fontSize:14, fontWeight:700, fontFamily:"monospace", color:"#2563eb" }}>{v.code}</span>
                 {v.hot && <Flame size={12} style={{ color:"#2563eb" }} />}
               </div>
               <span style={{ fontSize:13, fontWeight:600 }}>{v.discount}</span>
               <span style={{ fontSize:11, padding:"3px 8px", borderRadius:6, background:`${tagColors[v.type] || "#3f3f46"}18`, color:tagColors[v.type] || "#a1a1aa", fontWeight:600, whiteSpace:"nowrap" }}>{v.type}</span>
-              <span style={{ fontSize:12, color:"#71717a" }}>{v.exp}</span>
-              <span style={{ fontSize:11, color:"#a1a1aa", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{v.title}</span>
+              <span style={{ fontSize:12, color: "var(--text-secondary)" }}>{v.exp}</span>
+              <span style={{ fontSize:11, color: "var(--text-secondary)", overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{v.title}</span>
               <button onClick={() => toggleActive(v.id)} style={{
                 fontSize:11, padding:"3px 8px", borderRadius:6, fontWeight:600, cursor:"pointer", border:"none",
                 background: v.active ? "rgba(34,197,94,0.12)" : "rgba(100,116,139,0.12)",
@@ -129,7 +129,7 @@ export default function AdminServices() {
                 {v.active ? "Bật" : "Tắt"}
               </button>
               <div style={{ display:"flex", gap:6 }}>
-                <button onClick={() => openEdit(v)} style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#71717a" }}>
+                <button onClick={() => openEdit(v)} style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color: "var(--text-secondary)" }}>
                   <Pencil size={12} />
                 </button>
                 <button onClick={() => handleDelete(v.id)} style={{ background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.15)", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#ef4444" }}>
@@ -139,23 +139,23 @@ export default function AdminServices() {
             </motion.div>
           ))}
           {vouchers.length === 0 && (
-            <div style={{ padding:32, textAlign:"center", color:"#52525b", fontSize:13 }}>Chưa có voucher nào. Nhấn "+ Thêm voucher" để bắt đầu.</div>
+            <div style={{ padding:32, textAlign:"center", color: "var(--text-muted)", fontSize:13 }}>Chưa có voucher nào. Nhấn "+ Thêm voucher" để bắt đầu.</div>
           )}
         </div>
       )}
 
       {/* FEE TAB */}
       {tab === "fee" && (
-        <div style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:14, overflow:"hidden" }}>
+        <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:14, overflow:"hidden" }}>
           {fees.map((f, i) => (
             <div key={f.id} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px", borderBottom: i < fees.length-1 ? "1px solid #1a1a1a" : "none" }}>
               <div>
                 <p style={{ fontSize:14, fontWeight:600 }}>{f.name}</p>
-                <p style={{ fontSize:12, color:"#52525b", marginTop:2 }}>{f.note}</p>
+                <p style={{ fontSize:12, color: "var(--text-muted)", marginTop:2 }}>{f.note}</p>
               </div>
               <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                 <span style={{ fontSize:16, fontWeight:800, color:"#2563eb" }}>{f.value}</span>
-                <button style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:6, padding:"6px 10px", color:"#a1a1aa", cursor:"pointer", fontSize:12, display:"flex", alignItems:"center", gap:4 }}>
+                <button style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:6, padding:"6px 10px", color: "var(--text-secondary)", cursor:"pointer", fontSize:12, display:"flex", alignItems:"center", gap:4 }}>
                   <Pencil size={12} /> Sửa
                 </button>
               </div>
@@ -169,7 +169,7 @@ export default function AdminServices() {
         <div>
           <div style={{ display:"flex", gap:10, marginBottom:16 }}>
             <input value={newCat} onChange={e => setNewCat(e.target.value)} placeholder="Tên danh mục mới..."
-              style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 14px", color:"white", fontSize:14, outline:"none" }} />
+              style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 14px", color:"white", fontSize:14, outline:"none" }} />
             <button onClick={() => { if (newCat.trim()) { setCatList(c => [...c, newCat.trim()]); setNewCat(""); }}} style={{ background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:8, padding:"10px 16px", fontWeight:600, fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
               <Plus size={14} /> Thêm
             </button>
@@ -177,9 +177,9 @@ export default function AdminServices() {
           <div style={{ display:"flex", flexWrap:"wrap", gap:10 }}>
             {catList.map((c, i) => (
               <motion.div key={c} initial={{opacity:0,scale:0.8}} animate={{opacity:1,scale:1}} transition={{delay:i*0.03}}
-                style={{ display:"flex", alignItems:"center", gap:8, background:"#111", border:"1px solid #1f1f1f", borderRadius:10, padding:"8px 14px" }}>
+                style={{ display:"flex", alignItems:"center", gap:8, background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:10, padding:"8px 14px" }}>
                 <span style={{ fontSize:13, fontWeight:500 }}>{c}</span>
-                <button onClick={() => setCatList(l => l.filter(x => x !== c))} style={{ background:"none", border:"none", cursor:"pointer", color:"#52525b", display:"flex", padding:0 }}>
+                <button onClick={() => setCatList(l => l.filter(x => x !== c))} style={{ background:"none", border:"none", cursor:"pointer", color: "var(--text-muted)", display:"flex", padding:0 }}>
                   <X size={13} />
                 </button>
               </motion.div>
@@ -194,49 +194,49 @@ export default function AdminServices() {
           <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setShowModal(false)}
             style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
             <motion.div initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} exit={{scale:0.9,opacity:0}} onClick={e => e.stopPropagation()}
-              style={{ background:"#111", border:"1px solid #2a2a2a", borderRadius:18, padding:26, width:"100%", maxWidth:400, maxHeight:"90vh", overflowY:"auto" }}>
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:18, padding:26, width:"100%", maxWidth:400, maxHeight:"90vh", overflowY:"auto" }}>
               <h3 style={{ fontSize:16, fontWeight:700, marginBottom:18 }}>{editItem ? "Sửa Voucher" : "Thêm Voucher"}</h3>
 
               {/* Code */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Mã code <span style={{ color:"#2563eb" }}>*</span></label>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Mã code <span style={{ color:"#2563eb" }}>*</span></label>
                 <input value={form.code} onChange={e => setForm(p => ({...p, code: e.target.value.toUpperCase()}))} placeholder="VD: BLACKRED50"
-                  style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none", fontFamily:"monospace", letterSpacing:1 }} />
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none", fontFamily:"monospace", letterSpacing:1 }} />
               </div>
 
               {/* Title */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Tiêu đề hiển thị <span style={{ color:"#2563eb" }}>*</span></label>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Tiêu đề hiển thị <span style={{ color:"#2563eb" }}>*</span></label>
                 <input value={form.title} onChange={e => setForm(p => ({...p, title:e.target.value}))} placeholder="VD: Giảm 50K phí chuyển tiền"
-                  style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
               </div>
 
               {/* Desc */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Mô tả ngắn</label>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Mô tả ngắn</label>
                 <input value={form.desc} onChange={e => setForm(p => ({...p, desc:e.target.value}))} placeholder="VD: Áp dụng cho giao dịch từ 500K"
-                  style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
               </div>
 
               {/* Discount */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Giá trị giảm <span style={{ color:"#2563eb" }}>*</span></label>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Giá trị giảm <span style={{ color:"#2563eb" }}>*</span></label>
                 <input value={form.discount} onChange={e => setForm(p => ({...p, discount:e.target.value}))} placeholder="VD: 50K  hoặc  2%  hoặc  FREE"
-                  style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
               </div>
 
               {/* Exp */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Ngày hết hạn</label>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Ngày hết hạn</label>
                 <input value={form.exp} onChange={e => setForm(p => ({...p, exp:e.target.value}))} placeholder="DD/MM/YYYY hoặc Hàng tuần"
-                  style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
               </div>
 
               {/* Type */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Loại voucher</label>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Loại voucher</label>
                 <select value={form.type} onChange={e => setForm(p => ({...p, type:e.target.value}))}
-                  style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }}>
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }}>
                   {["Chuyển tiền","Rút tiền","Nạp tiền","Mua sắm","Referral","Hóa đơn"].map(t => (
                     <option key={t} value={t}>{t}</option>
                   ))}
@@ -255,11 +255,11 @@ export default function AdminServices() {
                   }}>
                   <Flame size={13} /> {form.hot ? "HOT (đang bật)" : "Đánh dấu HOT"}
                 </button>
-                <span style={{ fontSize:11, color:"#52525b" }}>Hiển thị badge 🔥 trên card</span>
+                <span style={{ fontSize:11, color: "var(--text-muted)" }}>Hiển thị badge 🔥 trên card</span>
               </div>
 
               <div style={{ display:"flex", gap:10 }}>
-                <button onClick={() => setShowModal(false)} style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", borderRadius:8, padding:"11px", fontWeight:600, fontSize:13, cursor:"pointer" }}>Huỷ</button>
+                <button onClick={() => setShowModal(false)} style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius:8, padding:"11px", fontWeight:600, fontSize:13, cursor:"pointer" }}>Huỷ</button>
                 <button onClick={handleSave} style={{ flex:2, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:8, padding:"11px", fontWeight:700, fontSize:13, cursor:"pointer" }}>
                   {editItem ? "Cập nhật" : "Thêm mới"}
                 </button>

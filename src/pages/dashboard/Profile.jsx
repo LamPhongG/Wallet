@@ -13,7 +13,7 @@ export default function ProfilePage() {
       <h1 style={{ fontSize:20, fontWeight:800, marginBottom:20 }}>Thông tin cá nhân</h1>
 
       <motion.div initial={{opacity:0,y:16}} animate={{opacity:1,y:0}}
-        style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:16, padding:28 }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:16, padding:28 }}>
         {/* Avatar */}
         <div style={{ display:"flex", alignItems:"center", gap:20, marginBottom:28, paddingBottom:24, borderBottom:"1px solid #1f1f1f" }}>
           <div style={{ position:"relative" }}>
@@ -21,12 +21,12 @@ export default function ProfilePage() {
               <User size={30} color="white" />
             </div>
             <button style={{ position:"absolute", bottom:0, right:0, width:24, height:24, borderRadius:"50%", background:"#2a2a2a", border:"2px solid #111", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer" }}>
-              <Camera size={11} style={{ color:"#a1a1aa" }} />
+              <Camera size={11} style={{ color: "var(--text-secondary)" }} />
             </button>
           </div>
           <div>
             <p style={{ fontSize:16, fontWeight:700 }}>{form.name}</p>
-            <p style={{ fontSize:13, color:"#52525b" }}>{form.email}</p>
+            <p style={{ fontSize:13, color: "var(--text-muted)" }}>{form.email}</p>
             <div style={{ display:"flex", alignItems:"center", gap:6, marginTop:6 }}>
               <Shield size={12} style={{ color:"#f59e0b" }} />
               <span style={{ fontSize:11, color:"#f59e0b", fontWeight:600 }}>Chưa xác thực KYC</span>
@@ -43,11 +43,11 @@ export default function ProfilePage() {
             { label:"Địa chỉ", key:"address", icon:MapPin, type:"text" },
           ].map(f => (
             <div key={f.key}>
-              <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>{f.label}</label>
+              <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>{f.label}</label>
               <div style={{ position:"relative" }}>
-                <f.icon size={15} style={{ position:"absolute", left:13, top:"50%", transform:"translateY(-50%)", color:"#52525b" }} />
+                <f.icon size={15} style={{ position:"absolute", left:13, top:"50%", transform:"translateY(-50%)", color: "var(--text-muted)" }} />
                 <input value={form[f.key]} onChange={e => setForm({...form,[f.key]:e.target.value})} type={f.type}
-                  style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px 11px 38px", color:"white", fontSize:14, outline:"none" }}
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px 11px 38px", color:"white", fontSize:14, outline:"none" }}
                   onFocus={e => { e.target.style.borderColor="#2563eb"; }}
                   onBlur={e => { e.target.style.borderColor="#2a2a2a"; }}
                 />
@@ -55,8 +55,8 @@ export default function ProfilePage() {
             </div>
           ))}
           <div>
-            <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>Email</label>
-            <input value={form.email} disabled style={{ width:"100%", background:"#141414", border:"1px solid #1f1f1f", borderRadius:10, padding:"11px 14px", color:"#52525b", fontSize:14, outline:"none", cursor:"not-allowed" }} />
+            <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Email</label>
+            <input value={form.email} disabled style={{ width:"100%", background:"#141414", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color: "var(--text-muted)", fontSize:14, outline:"none", cursor:"not-allowed" }} />
           </div>
 
           <button onClick={handleSave} style={{

@@ -99,7 +99,7 @@ export default function KycPage() {
           <CheckCircle size={36} style={{ color:"#22c55e" }} />
         </motion.div>
         <h2 style={{ fontSize:22, fontWeight:800, marginBottom:8, color:"#22c55e" }}>Tài khoản đã xác minh</h2>
-        <p style={{ color:"#71717a", fontSize:14, lineHeight:1.6 }}>
+        <p style={{ color: "var(--text-secondary)", fontSize:14, lineHeight:1.6 }}>
           Chúc mừng! Tài khoản SmartWallet Wallet của bạn đã được hoàn tất xác thực danh tính (KYC).<br />
           Hạn mức giao dịch của bạn đã được nâng cấp lên tối đa và mở khóa đầy đủ tính năng nạp/rút tiền.
         </p>
@@ -115,7 +115,7 @@ export default function KycPage() {
           <Clock size={36} style={{ color:"#f59e0b" }} />
         </motion.div>
         <h2 style={{ fontSize:22, fontWeight:800, marginBottom:8 }}>Đang xem xét hồ sơ</h2>
-        <p style={{ color:"#71717a", fontSize:14, lineHeight:1.6 }}>
+        <p style={{ color: "var(--text-secondary)", fontSize:14, lineHeight:1.6 }}>
           Chúng tôi đã nhận được hồ sơ KYC của bạn.<br />
           Kết quả đang được ban quản trị xem xét. Vui lòng chờ phản hồi trong thời gian sớm nhất!
         </p>
@@ -126,7 +126,7 @@ export default function KycPage() {
   return (
     <div style={{ maxWidth:560 }}>
       <h1 style={{ fontSize:20, fontWeight:800, marginBottom:4 }}>Xác thực danh tính (KYC)</h1>
-      <p style={{ color:"#71717a", fontSize:14, marginBottom:28 }}>Xác thực để tăng hạn mức giao dịch và sử dụng đầy đủ tính năng</p>
+      <p style={{ color: "var(--text-secondary)", fontSize:14, marginBottom:28 }}>Xác thực để tăng hạn mức giao dịch và sử dụng đầy đủ tính năng</p>
 
       {/* Stepper */}
       <div style={{ display:"flex", alignItems:"center", marginBottom:32 }}>
@@ -143,7 +143,7 @@ export default function KycPage() {
               </div>
               <div className="hidden sm:block">
                 <p style={{ fontSize:12, fontWeight:600, color: step >= s.id ? "#f4f4f5" : "#52525b" }}>{s.title}</p>
-                <p style={{ fontSize:10, color:"#52525b" }}>{s.desc}</p>
+                <p style={{ fontSize:10, color: "var(--text-muted)" }}>{s.desc}</p>
               </div>
             </div>
             {i < steps.length-1 && (
@@ -156,7 +156,7 @@ export default function KycPage() {
       {/* Step 1 */}
       {step === 1 && (
         <motion.div initial={{opacity:0,x:20}} animate={{opacity:1,x:0}}
-          style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:16, padding:28 }}>
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:16, padding:28 }}>
           <h3 style={{ fontSize:15, fontWeight:700, marginBottom:20 }}>Thông tin cá nhân</h3>
           {[
             { label:"Họ và tên (theo CCCD)", key:"fullname", placeholder:"Nguyễn Văn A" },
@@ -164,10 +164,10 @@ export default function KycPage() {
             { label:"Ngày sinh", key:"dob", placeholder:"", type:"date" },
           ].map(f => (
             <div key={f.key} style={{ marginBottom:16 }}>
-              <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>{f.label}</label>
+              <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>{f.label}</label>
               <input value={form[f.key]} onChange={e => setForm(p => ({...p,[f.key]:e.target.value}))}
                 type={f.type||"text"} placeholder={f.placeholder}
-                style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }}
+                style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }}
                 onFocus={e => { e.target.style.borderColor="#2563eb"; }}
                 onBlur={e => { e.target.style.borderColor="#2a2a2a"; }}
               />
@@ -182,7 +182,7 @@ export default function KycPage() {
       {/* Step 2 */}
       {step === 2 && (
         <motion.div initial={{opacity:0,x:20}} animate={{opacity:1,x:0}}
-          style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:16, padding:28 }}>
+          style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:16, padding:28 }}>
           <h3 style={{ fontSize:15, fontWeight:700, marginBottom:20 }}>Tải ảnh giấy tờ tùy thân</h3>
           <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:24 }}>
             {[
@@ -190,7 +190,7 @@ export default function KycPage() {
               { label:"Mặt sau CCCD", key:"backImg" },
             ].map(f => (
               <div key={f.key}>
-                <p style={{ fontSize:13, color:"#a1a1aa", marginBottom:8 }}>{f.label}</p>
+                <p style={{ fontSize:13, color: "var(--text-secondary)", marginBottom:8 }}>{f.label}</p>
                 <label style={{
                   display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
                   height:140, border:`2px dashed ${form[f.key] ? "#22c55e" : "#2a2a2a"}`,
@@ -200,8 +200,8 @@ export default function KycPage() {
                   {form[f.key]
                     ? <img src={form[f.key]} alt="" style={{ width:"100%", height:"100%", objectFit:"cover" }} />
                     : <>
-                        <Upload size={24} style={{ color:"#52525b", marginBottom:8 }} />
-                        <span style={{ fontSize:12, color:"#52525b" }}>Chọn ảnh</span>
+                        <Upload size={24} style={{ color: "var(--text-muted)", marginBottom:8 }} />
+                        <span style={{ fontSize:12, color: "var(--text-muted)" }}>Chọn ảnh</span>
                       </>
                   }
                   <input type="file" accept="image/*" onChange={e => handleFile(f.key, e)} style={{ position:"absolute", inset:0, opacity:0, cursor:"pointer" }} />
@@ -214,7 +214,7 @@ export default function KycPage() {
             <p style={{ fontSize:12, color:"#a16207", lineHeight:1.5 }}>Ảnh phải rõ ràng, không bị mờ, che khuất. Định dạng JPG/PNG, tối đa 5MB.</p>
           </div>
           <div style={{ display:"flex", gap:10 }}>
-            <button onClick={() => setStep(1)} style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", borderRadius:10, padding:"12px", fontWeight:600, fontSize:14, cursor:"pointer" }}>
+            <button onClick={() => setStep(1)} style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius:10, padding:"12px", fontWeight:600, fontSize:14, cursor:"pointer" }}>
               Quay lại
             </button>
             <button onClick={handleSubmit} style={{ flex:2, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>

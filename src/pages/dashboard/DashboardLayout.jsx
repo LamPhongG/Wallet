@@ -254,7 +254,7 @@ export default function DashboardLayout() {
   const Sidebar = ({ mobile = false }) => (
     <aside style={{
       width: mobile ? "100%" : 240,
-      background: "#0d0d0d",
+      background: "var(--bg-dark)",
       borderRight: mobile ? "none" : "1px solid #1a1a1a",
       display: "flex", flexDirection: "column",
       height: "100%", padding: "24px 16px",
@@ -265,12 +265,12 @@ export default function DashboardLayout() {
         <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Wallet size={18} color="white" />
         </div>
-        <span style={{ fontSize: 18, fontWeight: 800 }}>Black<span style={{ color: "#2563eb" }}>red</span></span>
+        <span style={{ fontSize: 18, fontWeight: 800 }}>Smart<span style={{ color: "var(--primary)" }}>Wallet</span></span>
       </div>
 
       {/* Nav items */}
       <nav style={{ flex: 1 }}>
-        <p style={{ fontSize: 10, fontWeight: 600, color: "#3f3f46", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8, paddingLeft: 12 }}>Menu</p>
+        <p style={{ fontSize: 10, fontWeight: 600, color: "var(--text-muted)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: 8, paddingLeft: 12 }}>Menu</p>
         {navItems.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
           return (
@@ -297,14 +297,14 @@ export default function DashboardLayout() {
 
       {/* User info at bottom */}
       {user && (
-        <div style={{ padding: "12px", background: "#1a1a1a", borderRadius: 12, marginTop: 16 }}>
+        <div style={{ padding: "12px", background: "var(--bg-card2)", borderRadius: 12, marginTop: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
             <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <User size={16} color="white" />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</p>
-              <p style={{ fontSize: 11, color: "#52525b", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</p>
+              <p style={{ fontSize: 11, color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.email}</p>
             </div>
           </div>
         </div>
@@ -313,7 +313,7 @@ export default function DashboardLayout() {
   );
 
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#0a0a0a" }}>
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "var(--bg-dark)" }}>
       {/* Desktop Sidebar */}
       <div className="hidden lg:flex" style={{ flexShrink: 0 }}>
         <Sidebar />
@@ -343,12 +343,12 @@ export default function DashboardLayout() {
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
         {/* Navbar */}
         <header style={{
-          height: 64, background: "rgba(13,13,13,0.95)", backdropFilter: "blur(20px)",
-          borderBottom: "1px solid #1a1a1a", display: "flex", alignItems: "center",
+          height: 64, background: "rgba(255,255,255,0.95)", backdropFilter: "blur(20px)",
+          borderBottom: "1px solid var(--border)", display: "flex", alignItems: "center",
           padding: "0 24px", gap: 16, flexShrink: 0, position: "sticky", top: 0, zIndex: 30
         }}>
           {/* Mobile menu button */}
-          <button onClick={() => setSidebarOpen(true)} className="lg:hidden" style={{ background: "none", border: "none", cursor: "pointer", color: "#a1a1aa", padding: 4 }}>
+          <button onClick={() => setSidebarOpen(true)} className="lg:hidden" style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-secondary)", padding: 4 }}>
             <Menu size={22} />
           </button>
 
@@ -412,12 +412,12 @@ export default function DashboardLayout() {
             <button
               onClick={() => { setShowNotif(!showNotif); setShowUserMenu(false); }}
               style={{
-                width: 40, height: 40, borderRadius: 10, background: "#1a1a1a",
-                border: "1px solid #2a2a2a", display: "flex", alignItems: "center",
+                width: 40, height: 40, borderRadius: 10, background: "var(--bg-card2)",
+                border: "1px solid var(--border)", display: "flex", alignItems: "center",
                 justifyContent: "center", cursor: "pointer", position: "relative"
               }}
             >
-              <Bell size={18} style={{ color: "#a1a1aa" }} />
+              <Bell size={18} style={{ color: "var(--text-secondary)" }} />
               {unreadCount > 0 && (
                 <div style={{
                   position: "absolute", top: 6, right: 6, width: 8, height: 8,
@@ -436,7 +436,7 @@ export default function DashboardLayout() {
                   transition={{ duration: 0.15 }}
                   style={{
                     position: "absolute", right: 0, top: "calc(100% + 8px)",
-                    width: 320, background: "#111", border: "1px solid #2a2a2a",
+                    width: 320, background: "var(--bg-card)", border: "1px solid var(--border)",
                     borderRadius: 14, boxShadow: "0 20px 60px rgba(0,0,0,0.5)", zIndex: 100, overflow: "hidden"
                   }}
                 >
@@ -446,7 +446,7 @@ export default function DashboardLayout() {
                   </div>
 
                   {/* Filter Pills */}
-                  <div style={{ display: "flex", gap: 6, padding: "4px 20px 12px", borderBottom: "1px solid #1a1a1a" }}>
+                  <div style={{ display: "flex", gap: 6, padding: "4px 20px 12px", borderBottom: "1px solid var(--border)" }}>
                     {[
                       { id: "all", label: "Tất cả" },
                       { id: "unread", label: "Chưa xem" },
@@ -471,7 +471,7 @@ export default function DashboardLayout() {
                   {/* Notification List */}
                   <div style={{ maxHeight: 280, overflowY: "auto" }}>
                     {filteredNotifs.length === 0 ? (
-                      <div style={{ padding: "30px 20px", textAlign: "center", color: "#71717a" }}>
+                      <div style={{ padding: "30px 20px", textAlign: "center", color: "var(--text-secondary)" }}>
                         <p style={{ fontSize: 12 }}>Không có thông báo nào</p>
                       </div>
                     ) : (
@@ -479,7 +479,7 @@ export default function DashboardLayout() {
                         <div key={n.id} 
                           onClick={() => handleMarkAsRead(n.id)}
                           style={{
-                            padding: "14px 20px", borderBottom: "1px solid #1a1a1a",
+                            padding: "14px 20px", borderBottom: "1px solid var(--border)",
                             background: !n.read ? "rgba(37,99,235,0.04)" : "transparent",
                             cursor: "pointer", transition: "background 0.2s"
                           }}
@@ -493,8 +493,8 @@ export default function DashboardLayout() {
                             {!n.read && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#2563eb", marginTop: 6, flexShrink: 0 }} />}
                             <div style={{ flex: 1 }}>
                               <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{n.title}</p>
-                              <p style={{ fontSize: 12, color: "#71717a" }}>{n.desc}</p>
-                              <p style={{ fontSize: 11, color: "#3f3f46", marginTop: 4 }}>{n.time}</p>
+                              <p style={{ fontSize: 12, color: "var(--text-secondary)" }}>{n.desc}</p>
+                              <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>{n.time}</p>
                             </div>
                           </div>
                         </div>
@@ -512,7 +512,7 @@ export default function DashboardLayout() {
               onClick={() => { setShowUserMenu(!showUserMenu); setShowNotif(false); }}
               style={{
                 display: "flex", alignItems: "center", gap: 8,
-                background: "#1a1a1a", border: "1px solid #2a2a2a",
+                background: "var(--bg-card2)", border: "1px solid var(--border)",
                 borderRadius: 10, padding: "6px 12px 6px 6px",
                 cursor: "pointer"
               }}
@@ -523,7 +523,7 @@ export default function DashboardLayout() {
               <span style={{ fontSize: 13, fontWeight: 500, color: "#e4e4e7" }} className="hidden sm:inline">
                 {user?.name || "User"}
               </span>
-              <ChevronDown size={14} style={{ color: "#52525b" }} />
+              <ChevronDown size={14} style={{ color: "var(--text-muted)" }} />
             </button>
 
             <AnimatePresence>
@@ -535,13 +535,13 @@ export default function DashboardLayout() {
                   transition={{ duration: 0.15 }}
                   style={{
                     position: "absolute", right: 0, top: "calc(100% + 8px)",
-                    width: 200, background: "#111", border: "1px solid #2a2a2a",
+                    width: 200, background: "var(--bg-card)", border: "1px solid var(--border)",
                     borderRadius: 12, boxShadow: "0 20px 60px rgba(0,0,0,0.5)", zIndex: 100, overflow: "hidden"
                   }}
                 >
-                  <div style={{ padding: "12px 16px", borderBottom: "1px solid #1a1a1a" }}>
+                  <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--border)" }}>
                     <p style={{ fontSize: 13, fontWeight: 600 }}>{user?.name}</p>
-                    <p style={{ fontSize: 11, color: "#52525b" }}>{user?.email}</p>
+                    <p style={{ fontSize: 11, color: "var(--text-muted)" }}>{user?.email}</p>
                   </div>
                   {[
                     isKycVerified
@@ -580,7 +580,7 @@ export default function DashboardLayout() {
                       </div>
                     </Link>
                   ))}
-                  <div style={{ borderTop: "1px solid #1a1a1a" }}>
+                  <div style={{ borderTop: "1px solid var(--border)" }}>
                     <button onClick={handleLogout} style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 16px", color: "#ef4444", fontSize: 13, cursor: "pointer", background: "none", border: "none", width: "100%", transition: "all 0.2s" }}
                       onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; }}
                       onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}

@@ -596,14 +596,14 @@ export default function WalletsPage() {
           border:"1px solid rgba(37,99,235,0.2)", borderRadius:20, padding:28, position:"relative", overflow:"hidden"
         }}>
         <div style={{ position:"absolute", top:-50, right:-50, width:200, height:200, background:"radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%)", borderRadius:"50%" }} />
-        <p style={{ color:"#71717a", fontSize:13, marginBottom:8 }}>Số dư khả dụng</p>
+        <p style={{ color: "var(--text-secondary)", fontSize:13, marginBottom:8 }}>Số dư khả dụng</p>
         {loading
           ? <div className="skeleton" style={{ height:40, width:220, marginBottom:12 }} />
           : <h2 style={{ fontSize:36, fontWeight:900, letterSpacing:"-1px", marginBottom:12 }}>{fmtCurrency(balance)}</h2>
         }
         <div style={{ display:"flex", alignItems:"center", gap:6 }}>
           <div style={{ width:8, height:8, borderRadius:"50%", background:"#22c55e" }} />
-          <span style={{ fontSize:12, color:"#52525b" }}>Tài khoản đã xác thực</span>
+          <span style={{ fontSize:12, color: "var(--text-muted)" }}>Tài khoản đã xác thực</span>
         </div>
 
         {/* Action Buttons */}
@@ -621,7 +621,7 @@ export default function WalletsPage() {
               <div style={{ width:44, height:44, borderRadius:12, background:`${color}20`, border:`1px solid ${color}40`, display:"flex", alignItems:"center", justifyContent:"center" }}>
                 <Icon size={20} style={{ color }} />
               </div>
-              <span style={{ fontSize:12, fontWeight:500, color:"#a1a1aa" }}>{label}</span>
+              <span style={{ fontSize:12, fontWeight:500, color: "var(--text-secondary)" }}>{label}</span>
             </button>
           ))}
         </div>
@@ -629,14 +629,14 @@ export default function WalletsPage() {
 
       {/* Link Bank */}
       <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.15}}
-        style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:16, padding:20, display:"flex", alignItems:"center", justifyBetween:"space-between" }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:16, padding:20, display:"flex", alignItems:"center", justifyBetween:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:40, height:40, borderRadius:10, background:"rgba(59,130,246,0.12)", display:"flex", alignItems:"center", justifyContent:"center" }}>
             <Building2 size={18} style={{ color:"#3b82f6" }} />
           </div>
           <div>
             <p style={{ fontSize:14, fontWeight:600 }}>Liên kết ngân hàng</p>
-            <p style={{ fontSize:12, color:"#52525b" }}>
+            <p style={{ fontSize:12, color: "var(--text-muted)" }}>
               {linkedBanks.length}/3 tài khoản đã liên kết
             </p>
           </div>
@@ -662,14 +662,14 @@ export default function WalletsPage() {
 
       {/* Transactions */}
       <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.2}}
-        style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:16, padding:24 }}>
+        style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:16, padding:24 }}>
         <h3 style={{ fontSize:15, fontWeight:700, marginBottom:16 }}>Lịch sử giao dịch</h3>
 
         {/* Filters */}
         <div style={{ display:"flex", gap:8, marginBottom:16, flexWrap:"wrap" }}>
           <div style={{ position:"relative", flex:1, minWidth:160 }}>
-            <Search size={14} style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color:"#52525b" }} />
-            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm giao dịch..." style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 12px 8px 34px", color:"white", fontSize:13, outline:"none" }} />
+            <Search size={14} style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color: "var(--text-muted)" }} />
+            <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Tìm giao dịch..." style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"8px 12px 8px 34px", color:"white", fontSize:13, outline:"none" }} />
           </div>
           <div style={{ display:"flex", gap:4 }}>
             {[{v:"all",l:"Tất cả"},{v:"receive",l:"Nhận"},{v:"send",l:"Chuyển"}].map(t => (
@@ -700,12 +700,12 @@ export default function WalletsPage() {
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
                     <p style={{ fontSize:13, fontWeight:600 }}>{tx.name}</p>
                     {tx.category && (
-                      <span style={{ fontSize:9, background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:4, padding:"0 4px", color:"#a1a1aa", fontWeight:500 }}>
+                      <span style={{ fontSize:9, background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:4, padding:"0 4px", color: "var(--text-secondary)", fontWeight:500 }}>
                         {tx.category}
                       </span>
                     )}
                   </div>
-                  <p style={{ fontSize:11, color:"#52525b" }}>{tx.id} • {tx.time}</p>
+                  <p style={{ fontSize:11, color: "var(--text-muted)" }}>{tx.id} • {tx.time}</p>
                 </div>
                 <div style={{ textAlign:"right" }}>
                   <p style={{ fontSize:14, fontWeight:700, color: tx.type==="receive" ? "#22c55e" : "#2563eb" }}>
@@ -722,7 +722,7 @@ export default function WalletsPage() {
             ))
           }
           {!loading && filtered.length === 0 && (
-            <div style={{ textAlign:"center", padding:40, color:"#52525b" }}>
+            <div style={{ textAlign:"center", padding:40, color: "var(--text-muted)" }}>
               <p style={{ fontSize:14 }}>Không có giao dịch nào</p>
             </div>
           )}
@@ -737,8 +737,8 @@ export default function WalletsPage() {
             style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
             <motion.div initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} exit={{scale:0.9,opacity:0}}
               onClick={(e) => e.stopPropagation()}
-              style={{ background:"#111", border:"1px solid #2a2a2a", borderRadius:20, padding:28, width:"100%", maxWidth:440, position:"relative" }}>
-              <button onClick={closeModal} style={{ position:"absolute", top:16, right:16, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, width:32, height:32, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#71717a" }}>
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:20, padding:28, width:"100%", maxWidth:440, position:"relative" }}>
+              <button onClick={closeModal} style={{ position:"absolute", top:16, right:16, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, width:32, height:32, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color: "var(--text-secondary)" }}>
                 <X size={16} />
               </button>
 
@@ -746,16 +746,16 @@ export default function WalletsPage() {
               {modal==="deposit" && step===1 && (
                 <div>
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:6 }}>💳 Nạp tiền</h3>
-                  <p style={{ color:"#52525b", fontSize:13, marginBottom:20 }}>
+                  <p style={{ color: "var(--text-muted)", fontSize:13, marginBottom:20 }}>
                     Nạp tiền vào ví SmartWallet
                   </p>
                   
                   <div style={{ marginBottom:16 }}>
-                    <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:8 }}>Số tiền (₫)</label>
-                    <input value={depositForm.amount} onChange={e => setDepositForm({...depositForm, amount:e.target.value})} placeholder="0" type="number" style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"12px 16px", color:"white", fontSize:18, fontWeight:700, outline:"none" }} />
+                    <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:8 }}>Số tiền (₫)</label>
+                    <input value={depositForm.amount} onChange={e => setDepositForm({...depositForm, amount:e.target.value})} placeholder="0" type="number" style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"12px 16px", color:"white", fontSize:18, fontWeight:700, outline:"none" }} />
                     <div style={{ display:"flex", gap:8, marginTop:10, flexWrap:"wrap" }}>
                       {[100000,200000,500000,1000000].map(v => (
-                        <button key={v} onClick={() => setDepositForm({...depositForm, amount:String(v)})} style={{ fontSize:12, padding:"6px 12px", borderRadius:8, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", cursor:"pointer" }}>
+                        <button key={v} onClick={() => setDepositForm({...depositForm, amount:String(v)})} style={{ fontSize:12, padding:"6px 12px", borderRadius:8, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", cursor:"pointer" }}>
                           +{fmtCurrency(v)}
                         </button>
                       ))}
@@ -763,8 +763,8 @@ export default function WalletsPage() {
                   </div>
 
                   <div style={{ marginBottom:20 }}>
-                    <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:8 }}>Ghi chú nạp tiền (Nội dung chuyển khoản)</label>
-                    <input value={depositForm.note} onChange={e => setDepositForm({...depositForm, note:e.target.value})} placeholder="Nội dung nạp tiền" style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"12px 16px", color:"white", fontSize:14, outline:"none" }} />
+                    <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:8 }}>Ghi chú nạp tiền (Nội dung chuyển khoản)</label>
+                    <input value={depositForm.note} onChange={e => setDepositForm({...depositForm, note:e.target.value})} placeholder="Nội dung nạp tiền" style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"12px 16px", color:"white", fontSize:14, outline:"none" }} />
                   </div>
 
                   <button onClick={handleConfirmDeposit} style={{ width:"100%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
@@ -777,7 +777,7 @@ export default function WalletsPage() {
               {modal==="deposit" && step===2 && activeDepositTx && (
                 <div style={{ textAlign:"center" }}>
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:6 }}>📱 Quét mã chuyển khoản</h3>
-                  <p style={{ color:"#71717a", fontSize:13, marginBottom:20 }}>
+                  <p style={{ color: "var(--text-secondary)", fontSize:13, marginBottom:20 }}>
                     Vui lòng quét mã QR bên dưới để thực hiện nạp tiền
                   </p>
 
@@ -789,14 +789,14 @@ export default function WalletsPage() {
                     />
                   </div>
 
-                  <div style={{ background:"#161616", border:"1px solid #2a2a2a", borderRadius:12, padding:"14px 18px", marginBottom:20, textAlign:"left" }}>
+                  <div style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:12, padding:"14px 18px", marginBottom:20, textAlign:"left" }}>
                     {[
                       { label: "Số tiền", value: fmtCurrency(activeDepositTx.amount), color: "#22c55e" },
                       { label: "Nội dung ghi chú", value: activeDepositTx.note },
                       { label: "Mã giao dịch", value: activeDepositTx.id }
                     ].map(r => (
                       <div key={r.label} style={{ display:"flex", justifyContent:"space-between", padding:"8px 0", borderBottom:"1px solid #222" }}>
-                        <span style={{ fontSize:13, color:"#71717a" }}>{r.label}</span>
+                        <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{r.label}</span>
                         <span style={{ fontSize:13, fontWeight:600, color: r.color || "white" }}>{r.value}</span>
                       </div>
                     ))}
@@ -825,7 +825,7 @@ export default function WalletsPage() {
               {modal==="withdraw" && (
                 <div>
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:6 }}>🏦 Rút tiền</h3>
-                  <p style={{ color:"#52525b", fontSize:13, marginBottom:20 }}>
+                  <p style={{ color: "var(--text-muted)", fontSize:13, marginBottom:20 }}>
                     Rút tiền về tài khoản ngân hàng
                   </p>
 
@@ -836,7 +836,7 @@ export default function WalletsPage() {
                     }}>
                       <Building2 size={24} style={{ color: "#ef4444", marginBottom: 8, marginLeft: "auto", marginRight: "auto" }} />
                       <h4 style={{ fontSize: 14, fontWeight: 700, color: "white", marginBottom: 4 }}>Chưa có ngân hàng liên kết</h4>
-                      <p style={{ fontSize: 12, color: "#71717a", marginBottom: 14, lineHeight: 1.5 }}>
+                      <p style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 14, lineHeight: 1.5 }}>
                         Vui lòng liên kết tài khoản ngân hàng chính chủ của bạn để thực hiện rút tiền
                       </p>
                       <button
@@ -854,7 +854,7 @@ export default function WalletsPage() {
                   ) : (
                     <>
                       <div style={{ marginBottom: 16 }}>
-                        <label style={{ fontSize: 13, color: "#a1a1aa", display: "block", marginBottom: 8 }}>Chọn tài khoản nhận tiền</label>
+                        <label style={{ fontSize: 13, color: "var(--text-secondary)", display: "block", marginBottom: 8 }}>Chọn tài khoản nhận tiền</label>
                         <div style={{ display: "flex", flexDirection: "column", gap: 8, maxHeight: 180, overflowY: "auto", paddingRight: 4 }}>
                           {linkedBanks.map(b => {
                             const isSelected = selectedBankId === b.id;
@@ -876,7 +876,7 @@ export default function WalletsPage() {
                                   </div>
                                   <div style={{ textAlign: "left" }}>
                                     <p style={{ fontSize: 12, fontWeight: 700, color: "white" }}>{b.bank}</p>
-                                    <p style={{ fontSize: 10, color: "#71717a" }}>{b.account.replace(/.(?=.{4})/g, "*")} • {b.owner}</p>
+                                    <p style={{ fontSize: 10, color: "var(--text-secondary)" }}>{b.account.replace(/.(?=.{4})/g, "*")} • {b.owner}</p>
                                   </div>
                                 </div>
                                 {isSelected && (
@@ -891,11 +891,11 @@ export default function WalletsPage() {
                       </div>
 
                       <div style={{ marginBottom: 20 }}>
-                        <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:8 }}>Số tiền muốn rút (₫)</label>
-                        <input value={depositForm.amount} onChange={e => setDepositForm({...depositForm, amount:e.target.value})} placeholder="0" type="number" style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"12px 16px", color:"white", fontSize:18, fontWeight:700, outline:"none" }} />
+                        <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:8 }}>Số tiền muốn rút (₫)</label>
+                        <input value={depositForm.amount} onChange={e => setDepositForm({...depositForm, amount:e.target.value})} placeholder="0" type="number" style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"12px 16px", color:"white", fontSize:18, fontWeight:700, outline:"none" }} />
                         <div style={{ display:"flex", gap:8, marginTop:10, flexWrap:"wrap" }}>
                           {[100000,200000,500000,1000000].map(v => (
-                            <button key={v} onClick={() => setDepositForm({...depositForm, amount:String(v)})} style={{ fontSize:12, padding:"6px 12px", borderRadius:8, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", cursor:"pointer" }}>
+                            <button key={v} onClick={() => setDepositForm({...depositForm, amount:String(v)})} style={{ fontSize:12, padding:"6px 12px", borderRadius:8, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", cursor:"pointer" }}>
                               +{fmtCurrency(v)}
                             </button>
                           ))}
@@ -914,11 +914,11 @@ export default function WalletsPage() {
               {modal==="transfer" && (
                 <div style={{ maxHeight: "80vh", overflowY: "auto", paddingRight: 2 }}>
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:6 }}>💸 Chuyển tiền</h3>
-                  <p style={{ color:"#52525b", fontSize:13, marginBottom:20 }}>Chuyển tiền nhanh chóng và an toàn</p>
+                  <p style={{ color: "var(--text-muted)", fontSize:13, marginBottom:20 }}>Chuyển tiền nhanh chóng và an toàn</p>
 
                   {/* Method Selector */}
                   <div style={{ marginBottom: 20 }}>
-                    <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:10 }}>Phương thức chuyển tiền</label>
+                    <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:10 }}>Phương thức chuyển tiền</label>
                     <div style={{ display:"flex", gap:10 }}>
                       {[
                         { id: "smartwallet", icon: Wallet, label: "Ví SmartWallet", desc: "Chuyển qua SĐT / Email", color: "#2563eb" },
@@ -938,7 +938,7 @@ export default function WalletsPage() {
                               <m.icon size={18} style={{ color: active ? m.color : "#52525b" }} />
                             </div>
                             <span style={{ fontSize:12, fontWeight:700, color: active ? m.color : "#71717a" }}>{m.label}</span>
-                            <span style={{ fontSize:10, color:"#52525b", textAlign:"center" }}>{m.desc}</span>
+                            <span style={{ fontSize:10, color: "var(--text-muted)", textAlign:"center" }}>{m.desc}</span>
                           </button>
                         );
                       })}
@@ -950,13 +950,13 @@ export default function WalletsPage() {
                     <div>
                       <div style={{ background:"rgba(37,99,235,0.06)", border:"1px solid rgba(37,99,235,0.15)", borderRadius:10, padding:"10px 14px", marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
                         <Smartphone size={14} style={{ color:"#2563eb", flexShrink:0 }} />
-                        <p style={{ fontSize:12, color:"#a1a1aa", lineHeight:1.5 }}>Chuyển tiền trực tiếp tới tài khoản ví SmartWallet bằng số điện thoại hoặc email đăng ký.</p>
+                        <p style={{ fontSize:12, color: "var(--text-secondary)", lineHeight:1.5 }}>Chuyển tiền trực tiếp tới tài khoản ví SmartWallet bằng số điện thoại hoặc email đăng ký.</p>
                       </div>
                       <div style={{ marginBottom:14 }}>
-                        <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>SĐT / Email người nhận *</label>
+                        <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>SĐT / Email người nhận *</label>
                         <input value={txForm.target} onChange={e => setTxForm({...txForm, target:e.target.value})}
                           placeholder="Nhập số điện thoại hoặc email"
-                          style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
+                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
                       </div>
                     </div>
                   )}
@@ -966,30 +966,30 @@ export default function WalletsPage() {
                     <div>
                       <div style={{ background:"rgba(59,130,246,0.06)", border:"1px solid rgba(59,130,246,0.15)", borderRadius:10, padding:"10px 14px", marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
                         <AlertCircle size={14} style={{ color:"#3b82f6", flexShrink:0 }} />
-                        <p style={{ fontSize:12, color:"#a1a1aa", lineHeight:1.5 }}>Tải ảnh QR ngân hàng lên hoặc nhập thủ công số tài khoản và ngân hàng người nhận.</p>
+                        <p style={{ fontSize:12, color: "var(--text-secondary)", lineHeight:1.5 }}>Tải ảnh QR ngân hàng lên hoặc nhập thủ công số tài khoản và ngân hàng người nhận.</p>
                       </div>
 
                       {/* QR Upload */}
                       <div style={{ marginBottom:16 }}>
-                        <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:8 }}>Tải ảnh mã QR ngân hàng (tuỳ chọn)</label>
+                        <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:8 }}>Tải ảnh mã QR ngân hàng (tuỳ chọn)</label>
                         <input ref={qrInputRef} type="file" accept="image/*" onChange={handleQrFileChange} style={{ display:"none" }} />
                         {qrUploadPreview ? (
                           <div style={{ position:"relative", display:"inline-block", width:"100%" }}>
                             <img src={qrUploadPreview} alt="QR preview"
-                              style={{ width:"100%", maxHeight:180, objectFit:"contain", borderRadius:12, border:"1px solid #2a2a2a", background:"#161616" }} />
+                              style={{ width:"100%", maxHeight:180, objectFit:"contain", borderRadius:12, border: "1px solid var(--border)", background: "var(--bg-card2)" }} />
                             <button onClick={() => { setQrUploadFile(null); setQrUploadPreview(null); }}
                               style={{ position:"absolute", top:8, right:8, background:"rgba(0,0,0,0.7)", border:"none", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", color:"white" }}>
                               <X size={14} />
                             </button>
                             <button onClick={() => qrInputRef.current?.click()}
-                              style={{ marginTop:8, width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"7px", color:"#71717a", fontSize:12, cursor:"pointer" }}>
+                              style={{ marginTop:8, width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"7px", color: "var(--text-secondary)", fontSize:12, cursor:"pointer" }}>
                               Đổi ảnh khác
                             </button>
                           </div>
                         ) : (
                           <button onClick={() => qrInputRef.current?.click()}
                             style={{
-                              width:"100%", background:"#161616", border:"2px dashed #2a2a2a",
+                              width:"100%", background: "var(--bg-card2)", border:"2px dashed #2a2a2a",
                               borderRadius:12, padding:"22px 16px", display:"flex", flexDirection:"column",
                               alignItems:"center", gap:8, cursor:"pointer", transition:"all 0.2s"
                             }}
@@ -999,8 +999,8 @@ export default function WalletsPage() {
                             <div style={{ width:44, height:44, borderRadius:12, background:"rgba(59,130,246,0.1)", display:"flex", alignItems:"center", justifyContent:"center" }}>
                               <Upload size={20} style={{ color:"#3b82f6" }} />
                             </div>
-                            <span style={{ fontSize:13, fontWeight:600, color:"#71717a" }}>Nhấn để tải ảnh QR lên</span>
-                            <span style={{ fontSize:11, color:"#3f3f46" }}>PNG, JPG, JPEG (tối đa 5MB)</span>
+                            <span style={{ fontSize:13, fontWeight:600, color: "var(--text-secondary)" }}>Nhấn để tải ảnh QR lên</span>
+                            <span style={{ fontSize:11, color: "var(--text-muted)" }}>PNG, JPG, JPEG (tối đa 5MB)</span>
                           </button>
                         )}
                       </div>
@@ -1008,15 +1008,15 @@ export default function WalletsPage() {
                       {/* Divider */}
                       <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
                         <div style={{ flex:1, height:1, background:"#2a2a2a" }} />
-                        <span style={{ fontSize:11, color:"#3f3f46", whiteSpace:"nowrap" }}>hoặc nhập thủ công</span>
+                        <span style={{ fontSize:11, color: "var(--text-muted)", whiteSpace:"nowrap" }}>hoặc nhập thủ công</span>
                         <div style={{ flex:1, height:1, background:"#2a2a2a" }} />
                       </div>
 
                       {/* Bank selector */}
                       <div style={{ marginBottom:12 }}>
-                        <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>Ngân hàng người nhận *</label>
+                        <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Ngân hàng người nhận *</label>
                         <select value={bankTransferForm.bank} onChange={e => setBankTransferForm({...bankTransferForm, bank:e.target.value})}
-                          style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color: bankTransferForm.bank ? "white" : "#52525b", fontSize:14, outline:"none" }}>
+                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color: bankTransferForm.bank ? "white" : "#52525b", fontSize:14, outline:"none" }}>
                           <option value="">-- Chọn ngân hàng --</option>
                           {BANKS.map(b => <option key={b} value={b}>{b}</option>)}
                         </select>
@@ -1024,27 +1024,27 @@ export default function WalletsPage() {
 
                       {/* Account number */}
                       <div style={{ marginBottom:12 }}>
-                        <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>Số tài khoản người nhận *</label>
+                        <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Số tài khoản người nhận *</label>
                         <input value={bankTransferForm.account} onChange={e => setBankTransferForm({...bankTransferForm, account:e.target.value})}
                           placeholder="Nhập số tài khoản"
-                          style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
+                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
                       </div>
 
                       {/* Owner name */}
                       <div style={{ marginBottom:4 }}>
-                        <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>Tên chủ tài khoản (tuỳ chọn)</label>
+                        <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Tên chủ tài khoản (tuỳ chọn)</label>
                         <input value={bankTransferForm.ownerName} onChange={e => setBankTransferForm({...bankTransferForm, ownerName:e.target.value})}
                           placeholder="Họ và tên người nhận"
-                          style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
+                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
                       </div>
                     </div>
                   )}
 
                   {/* Category Selection */}
                   <div style={{ marginBottom: 16, textAlign: "left" }}>
-                    <label style={{ fontSize: 13, color: "#a1a1aa", display: "block", marginBottom: 6 }}>Danh mục chuyển tiền *</label>
+                    <label style={{ fontSize: 13, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>Danh mục chuyển tiền *</label>
                     <select value={txForm.category} onChange={e => setTxForm({...txForm, category: e.target.value})}
-                      style={{ width: "100%", background: "#1a1a1a", border: "1px solid #2a2a2a", borderRadius: 10, padding: "11px 14px", color: txForm.category ? "white" : "#52525b", fontSize: 14, outline: "none" }}>
+                      style={{ width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 10, padding: "11px 14px", color: txForm.category ? "white" : "#52525b", fontSize: 14, outline: "none" }}>
                       <option value="">-- Chọn danh mục --</option>
                       <option value="Mua sắm">🛒 Mua sắm</option>
                       <option value="Ăn uống">🍔 Ăn uống</option>
@@ -1056,7 +1056,7 @@ export default function WalletsPage() {
                   </div>
 
                   {/* Promo Code Selection */}
-                  <div style={{ marginTop:16, marginBottom:16, border:"1px solid #2a2a2a", borderRadius:12, padding:14, background:"#161616", textAlign:"left" }}>
+                  <div style={{ marginTop:16, marginBottom:16, border: "1px solid var(--border)", borderRadius:12, padding:14, background: "var(--bg-card2)", textAlign:"left" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:8 }}>
                       <Gift size={16} style={{ color:"#3b82f6" }} />
                       <span style={{ fontSize:13, fontWeight:700, color:"white" }}>Mã ưu đãi & Quà tặng</span>
@@ -1067,7 +1067,7 @@ export default function WalletsPage() {
                         value={promoCode} 
                         onChange={e => setPromoCode(e.target.value)} 
                         placeholder="Nhập mã ưu đãi (Ví dụ: CHUYENTIEN50)" 
-                        style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"8px 12px", color:"white", fontSize:12, outline:"none" }} 
+                        style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"8px 12px", color:"white", fontSize:12, outline:"none" }} 
                       />
                       <button 
                         onClick={handleApplyPromo}
@@ -1102,7 +1102,7 @@ export default function WalletsPage() {
                           <p style={{ fontSize:12, color:"#22c55e", fontWeight:700 }}>
                             ✓ Đã áp dụng: {appliedVoucher.code}
                           </p>
-                          <p style={{ fontSize:11, color:"#a1a1aa", marginTop:2 }}>
+                          <p style={{ fontSize:11, color: "var(--text-secondary)", marginTop:2 }}>
                             {appliedVoucher.title}
                           </p>
                           {appliedVoucher.minAmount && (
@@ -1126,29 +1126,29 @@ export default function WalletsPage() {
 
                   {/* Common fields: Amount + Note */}
                   <div style={{ marginTop:16, marginBottom:14, textAlign:"left" }}>
-                    <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>Số tiền (₫) *</label>
+                    <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Số tiền (₫) *</label>
                     <input value={txForm.amount} onChange={e => setTxForm({...txForm, amount:e.target.value})}
                       placeholder="0" type="number"
-                      style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"12px 16px", color:"white", fontSize:18, fontWeight:700, outline:"none" }} />
+                      style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"12px 16px", color:"white", fontSize:18, fontWeight:700, outline:"none" }} />
                     <div style={{ display:"flex", gap:8, marginTop:10, flexWrap:"wrap" }}>
                       {[50000,100000,200000,500000].map(v => (
                         <button key={v} onClick={() => setTxForm({...txForm, amount:String(v)})}
-                          style={{ fontSize:12, padding:"5px 10px", borderRadius:8, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", cursor:"pointer" }}>
+                          style={{ fontSize:12, padding:"5px 10px", borderRadius:8, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", cursor:"pointer" }}>
                           +{fmtCurrency(v)}
                         </button>
                       ))}
                     </div>
                   </div>
                   <div style={{ marginBottom:20, textAlign:"left" }}>
-                    <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>Ghi chú (tuỳ chọn)</label>
+                    <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Ghi chú (tuỳ chọn)</label>
                     <input value={txForm.note} onChange={e => setTxForm({...txForm, note:e.target.value})}
                       placeholder="Nội dung chuyển tiền"
-                      style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
+                      style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
                   </div>
 
                   {/* Available balance display */}
-                  <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 12px", background:"#161616", borderRadius:8, marginBottom:16 }}>
-                    <span style={{ fontSize:12, color:"#71717a" }}>Số dư khả dụng</span>
+                  <div style={{ display:"flex", justifyContent:"space-between", padding:"8px 12px", background: "var(--bg-card2)", borderRadius:8, marginBottom:16 }}>
+                    <span style={{ fontSize:12, color: "var(--text-secondary)" }}>Số dư khả dụng</span>
                     <span style={{ fontSize:12, fontWeight:700, color:"#22c55e" }}>{fmtCurrency(balance)}</span>
                   </div>
 
@@ -1170,12 +1170,12 @@ export default function WalletsPage() {
 
                   {/* Voucher Picker Overlay Sheet */}
                   {showPromoSelector && (
-                    <div style={{ position:"absolute", inset:0, background:"#111", borderRadius:20, padding:24, zIndex:210, display:"flex", flexDirection:"column" }}>
+                    <div style={{ position:"absolute", inset:0, background: "var(--bg-card)", borderRadius:20, padding:24, zIndex:210, display:"flex", flexDirection:"column" }}>
                       <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:16 }}>
                         <h4 style={{ fontSize:15, fontWeight:700, display:"flex", alignItems:"center", gap:6, color:"white" }}>
                           <Gift size={16} style={{ color:"#3b82f6" }} /> Chọn mã ưu đãi
                         </h4>
-                        <button onClick={() => setShowPromoSelector(false)} style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"#71717a" }}>
+                        <button onClick={() => setShowPromoSelector(false)} style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color: "var(--text-secondary)" }}>
                           <X size={14} />
                         </button>
                       </div>
@@ -1205,7 +1205,7 @@ export default function WalletsPage() {
                               key={v.id} 
                               onClick={() => isApplicable && handleSelectVoucher(v)}
                               style={{
-                                padding:12, borderRadius:12, background:"#161616", border:"1px solid #2a2a2a",
+                                padding:12, borderRadius:12, background: "var(--bg-card2)", border: "1px solid var(--border)",
                                 cursor: isApplicable ? "pointer" : "not-allowed", opacity: isApplicable ? 1 : 0.6,
                                 transition:"all 0.2s", textAlign:"left"
                               }}
@@ -1214,17 +1214,17 @@ export default function WalletsPage() {
                                 <div style={{ textAlign:"left" }}>
                                   <span style={{ fontSize:10, padding:"2px 6px", borderRadius:4, background:`${tagColors[v.tag]}18`, color:tagColors[v.tag], fontWeight:600 }}>{v.tag}</span>
                                   <h5 style={{ fontSize:13, fontWeight:700, color:"white", marginTop:6 }}>{v.title}</h5>
-                                  <p style={{ fontSize:11, color:"#71717a", marginTop:2 }}>{v.desc}</p>
+                                  <p style={{ fontSize:11, color: "var(--text-secondary)", marginTop:2 }}>{v.desc}</p>
                                   {v.minAmount && (
                                     <p style={{ fontSize:10, color:"#f59e0b", marginTop:2 }}>
                                       Min GD: {fmtCurrency(v.minAmount)}
                                     </p>
                                   )}
-                                  <p style={{ fontSize:10, color:"#3f3f46", marginTop:4 }}>HSD: {v.exp}</p>
+                                  <p style={{ fontSize:10, color: "var(--text-muted)", marginTop:4 }}>HSD: {v.exp}</p>
                                 </div>
                                 <div style={{ textAlign:"right" }}>
                                   <span style={{ fontSize:14, fontWeight:900, color:"#3b82f6" }}>{v.discount}</span>
-                                  <div style={{ fontSize:10, fontWeight:700, color:"#52525b", marginTop:4 }}>Mã: {v.code}</div>
+                                  <div style={{ fontSize:10, fontWeight:700, color: "var(--text-muted)", marginTop:4 }}>Mã: {v.code}</div>
                                 </div>
                               </div>
                             </div>
@@ -1240,12 +1240,12 @@ export default function WalletsPage() {
               {modal==="qr" && (
                 <div style={{ textAlign:"center" }}>
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:6 }}>📱 Mã QR của tôi</h3>
-                  <p style={{ color:"#52525b", fontSize:13, marginBottom:24 }}>Cho người khác quét để chuyển tiền cho bạn</p>
+                  <p style={{ color: "var(--text-muted)", fontSize:13, marginBottom:24 }}>Cho người khác quét để chuyển tiền cho bạn</p>
                   <div style={{ display:"inline-block", background:"white", borderRadius:16, padding:16, marginBottom:20 }}>
                     <QRCode value="smartwallet://user/demo_user_123" size={180} level="H" />
                   </div>
-                  <p style={{ fontSize:13, color:"#a1a1aa", marginBottom:4 }}>ID: <strong style={{ color:"#2563eb" }}>SW-DEMO-123</strong></p>
-                  <button style={{ marginTop:12, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"10px 24px", color:"#a1a1aa", cursor:"pointer", fontSize:13 }}>
+                  <p style={{ fontSize:13, color: "var(--text-secondary)", marginBottom:4 }}>ID: <strong style={{ color:"#2563eb" }}>SW-DEMO-123</strong></p>
+                  <button style={{ marginTop:12, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"10px 24px", color: "var(--text-secondary)", cursor:"pointer", fontSize:13 }}>
                     Tải ảnh QR
                   </button>
                 </div>
@@ -1275,7 +1275,7 @@ export default function WalletsPage() {
                       <p style={{ fontSize:14, fontWeight:700, color:"white", marginBottom:6 }}>
                         Đã đạt giới hạn liên kết
                       </p>
-                      <p style={{ fontSize:13, color:"#71717a", lineHeight:1.6, marginBottom:16 }}>
+                      <p style={{ fontSize:13, color: "var(--text-secondary)", lineHeight:1.6, marginBottom:16 }}>
                         Bạn đã liên kết tối đa <strong style={{ color:"#ef4444" }}>3 ngân hàng</strong>.<br/>
                         Vui lòng xoá bớt ngân hàng cũ trước khi thêm mới.
                       </p>
@@ -1283,14 +1283,14 @@ export default function WalletsPage() {
                         {linkedBanks.map(b => (
                           <div key={b.id} style={{
                             display:"flex", alignItems:"center", justifyBetween:"space-between",
-                            background:"#161616", border:"1px solid #2a2a2a",
+                            background: "var(--bg-card2)", border: "1px solid var(--border)",
                             borderRadius:10, padding:"10px 14px"
                           }}>
                             <div style={{ display:"flex", alignItems:"center", gap:10 }}>
                               <Building2 size={15} style={{ color:"#3b82f6" }} />
                               <div style={{ textAlign:"left" }}>
                                 <p style={{ fontSize:12, fontWeight:700 }}>{b.bank}</p>
-                                <p style={{ fontSize:11, color:"#71717a" }}>{b.account.replace(/.(?=.{4})/g,"*")} • {b.owner}</p>
+                                <p style={{ fontSize:11, color: "var(--text-secondary)" }}>{b.account.replace(/.(?=.{4})/g,"*")} • {b.owner}</p>
                               </div>
                             </div>
                             <button
@@ -1318,10 +1318,10 @@ export default function WalletsPage() {
                     <>
                       <div style={{ marginBottom:16 }}>
                         <div style={{ display:"flex", justifyBetween:"space-between", marginBottom:6 }}>
-                          <span style={{ fontSize:11, color:"#71717a" }}>Số ngân hàng đã liên kết</span>
+                          <span style={{ fontSize:11, color: "var(--text-secondary)" }}>Số ngân hàng đã liên kết</span>
                           <span style={{ fontSize:11, color:"#3b82f6", fontWeight:700 }}>{linkedBanks.length}/{MAX_BANKS}</span>
                         </div>
-                        <div style={{ height:4, background:"#1f1f1f", borderRadius:4 }}>
+                        <div style={{ height:4, background: "var(--bg-card2)", borderRadius:4 }}>
                           <div style={{
                             height:"100%", borderRadius:4, transition:"width 0.4s",
                             width:`${(linkedBanks.length / MAX_BANKS) * 100}%`,
@@ -1334,9 +1334,9 @@ export default function WalletsPage() {
                       </div>
 
                       <div style={{ marginBottom:14 }}>
-                        <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>Tên ngân hàng</label>
+                        <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Tên ngân hàng</label>
                         <select value={bankForm.bank} onChange={e => setBankForm({...bankForm,bank:e.target.value})}
-                          style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color: bankForm.bank ? "white" : "#52525b", fontSize:14, outline:"none" }}>
+                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color: bankForm.bank ? "white" : "#52525b", fontSize:14, outline:"none" }}>
                           <option value="">-- Chọn ngân hàng --</option>
                           {BANKS.map(b => <option key={b} value={b}>{b}</option>)}
                         </select>
@@ -1346,10 +1346,10 @@ export default function WalletsPage() {
                         { label:"Tên chủ tài khoản", key:"owner", placeholder:"Nhập họ và tên" },
                       ].map(f => (
                         <div key={f.key} style={{ marginBottom:14 }}>
-                          <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>{f.label}</label>
+                          <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>{f.label}</label>
                           <input value={bankForm[f.key]} onChange={e => setBankForm({...bankForm,[f.key]:e.target.value})}
                             placeholder={f.placeholder}
-                            style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
+                            style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }} />
                         </div>
                       ))}
                       <button onClick={handleLinkBank} style={{ width:"100%", background:"linear-gradient(135deg,#3b82f6,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer", marginTop:8 }}>
@@ -1364,7 +1364,7 @@ export default function WalletsPage() {
               {modal==="tx" && selectedTx && (
                 <div>
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:20 }}>Chi tiết giao dịch</h3>
-                  <div style={{ background:"#1a1a1a", borderRadius:12, padding:20, marginBottom:20, textAlign:"center" }}>
+                  <div style={{ background: "var(--bg-card2)", borderRadius:12, padding:20, marginBottom:20, textAlign:"center" }}>
                     <p style={{ fontSize:32, fontWeight:900, color: selectedTx.type==="receive" ? "#22c55e" : "#2563eb" }}>
                       {selectedTx.type==="receive" ? "+" : "-"}{fmtCurrency(selectedTx.amount)}
                     </p>
@@ -1384,7 +1384,7 @@ export default function WalletsPage() {
                     { label:"Ghi chú", value:selectedTx.note || "—" },
                   ].map(r => (
                     <div key={r.label} style={{ display:"flex", justifyBetween:"space-between", padding:"10px 0", borderBottom:"1px solid #1f1f1f" }}>
-                      <span style={{ fontSize:13, color:"#71717a" }}>{r.label}</span>
+                      <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{r.label}</span>
                       <span style={{ fontSize:13, fontWeight:600 }}>{r.value}</span>
                     </div>
                   ))}
