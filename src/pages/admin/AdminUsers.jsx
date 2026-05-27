@@ -270,15 +270,15 @@ export default function AdminUsersPage() {
         <div style={{ position:"relative", flex:1, minWidth:200 }}>
           <Search size={14} style={{ position:"absolute", left:12, top:"50%", transform:"translateY(-50%)", color: "var(--text-muted)" }} />
           <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Tìm theo tên, email, ID..."
-            style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"9px 12px 9px 34px", color:"white", fontSize:13, outline:"none" }} />
+            style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"9px 12px 9px 34px", color: "#000000", fontSize:13, outline:"none" }} />
         </div>
         <div style={{ display:"flex", gap:6 }}>
           {[{v:"all",l:"Tất cả"},{v:"verified",l:"Đã KYC"},{v:"pending",l:"Chờ duyệt"},{v:"none",l:"Chưa KYC"}].map(f => (
             <button key={f.v} onClick={() => setKycFilter(f.v)} style={{
               padding:"8px 12px", borderRadius:8, fontSize:12, fontWeight:500,
-              background: kycFilter===f.v ? "rgba(37,99,235,0.15)" : "#1a1a1a",
-              border:`1px solid ${kycFilter===f.v ? "rgba(37,99,235,0.3)" : "#2a2a2a"}`,
-              color: kycFilter===f.v ? "#2563eb" : "#71717a", cursor:"pointer"
+              background: kycFilter===f.v ? "rgba(37,99,235,0.15)" : "#ffffff",
+              border:`1px solid ${kycFilter===f.v ? "rgba(37,99,235,0.3)" : "var(--border)"}`,
+              color: kycFilter===f.v ? "#2563eb" : "#000000", cursor:"pointer"
             }}>{f.l}</button>
           ))}
         </div>
@@ -287,7 +287,7 @@ export default function AdminUsersPage() {
       {/* Table */}
       <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:14, overflow:"hidden" }}>
         {/* Header */}
-        <div style={{ display:"grid", gridTemplateColumns:"80px 1fr 1fr 100px 100px 120px 80px", gap:0, padding:"12px 16px", borderBottom:"1px solid #1f1f1f", background: "var(--bg-dark)" }}>
+        <div style={{ display:"grid", gridTemplateColumns:"80px 1fr 1fr 100px 100px 120px 80px", gap:0, padding:"12px 16px", borderBottom:"1px solid var(--border)", background: "var(--bg-dark)" }}>
           {["ID","Tên","Email","KYC","Trạng thái","Số dư","Hành động"].map(h => (
             <span key={h} style={{ fontSize:11, fontWeight:700, color: "var(--text-muted)", textTransform:"uppercase", letterSpacing:"0.5px" }}>{h}</span>
           ))}
@@ -341,7 +341,7 @@ export default function AdminUsersPage() {
             <motion.div initial={{scale:0.95,opacity:0}} animate={{scale:1,opacity:1}} onClick={e => e.stopPropagation()}
               style={{ background: "var(--bg-dark)", border:"1px solid #222", borderRadius:20, padding:28, width:"100%", maxWidth: modalTab === "cccd" && selectedUser.cccd ? 760 : modalTab === "tx" ? 600 : 450, transition: "max-width 0.3s ease" }}>
               
-              <h3 style={{ fontSize:16, fontWeight:700, marginBottom:16, color: "white" }}>Chi tiết tài khoản: {selectedUser.name}</h3>
+              <h3 style={{ fontSize:16, fontWeight:700, marginBottom:16, color: "#000000" }}>Chi tiết tài khoản: {selectedUser.name}</h3>
 
               {/* Tabs Selector */}
               <div style={{ display:"flex", borderBottom: "1px solid var(--border)", marginBottom:20, gap:16 }}>
@@ -377,7 +377,7 @@ export default function AdminUsersPage() {
                   {Object.entries({ "ID":selectedUser.id, "Email":selectedUser.email, "SĐT":selectedUser.phone, "KYC":kycBadge[selectedUser.kyc].text, "Trạng thái":statusBadge[selectedUser.status].text, "Số dư":selectedUser.balance, "Ngày tham gia":selectedUser.joined }).map(([k,v]) => (
                     <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom: "1px solid var(--border)" }}>
                       <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{k}</span>
-                      <span style={{ fontSize:13, fontWeight:600, color: "white" }}>{v}</span>
+                      <span style={{ fontSize:13, fontWeight:600, color: "#000000" }}>{v}</span>
                     </div>
                   ))}
                 </div>
@@ -404,7 +404,7 @@ export default function AdminUsersPage() {
                         ].map(item => (
                           <div key={item.k} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                             <span style={{ fontSize: 11, color: "var(--text-muted)", textTransform: "uppercase" }}>{item.k}</span>
-                            <span style={{ fontSize: 13, fontWeight: 700, color: "white" }}>{item.v}</span>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: "#000000" }}>{item.v}</span>
                           </div>
                         ))}
                       </div>
@@ -600,7 +600,7 @@ export default function AdminUsersPage() {
 
                           <div style={{ flex:1, minWidth:0 }}>
                             <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                              <p style={{ fontSize:12, fontWeight:600, color:"white", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{tx.name}</p>
+                              <p style={{ fontSize:12, fontWeight:600, color: "#000000", whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{tx.name}</p>
                               {tx.category && (
                                 <span style={{ fontSize:9, background:"rgba(255,255,255,0.06)", border:"1px solid rgba(255,255,255,0.1)", borderRadius:4, padding:"0 4px", color: "var(--text-secondary)", fontWeight:500 }}>
                                   {tx.category}

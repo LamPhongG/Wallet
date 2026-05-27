@@ -47,7 +47,7 @@ export default function ProfilePage() {
               <div style={{ position:"relative" }}>
                 <f.icon size={15} style={{ position:"absolute", left:13, top:"50%", transform:"translateY(-50%)", color: "var(--text-muted)" }} />
                 <input value={form[f.key]} onChange={e => setForm({...form,[f.key]:e.target.value})} type={f.type}
-                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px 11px 38px", color:"white", fontSize:14, outline:"none" }}
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px 11px 38px", color: "#000000", fontSize:14, outline:"none" }}
                   onFocus={e => { e.target.style.borderColor="#2563eb"; }}
                   onBlur={e => { e.target.style.borderColor="#2a2a2a"; }}
                 />

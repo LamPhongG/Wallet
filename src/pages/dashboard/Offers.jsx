@@ -60,9 +60,9 @@ export default function OffersPage() {
         {tags.map(t => (
           <button key={t} onClick={() => setActiveTag(t)} style={{
             padding:"6px 14px", borderRadius:20, fontSize:13, fontWeight:500,
-            background: activeTag===t ? "rgba(37,99,235,0.15)" : "#1a1a1a",
-            border:`1px solid ${activeTag===t ? "rgba(37,99,235,0.4)" : "#2a2a2a"}`,
-            color: activeTag===t ? "#2563eb" : "#71717a", cursor:"pointer", transition:"all 0.2s"
+            background: activeTag===t ? "rgba(37,99,235,0.15)" : "#ffffff",
+            border:`1px solid ${activeTag===t ? "rgba(37,99,235,0.4)" : "var(--border)"}`,
+            color: activeTag===t ? "#2563eb" : "#000000", cursor:"pointer", transition:"all 0.2s"
           }}>{t}</button>
         ))}
       </div>
@@ -82,10 +82,10 @@ export default function OffersPage() {
               <motion.div key={v.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*0.07}}
                 onClick={() => handleUseVoucher(v)}
                 style={{
-                  background: "var(--bg-card)", border:`1px solid ${v.hot ? "rgba(37,99,235,0.25)" : "#1f1f1f"}`,
+                  background: "var(--bg-card)", border:`1px solid ${v.hot ? "rgba(37,99,235,0.25)" : "var(--border)"}`,
                   borderRadius:16, overflow:"hidden", cursor:"pointer", transition:"all 0.25s", position:"relative"
                 }}
-                whileHover={{ y:-4, boxShadow:"0 12px 32px rgba(0,0,0,0.4)" }}
+                whileHover={{ y:-4, boxShadow:"0 12px 32px rgba(37,99,235,0.06)" }}
               >
                 {v.hot && (
                   <div style={{ position:"absolute", top:12, right:12, display:"flex", alignItems:"center", gap:4, background:"rgba(37,99,235,0.15)", border:"1px solid rgba(37,99,235,0.3)", borderRadius:6, padding:"3px 8px" }}>
@@ -94,9 +94,9 @@ export default function OffersPage() {
                   </div>
                 )}
                 {/* Discount badge */}
-                <div style={{ background:`linear-gradient(135deg, ${color}22, ${color}0a)`, padding:"20px 20px 16px", borderBottom:"1px dashed #2a2a2a" }}>
+                <div style={{ background:`linear-gradient(135deg, ${color}12, transparent)`, padding:"20px 20px 16px", borderBottom:"1px dashed var(--border)" }}>
                   <div style={{ fontSize:32, fontWeight:900, color }}>{v.discount}</div>
-                  <p style={{ fontSize:15, fontWeight:700, marginTop:4, color:"#f4f4f5" }}>{v.title || v.code}</p>
+                  <p style={{ fontSize:15, fontWeight:700, marginTop:4, color:"var(--text-primary)" }}>{v.title || v.code}</p>
                 </div>
                 <div style={{ padding:"14px 20px" }}>
                   <p style={{ fontSize:12, color: "var(--text-secondary)", marginBottom:12 }}>{v.desc || ""}</p>

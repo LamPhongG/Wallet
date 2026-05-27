@@ -559,9 +559,9 @@ export default function DashboardPage() {
               ].map(f => (
                 <button key={f.key} onClick={() => setTimeFilterMonth(f.key)} style={{
                   padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500,
-                  background: timeFilterMonth === f.key ? "rgba(37,99,235,0.15)" : "#1a1a1a",
-                  border: `1px solid ${timeFilterMonth === f.key ? "rgba(37,99,235,0.3)" : "#2a2a2a"}`,
-                  color: timeFilterMonth === f.key ? "#2563eb" : "#71717a", cursor: "pointer"
+                  background: timeFilterMonth === f.key ? "rgba(37,99,235,0.15)" : "#ffffff",
+                  border: `1px solid ${timeFilterMonth === f.key ? "rgba(37,99,235,0.3)" : "var(--border)"}`,
+                  color: timeFilterMonth === f.key ? "#2563eb" : "#000000", cursor: "pointer"
                 }}>
                   {f.label}
                 </button>
@@ -616,9 +616,9 @@ export default function DashboardPage() {
               ].map(f => (
                 <button key={f.key} onClick={() => setTimeFilterCategory(f.key)} style={{
                   padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500,
-                  background: timeFilterCategory === f.key ? "rgba(37,99,235,0.15)" : "#1a1a1a",
-                  border: `1px solid ${timeFilterCategory === f.key ? "rgba(37,99,235,0.3)" : "#2a2a2a"}`,
-                  color: timeFilterCategory === f.key ? "#2563eb" : "#71717a", cursor: "pointer"
+                  background: timeFilterCategory === f.key ? "rgba(37,99,235,0.15)" : "#ffffff",
+                  border: `1px solid ${timeFilterCategory === f.key ? "rgba(37,99,235,0.3)" : "var(--border)"}`,
+                  color: timeFilterCategory === f.key ? "#2563eb" : "#000000", cursor: "pointer"
                 }}>
                   {f.label}
                 </button>
@@ -909,7 +909,7 @@ export default function DashboardPage() {
                         setSelectedNews(n);
                       }
                     }}
-                    style={{ padding: "12px 0", borderBottom: i < posts.length-1 ? "1px solid #1a1a1a" : "none", cursor: "pointer", transition: "transform 0.2s" }}
+                    style={{ padding: "12px 0", borderBottom: i < posts.length-1 ? "1px solid var(--border)" : "none", cursor: "pointer", transition: "transform 0.2s" }}
                     onMouseEnter={e => e.currentTarget.style.transform = "translateX(4px)"}
                     onMouseLeave={e => e.currentTarget.style.transform = "none"}
                   >
@@ -925,7 +925,7 @@ export default function DashboardPage() {
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <span style={{ fontSize: 9, background: "rgba(37,99,235,0.15)", color: "#2563eb", padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>{n.tag}</span>
-                        <p style={{ fontSize: 13, fontWeight: 500, marginTop: 4, lineHeight: 1.4, color: "#e4e4e7", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</p>
+                        <p style={{ fontSize: 13, fontWeight: 500, marginTop: 4, lineHeight: 1.4, color: "var(--text-primary)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</p>
                         <p style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>{n.time}</p>
                       </div>
                       <ChevronRight size={14} style={{ color: "var(--text-muted)", flexShrink: 0 }} />

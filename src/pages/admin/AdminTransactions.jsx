@@ -227,7 +227,7 @@ export default function AdminTransactions() {
 
       {/* Header and overview */}
       <div>
-        <h1 style={{ fontSize:24, fontWeight:800, color:"white", marginBottom:6 }}>📋 Quản lý giao dịch</h1>
+        <h1 style={{ fontSize:24, fontWeight:800, color:"var(--text-primary)", marginBottom:6 }}>📋 Quản lý giao dịch</h1>
         <p style={{ color: "var(--text-secondary)", fontSize:14 }}>Phê duyệt và theo dõi các yêu cầu nạp tiền, rút tiền, chuyển tiền từ phía người dùng</p>
       </div>
 
@@ -258,7 +258,7 @@ export default function AdminTransactions() {
                 </div>
               </div>
               <div style={{ display:"flex", alignItems:"baseline", gap:8 }}>
-                <h3 style={{ fontSize:28, fontWeight:900, color:"white" }}>{item.count}</h3>
+                <h3 style={{ fontSize:28, fontWeight:900, color:"var(--text-primary)" }}>{item.count}</h3>
                 {item.pulse && (
                   <span style={{ display:"flex", height:8, width:8, position:"relative" }}>
                     <span className="animate-ping" style={{ position:"absolute", display:"inline-flex", height:"100%", width:"100%", borderRadius:"50%", background:"#f59e0b", opacity:0.75 }}></span>
@@ -288,7 +288,7 @@ export default function AdminTransactions() {
               value={search} 
               onChange={e => setSearch(e.target.value)} 
               placeholder="Tìm theo Mã GD, tên user, nội dung..." 
-              style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"10px 14px 10px 36px", color:"white", fontSize:13, outline:"none" }} 
+              style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"10px 14px 10px 36px", color:"var(--text-primary)", fontSize:13, outline:"none" }} 
             />
           </div>
           
@@ -348,12 +348,12 @@ export default function AdminTransactions() {
                 key={tx.id}
                 onClick={() => setSelectedTx(tx)}
                 style={{
-                  display:"flex", alignItems:"center", justify:"space-between", padding:"14px 18px",
+                  display:"flex", alignItems:"center", justifyContent:"space-between", padding:"14px 18px",
                   background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:12,
                   cursor:"pointer", transition:"all 0.2s"
                 }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)"; e.currentTarget.style.background = "#1a1a1a"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1f1f1f"; e.currentTarget.style.background = "#161616"; }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor = "var(--primary)"; e.currentTarget.style.background = "rgba(37,99,235,0.04)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = "var(--border)"; e.currentTarget.style.background = "var(--bg-card2)"; }}
               >
                 {/* Status icon column */}
                 <div style={{
@@ -370,7 +370,7 @@ export default function AdminTransactions() {
                 {/* Main info */}
                 <div style={{ flex:1, minWidth:0, marginRight:16 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
-                    <span style={{ fontSize:13, fontWeight:700, color:"white" }}>{tx.name}</span>
+                    <span style={{ fontSize:13, fontWeight:700, color:"var(--text-primary)" }}>{tx.name}</span>
                     <span style={{ fontSize:10, color: "var(--text-muted)" }}>•</span>
                     <span style={{ fontSize:11, color: "var(--text-secondary)", fontFamily:"monospace" }}>{tx.id}</span>
                     <span style={{ fontSize:10, color: "var(--text-muted)" }}>•</span>
@@ -465,7 +465,7 @@ export default function AdminTransactions() {
                 <X size={16} />
               </button>
 
-              <h3 style={{ fontSize:18, fontWeight:700, marginBottom:20, color:"white" }}>Chi tiết yêu cầu giao dịch</h3>
+              <h3 style={{ fontSize:18, fontWeight:700, marginBottom:20, color:"var(--text-primary)" }}>Chi tiết yêu cầu giao dịch</h3>
 
               <div style={{ background: "var(--bg-card2)", borderRadius:12, padding:20, marginBottom:20, textAlign:"center", border: "1px solid var(--border)" }}>
                 <p style={{ fontSize:32, fontWeight:900, color: selectedTx.type === "receive" ? "#22c55e" : "#ef4444" }}>
@@ -491,7 +491,7 @@ export default function AdminTransactions() {
                 ].map(r => (
                   <div key={r.label} style={{ display:"flex", justifyContent:"space-between", padding:"12px 0", borderBottom: "1px solid var(--border)" }}>
                     <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{r.label}</span>
-                    <span style={{ fontSize:13, fontWeight:600, color:"white", fontFamily: r.font || "inherit" }}>{r.value}</span>
+                    <span style={{ fontSize:13, fontWeight:600, color:"var(--text-primary)", fontFamily: r.font || "inherit" }}>{r.value}</span>
                   </div>
                 ))}
               </div>

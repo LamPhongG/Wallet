@@ -35,13 +35,13 @@ export default function AdminLayout() {
   };
 
   const Sidebar = () => (
-    <aside style={{ width:220, background: "var(--bg-dark)", borderRight:"1px solid #1a1a1a", display:"flex", flexDirection:"column", height:"100%", padding:"20px 12px" }}>
+    <aside style={{ width:220, background: "var(--bg-dark)", borderRight:"1px solid var(--border)", display:"flex", flexDirection:"column", height:"100%", padding:"20px 12px" }}>
       <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:32, paddingLeft:8 }}>
         <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", display:"flex", alignItems:"center", justifyContent:"center" }}>
           <Wallet size={16} color="white" />
         </div>
         <div>
-          <span style={{ fontSize:15, fontWeight:800 }}>Smart<span style={{ color:"var(--primary)" }}>Wallet</span></span>
+          <span style={{ fontSize:15, fontWeight:800 }}>SmartWallet</span>
           <p style={{ fontSize:10, color:"#2563eb", fontWeight:600 }}>ADMIN</p>
         </div>
       </div>
@@ -68,7 +68,7 @@ export default function AdminLayout() {
       </nav>
 
       {/* Admin info at bottom of sidebar */}
-      <div style={{ borderTop:"1px solid #1a1a1a", paddingTop:12, display:"flex", flexDirection:"column", gap:4 }}>
+      <div style={{ borderTop:"1px solid var(--border)", paddingTop:12, display:"flex", flexDirection:"column", gap:4 }}>
         {adminUser && (
           <div style={{ padding:"10px 12px", marginBottom:4 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
@@ -118,7 +118,7 @@ export default function AdminLayout() {
         </AnimatePresence>
 
         <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-          <header style={{ height:58, background:"rgba(8,8,8,0.95)", backdropFilter:"blur(20px)", borderBottom: "1px solid var(--border)", display:"flex", alignItems:"center", padding:"0 20px", gap:12, flexShrink:0 }}>
+          <header style={{ height:58, background:"rgba(255,255,255,0.95)", backdropFilter:"blur(20px)", borderBottom: "1px solid var(--border)", display:"flex", alignItems:"center", padding:"0 20px", gap:12, flexShrink:0 }}>
             <button onClick={() => setSidebarOpen(true)} className="lg:hidden" style={{ background:"none", border:"none", cursor:"pointer", color: "var(--text-secondary)" }}>
               <Menu size={20} />
             </button>
@@ -191,7 +191,7 @@ export default function AdminLayout() {
                 </button>
                 <button
                   onClick={handleLogout}
-                  style={{ flex:1, background:"linear-gradient(135deg,#dc2626,#991b1b)", border:"none", color:"white", borderRadius:10, padding:"11px", fontWeight:700, fontSize:14, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}
+                  style={{ flex:1, background:"linear-gradient(135deg,#dc2626,#991b1b)", border:"none", color: "#000000", borderRadius:10, padding:"11px", fontWeight:700, fontSize:14, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:6 }}
                 >
                   <LogOut size={15} /> Đăng xuất
                 </button>

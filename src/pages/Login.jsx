@@ -204,8 +204,8 @@ export default function LoginPage() {
           }}>
             <Wallet size={22} color="white" />
           </div>
-          <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.5px" }}>
-            Smart<span style={{ color: "var(--primary)" }}>Wallet</span>
+          <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.5px", color: "#ffffff" }}>
+            SmartWallet
           </span>
         </div>
 
@@ -215,7 +215,7 @@ export default function LoginPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.6 }}
-            style={{ fontSize: 48, fontWeight: 800, lineHeight: 1.1, marginBottom: 20 }}
+            style={{ fontSize: 48, fontWeight: 800, lineHeight: 1.1, marginBottom: 20, color: "#ffffff" }}
           >
             Quản lý tài chính
             <br />
@@ -225,7 +225,7 @@ export default function LoginPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
-            style={{ color: "var(--text-secondary)", fontSize: 16, lineHeight: 1.7, maxWidth: 400 }}
+            style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 16, lineHeight: 1.7, maxWidth: 400 }}
           >
             Ví điện tử SmartWallet giúp bạn theo dõi chi tiêu, chuyển tiền tức thì, 
             và nhận gợi ý tài chính thông minh từ AI.
@@ -246,7 +246,7 @@ export default function LoginPage() {
                 style={{ display: "flex", alignItems: "center", gap: 12 }}
               >
                 <span style={{ fontSize: 20 }}>{f.icon}</span>
-                <span style={{ color: "var(--text-secondary)", fontSize: 14 }}>{f.text}</span>
+                <span style={{ color: "rgba(255, 255, 255, 0.7)", fontSize: 14 }}>{f.text}</span>
               </motion.div>
             ))}
           </div>
@@ -275,8 +275,8 @@ export default function LoginPage() {
             }}>
               <Wallet size={20} color="white" />
             </div>
-            <span style={{ fontSize: 20, fontWeight: 800 }}>
-              Smart<span style={{ color: "var(--primary)" }}>Wallet</span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: "#ffffff" }}>
+              SmartWallet
             </span>
           </div>
 
@@ -318,10 +318,10 @@ export default function LoginPage() {
                   style={{
                     width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)",
                     borderRadius: 10, padding: "12px 16px 12px 42px",
-                    color: "white", fontSize: 14, outline: "none", transition: "all 0.3s"
+                    color: "#000000", fontSize: 14, outline: "none", transition: "all 0.3s"
                   }}
                   onFocus={(e) => { e.target.style.borderColor = "#2563eb"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.15)"; }}
-                  onBlur={(e) => { e.target.style.borderColor = "#2a2a2a"; e.target.style.boxShadow = "none"; }}
+                  onBlur={(e) => { e.target.style.borderColor = "var(--border)"; e.target.style.boxShadow = "none"; }}
                 />
               </div>
             </div>
@@ -341,10 +341,10 @@ export default function LoginPage() {
                   style={{
                     width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)",
                     borderRadius: 10, padding: "12px 42px 12px 42px",
-                    color: "white", fontSize: 14, outline: "none", transition: "all 0.3s"
+                    color: "#000000", fontSize: 14, outline: "none", transition: "all 0.3s"
                   }}
                   onFocus={(e) => { e.target.style.borderColor = "#2563eb"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.15)"; }}
-                  onBlur={(e) => { e.target.style.borderColor = "#2a2a2a"; e.target.style.boxShadow = "none"; }}
+                  onBlur={(e) => { e.target.style.borderColor = "var(--border)"; e.target.style.boxShadow = "none"; }}
                 />
                 <button
                   type="button"
@@ -368,7 +368,7 @@ export default function LoginPage() {
               style={{
                 width: "100%",
                 background: loading ? "#3f3f46" : "linear-gradient(135deg, #2563eb, #1d4ed8)",
-                color: "white", border: "none", borderRadius: 10,
+                color: "#000000", border: "none", borderRadius: 10,
                 padding: "14px 24px", fontWeight: 700, fontSize: 15,
                 cursor: loading ? "not-allowed" : "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,

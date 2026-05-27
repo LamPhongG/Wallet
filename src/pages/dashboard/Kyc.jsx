@@ -135,19 +135,19 @@ export default function KycPage() {
             <div style={{ display:"flex", alignItems:"center", gap:10, flexShrink:0 }}>
               <div style={{
                 width:32, height:32, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:13,
-                background: step > s.id ? "#22c55e" : step === s.id ? "#2563eb" : "#1a1a1a",
-                border: `2px solid ${step > s.id ? "#22c55e" : step === s.id ? "#2563eb" : "#2a2a2a"}`,
-                color: step >= s.id ? "white" : "#52525b", transition:"all 0.3s"
+                background: step > s.id ? "#22c55e" : step === s.id ? "#2563eb" : "#ffffff",
+                border: `2px solid ${step > s.id ? "#22c55e" : step === s.id ? "#2563eb" : "var(--border)"}`,
+                color: step >= s.id ? "white" : "var(--text-muted)", transition:"all 0.3s"
               }}>
                 {step > s.id ? <CheckCircle size={16} /> : s.id}
               </div>
               <div className="hidden sm:block">
-                <p style={{ fontSize:12, fontWeight:600, color: step >= s.id ? "#f4f4f5" : "#52525b" }}>{s.title}</p>
+                <p style={{ fontSize:12, fontWeight:600, color: step >= s.id ? "var(--primary)" : "var(--text-muted)" }}>{s.title}</p>
                 <p style={{ fontSize:10, color: "var(--text-muted)" }}>{s.desc}</p>
               </div>
             </div>
             {i < steps.length-1 && (
-              <div style={{ flex:1, height:2, margin:"0 12px", background: step > s.id ? "#22c55e" : "#1f1f1f", transition:"all 0.3s" }} />
+              <div style={{ flex:1, height:2, margin:"0 12px", background: step > s.id ? "#22c55e" : "var(--border)", transition:"all 0.3s" }} />
             )}
           </div>
         ))}
@@ -167,13 +167,13 @@ export default function KycPage() {
               <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>{f.label}</label>
               <input value={form[f.key]} onChange={e => setForm(p => ({...p,[f.key]:e.target.value}))}
                 type={f.type||"text"} placeholder={f.placeholder}
-                style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }}
+                style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color: "#000000", fontSize:14, outline:"none" }}
                 onFocus={e => { e.target.style.borderColor="#2563eb"; }}
-                onBlur={e => { e.target.style.borderColor="#2a2a2a"; }}
+                onBlur={e => { e.target.style.borderColor="var(--border)"; }}
               />
             </div>
           ))}
-          <button onClick={handleSubmit} style={{ width:"100%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:8 }}>
+          <button onClick={handleSubmit} style={{ width:"100%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color: "#000000", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:8 }}>
             Tiếp theo <ArrowRight size={16} />
           </button>
         </motion.div>
@@ -193,8 +193,8 @@ export default function KycPage() {
                 <p style={{ fontSize:13, color: "var(--text-secondary)", marginBottom:8 }}>{f.label}</p>
                 <label style={{
                   display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center",
-                  height:140, border:`2px dashed ${form[f.key] ? "#22c55e" : "#2a2a2a"}`,
-                  borderRadius:12, cursor:"pointer", background: form[f.key] ? "rgba(34,197,94,0.05)" : "#1a1a1a",
+                  height:140, border:`2px dashed ${form[f.key] ? "#22c55e" : "var(--border)"}`,
+                  borderRadius:12, cursor:"pointer", background: form[f.key] ? "rgba(34,197,94,0.05)" : "var(--bg-card2)",
                   overflow:"hidden", transition:"all 0.2s", position:"relative"
                 }}>
                   {form[f.key]
@@ -217,7 +217,7 @@ export default function KycPage() {
             <button onClick={() => setStep(1)} style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius:10, padding:"12px", fontWeight:600, fontSize:14, cursor:"pointer" }}>
               Quay lại
             </button>
-            <button onClick={handleSubmit} style={{ flex:2, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+            <button onClick={handleSubmit} style={{ flex:2, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color: "#000000", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
               Gửi xác minh
             </button>
           </div>

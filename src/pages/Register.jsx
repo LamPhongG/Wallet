@@ -52,7 +52,7 @@ export default function RegisterPage() {
     width: "100%", background: "var(--bg-card2)",
     border: `1px solid ${err ? "#ef4444" : "#2a2a2a"}`,
     borderRadius: 10, padding: "12px 16px 12px 42px",
-    color: "white", fontSize: 14, outline: "none", transition: "all 0.3s"
+    color: "#000000", fontSize: 14, outline: "none", transition: "all 0.3s"
   });
 
   return (
@@ -80,7 +80,7 @@ export default function RegisterPage() {
             <Wallet size={26} color="white" />
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 800 }}>
-            Smart<span style={{ color: "var(--primary)" }}>Wallet</span> Wallet
+            SmartWallet Wallet
           </h1>
           <p style={{ color: "var(--text-secondary)", fontSize: 14, marginTop: 4 }}>Tạo tài khoản mới</p>
         </div>
@@ -168,7 +168,7 @@ export default function RegisterPage() {
               style={{
                 width: "100%",
                 background: loading ? "#3f3f46" : "linear-gradient(135deg, #2563eb, #1d4ed8)",
-                color: "white", border: "none", borderRadius: 10,
+                color: "#000000", border: "none", borderRadius: 10,
                 padding: "14px", fontWeight: 700, fontSize: 15,
                 cursor: loading ? "not-allowed" : "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,

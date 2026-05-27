@@ -255,7 +255,7 @@ export default function DashboardLayout() {
     <aside style={{
       width: mobile ? "100%" : 240,
       background: "var(--bg-dark)",
-      borderRight: mobile ? "none" : "1px solid #1a1a1a",
+      borderRight: mobile ? "none" : "1px solid var(--border)",
       display: "flex", flexDirection: "column",
       height: "100%", padding: "24px 16px",
       position: "relative"
@@ -265,7 +265,7 @@ export default function DashboardLayout() {
         <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Wallet size={18} color="white" />
         </div>
-        <span style={{ fontSize: 18, fontWeight: 800 }}>Smart<span style={{ color: "var(--primary)" }}>Wallet</span></span>
+        <span style={{ fontSize: 18, fontWeight: 800 }}>SmartWallet</span>
       </div>
 
       {/* Nav items */}
@@ -354,7 +354,7 @@ export default function DashboardLayout() {
 
           {/* Page title - dynamic */}
           <div style={{ flex: 1 }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: "var(--text-primary)" }}>
               {pathname === "/dashboard" ? "Dashboard" :
                pathname.includes("wallets") ? "My Wallets" :
                pathname.includes("offers") ? "Ưu đãi" : "SmartWallet Wallet"}
@@ -520,7 +520,7 @@ export default function DashboardLayout() {
               <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <User size={14} color="white" />
               </div>
-              <span style={{ fontSize: 13, fontWeight: 500, color: "#e4e4e7" }} className="hidden sm:inline">
+              <span style={{ fontSize: 13, fontWeight: 500, color: "#000000" }} className="hidden sm:inline">
                 {user?.name || "User"}
               </span>
               <ChevronDown size={14} style={{ color: "var(--text-muted)" }} />
@@ -536,7 +536,7 @@ export default function DashboardLayout() {
                   style={{
                     position: "absolute", right: 0, top: "calc(100% + 8px)",
                     width: 200, background: "var(--bg-card)", border: "1px solid var(--border)",
-                    borderRadius: 12, boxShadow: "0 20px 60px rgba(0,0,0,0.5)", zIndex: 100, overflow: "hidden"
+                    borderRadius: 12, boxShadow: "0 10px 30px rgba(0,0,0,0.08)", zIndex: 100, overflow: "hidden"
                   }}
                 >
                   <div style={{ padding: "12px 16px", borderBottom: "1px solid var(--border)" }}>
@@ -554,15 +554,15 @@ export default function DashboardLayout() {
                     <Link key={href} to={href} style={{ textDecoration: "none" }} onClick={() => setShowUserMenu(false)}>
                       <div style={{
                         display: "flex", alignItems: "center", gap: 10, padding: "11px 16px",
-                        color: status === "verified" ? "#22c55e" : status === "pending" ? "#f59e0b" : "#a1a1aa", fontSize: 13, cursor: "pointer", transition: "all 0.2s"
+                        color: status === "verified" ? "#22c55e" : status === "pending" ? "#f59e0b" : "var(--text-primary)", fontSize: 13, cursor: "pointer", transition: "all 0.2s"
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-                        if (status === "none") e.currentTarget.style.color = "#fff";
+                        e.currentTarget.style.background = "var(--bg-card2)";
+                        if (status === "none") e.currentTarget.style.color = "var(--primary)";
                       }}
                       onMouseLeave={(e) => {
                         e.currentTarget.style.background = "transparent";
-                        if (status === "none") e.currentTarget.style.color = "#a1a1aa";
+                        if (status === "none") e.currentTarget.style.color = "var(--text-primary)";
                       }}
                       >
                         <Icon size={15} style={{ color: status === "verified" ? "#22c55e" : status === "pending" ? "#f59e0b" : undefined }} />
