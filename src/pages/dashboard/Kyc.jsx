@@ -1,6 +1,5 @@
-"use client";
 import { useState, useEffect } from "react";
-import { Upload, CheckCircle, Clock, AlertCircle, FileText, User, Image, ArrowRight } from "lucide-react";
+import { Upload, CheckCircle, Clock, AlertCircle, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 const steps = [
@@ -72,10 +71,8 @@ export default function KycPage() {
       };
 
       if (foundIdx !== -1) {
-        // Cập nhật user đã tồn tại
         list[foundIdx] = { ...list[foundIdx], ...kycEntry };
       } else {
-        // Thêm mới user vào danh sách admin
         list.push({
           id: "U" + Date.now(),
           email: updatedUser.email,

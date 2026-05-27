@@ -1,4 +1,3 @@
-"use client";
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, Newspaper, Tag, Calendar, Eye, EyeOff, Link as LinkIcon, Upload, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -36,7 +35,7 @@ const defaultPosts = [
   },
 ];
 
-export default function AdminPostsPage() {
+export default function AdminMedia() {
   const [posts, setPosts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editItem, setEditItem] = useState(null);

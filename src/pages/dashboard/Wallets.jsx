@@ -1,9 +1,9 @@
-"use client";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   ArrowDownLeft, ArrowUpRight, QrCode, Building2, Plus,
-  X, CreditCard, Check, Clock, ChevronDown, Search, Filter,
-  Wallet, Upload, Image, Smartphone, AlertCircle, Gift, Tag, Flame
+  X, CreditCard, Check, Search,
+  Wallet, Upload, Smartphone, AlertCircle, Gift, Tag, Flame
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { QRCodeCanvas as QRCode } from "qrcode.react";
@@ -107,7 +107,6 @@ const saveTx = (list) => {
         u.balance = balanceStr;
         localStorage.setItem("bw_user", JSON.stringify(u));
         
-        // Dispatch event để cập nhật balance tức thì ở các nơi khác
         window.dispatchEvent(new CustomEvent("balance_updated", { detail: {} }));
       }
     }
@@ -137,6 +136,8 @@ const parseTxTime = (timeStr) => {
 };
 
 export default function WalletsPage() {
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [tab, setTab] = useState("all");
   const [userEmail, setUserEmail] = useState("");
   const [modal, setModal] = useState(null); // null | 'deposit' | 'withdraw' | 'transfer' | 'qr' | 'bank' | 'tx'
@@ -152,7 +153,6 @@ export default function WalletsPage() {
   const [linkedBanks, setLinkedBanks] = useState([]);
   const [selectedBankId, setSelectedBankId] = useState("");
   const [toast, setToast] = useState(null);
-  // Transfer method states
   const [transferMethod, setTransferMethod] = useState("blackred"); // 'blackred' | 'bank'
   const [bankTransferForm, setBankTransferForm] = useState({ bank: "", account: "", ownerName: "" });
   const [qrUploadFile, setQrUploadFile] = useState(null);
@@ -166,13 +166,11 @@ export default function WalletsPage() {
   const [activePromoTab, setActivePromoTab] = useState("Tất cả");
   const [voucherList, setVoucherList] = useState(VOUCHERS_FALLBACK);
 
-  // Load vouchers từ admin localStorage
   const loadVouchers = () => {
     try {
       const saved = localStorage.getItem("bw_admin_vouchers");
       if (saved) {
         const all = JSON.parse(saved);
-        // Normalize: admin dùng field 'type', offers dùng 'tag'
         const active = all.filter(v => v.active !== false).map(v => ({
           ...v,
           tag: v.type || v.tag || "Khác"
@@ -181,7 +179,6 @@ export default function WalletsPage() {
       }
     } catch { /* fallback */ }
   };
-
 
   const calculateDiscount = (amountVal, v) => {
     if (!v) return 0;
@@ -194,10 +191,10 @@ export default function WalletsPage() {
       return Math.round(amt * 0.02);
     }
     if (v.code === "FREERUT") {
-      return 10000; // Giảm 10K
+      return 10000;
     }
     if (v.code === "REF100K") {
-      return 100000; // Giảm 100K
+      return 100000;
     }
     if (v.code === "NAP20K") {
       if (amt < 1000000) return 0;
@@ -239,19 +236,15 @@ export default function WalletsPage() {
     showToast(`Áp dụng thành công mã: ${v.code}!`);
   };
 
-  // Helper: sync transactions & balance sang admin ngay lập tức
   const syncBalanceToAdmin = (txs, userEmail) => {
     try {
       if (!userEmail) return;
-      // Chỉ lưu GD của user này (lọc theo userEmail tag hoặc nếu chưa tag thì khớp tên mock user)
       const myTxs = txs.filter(tx => {
         if (tx.userEmail) return tx.userEmail === userEmail;
         const mockEmail = getMockUserEmailByName(tx.name);
         return mockEmail === userEmail;
       });
-      // Lưu transactions theo email
       localStorage.setItem(`bw_transactions_${userEmail}`, JSON.stringify(myTxs));
-      // Tính số dư thực chỉ từ GD của user này
       const base = getUserBaseBalance(userEmail);
       const newBalance = Math.max(0, myTxs.reduce((acc, tx) => {
         if (tx.status !== "success") return acc;
@@ -260,7 +253,6 @@ export default function WalletsPage() {
         return acc;
       }, base));
       const balanceStr = newBalance.toLocaleString("vi-VN") + " ₫";
-      // Cập nhật bw_users
       const storedUsers = localStorage.getItem("bw_users");
       if (storedUsers) {
         const users = JSON.parse(storedUsers);
@@ -270,7 +262,6 @@ export default function WalletsPage() {
           localStorage.setItem("bw_users", JSON.stringify(users));
         }
       }
-      // Cập nhật bw_user session
       const bwUser = localStorage.getItem("bw_user");
       if (bwUser) {
         const u = JSON.parse(bwUser);
@@ -279,16 +270,13 @@ export default function WalletsPage() {
           localStorage.setItem("bw_user", JSON.stringify(u));
         }
       }
-      // Dispatch event để cập nhật balance tức thì ở các nơi khác
       window.dispatchEvent(new CustomEvent("balance_updated", { detail: {} }));
     } catch(e) { /* silent */ }
   };
 
   useEffect(() => {
     loadVouchers();
-    // Lắng nghe admin cập nhật voucher (cùng tab)
     window.addEventListener("bw_vouchers_updated", loadVouchers);
-    // Lắng nghe cross-tab
     const storageHandler = (e) => { if (e.key === "bw_admin_vouchers") loadVouchers(); };
     window.addEventListener("storage", storageHandler);
 
@@ -300,7 +288,6 @@ export default function WalletsPage() {
     let txs;
     if (saved) {
       const allTxs = JSON.parse(saved);
-      // Chỉ hiển thị GD của user hiện tại (lọc theo userEmail tag hoặc khớp tên mock user)
       txs = currentEmail
         ? allTxs.filter(tx => {
             if (tx.userEmail) return tx.userEmail === currentEmail;
@@ -312,7 +299,6 @@ export default function WalletsPage() {
     } else {
       txs = mockTx;
       localStorage.setItem("bw_transactions", JSON.stringify(txs));
-      // Lọc GD của user hiện tại
       const filteredTxs = currentEmail
         ? txs.filter(tx => {
             if (tx.userEmail) return tx.userEmail === currentEmail;
@@ -323,10 +309,8 @@ export default function WalletsPage() {
       setTxList(filteredTxs);
     }
 
-    // Sync balance lên admin ngay khi wallet page load
     if (currentEmail) syncBalanceToAdmin(txs, currentEmail);
 
-    // Load ngân hàng theo từng user riêng biệt
     const bankKey = currentEmail ? `bw_linked_banks_${currentEmail}` : "bw_linked_banks";
     const savedBanks = localStorage.getItem(bankKey);
     if (savedBanks) {
@@ -336,34 +320,38 @@ export default function WalletsPage() {
         setSelectedBankId(parsedBanks[0].id);
       }
     }
-    // Parse URL params for promo code & modal trigger
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const promo = params.get("promo");
-      const modalParam = params.get("modal");
 
-      if (modalParam) {
-        setModal(modalParam);
-        if (promo) {
-          // Đọc vouchers từ localStorage hoặc fallback
-          const savedVouchers = (() => {
-            try {
-              const s = localStorage.getItem("bw_admin_vouchers");
-              return s ? JSON.parse(s).filter(v => v.active !== false) : VOUCHERS_FALLBACK;
-            } catch { return VOUCHERS_FALLBACK; }
-          })();
-          const v = savedVouchers.find(x => x.code.toUpperCase() === promo.toUpperCase());
-          if (v) {
-            setPromoCode(v.code);
-            setAppliedVoucher(v);
-            setTimeout(() => { showToast(`Tự động áp dụng ưu đãi: ${v.code}!`); }, 900);
-          }
+    // Parse URL params for promo code & modal trigger using react-router-dom searchParams
+    const promo = searchParams.get("promo");
+    const modalParam = searchParams.get("modal");
+
+    if (modalParam) {
+      setModal(modalParam);
+      if (promo) {
+        const savedVouchers = (() => {
+          try {
+            const s = localStorage.getItem("bw_admin_vouchers");
+            return s ? JSON.parse(s).filter(v => v.active !== false) : VOUCHERS_FALLBACK;
+          } catch { return VOUCHERS_FALLBACK; }
+        })();
+        const v = savedVouchers.find(x => x.code.toUpperCase() === promo.toUpperCase());
+        if (v) {
+          setPromoCode(v.code);
+          setAppliedVoucher(v);
+          setTimeout(() => { showToast(`Tự động áp dụng ưu đãi: ${v.code}!`); }, 900);
         }
       }
+      // Clear searchParams to prevent opening modal on refresh
+      setSearchParams({}, { replace: true });
     }
 
     setTimeout(() => setLoading(false), 800);
-  }, []);
+
+    return () => {
+      window.removeEventListener("bw_vouchers_updated", loadVouchers);
+      window.removeEventListener("storage", storageHandler);
+    };
+  }, [searchParams]);
 
   const handleConfirmDeposit = () => {
     if (!depositForm.amount || Number(depositForm.amount) <= 0) return;
@@ -478,6 +466,7 @@ export default function WalletsPage() {
     if (tx.type === "send") return acc - tx.amount;
     return acc;
   }, baseBalance));
+
   const filtered = txList.filter(tx => {
     const matchTab = tab === "all" || tx.type === tab || (tab === "send" && tx.type === "send") || (tab === "receive" && tx.type === "receive");
     const matchSearch = !search || tx.name.toLowerCase().includes(search.toLowerCase()) || tx.id.includes(search);
@@ -517,7 +506,6 @@ export default function WalletsPage() {
       if (!txForm.target) { showToast("Vui lòng nhập SĐT hoặc email người nhận!", "error"); return; }
       if (!txForm.amount || Number(txForm.amount) <= 0) { showToast("Vui lòng nhập số tiền hợp lệ!", "error"); return; }
       
-      // Kiểm tra minAmount của Voucher
       if (appliedVoucher && appliedVoucher.minAmount && Number(txForm.amount) < appliedVoucher.minAmount) {
         showToast(`Mã ưu đãi ${appliedVoucher.code} yêu cầu số tiền tối thiểu ${fmtCurrency(appliedVoucher.minAmount)}!`, "error");
         return;
@@ -531,7 +519,6 @@ export default function WalletsPage() {
       if (!bankTransferForm.account) { showToast("Vui lòng nhập số tài khoản người nhận!", "error"); return; }
       if (!txForm.amount || Number(txForm.amount) <= 0) { showToast("Vui lòng nhập số tiền hợp lệ!", "error"); return; }
       
-      // Kiểm tra minAmount của Voucher
       if (appliedVoucher && appliedVoucher.minAmount && Number(txForm.amount) < appliedVoucher.minAmount) {
         showToast(`Mã ưu đãi ${appliedVoucher.code} yêu cầu số tiền tối thiểu ${fmtCurrency(appliedVoucher.minAmount)}!`, "error");
         return;
@@ -545,10 +532,6 @@ export default function WalletsPage() {
     const txId = "TX" + Math.floor(100000 + Math.random() * 900000);
     const date = new Date();
     const timeStr = date.toLocaleTimeString("vi-VN", {hour: "2-digit", minute:"2-digit"}) + " " + date.toLocaleDateString("vi-VN");
-
-    const recipientName = transferMethod === "blackred"
-      ? txForm.target
-      : `${bankTransferForm.bank} - ${bankTransferForm.account}`;
 
     const bwUserRaw3 = localStorage.getItem("bw_user");
     const currentEmail3 = bwUserRaw3 ? JSON.parse(bwUserRaw3).email : null;
@@ -605,6 +588,7 @@ export default function WalletsPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      
       {/* Balance Card */}
       <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}}
         style={{
@@ -645,7 +629,7 @@ export default function WalletsPage() {
 
       {/* Link Bank */}
       <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.15}}
-        style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:16, padding:20, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        style={{ background:"#111", border:"1px solid #1f1f1f", borderRadius:16, padding:20, display:"flex", alignItems:"center", justifyBetween:"space-between" }}>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
           <div style={{ width:40, height:40, borderRadius:10, background:"rgba(59,130,246,0.12)", display:"flex", alignItems:"center", justifyContent:"center" }}>
             <Building2 size={18} style={{ color:"#3b82f6" }} />
@@ -994,7 +978,7 @@ export default function WalletsPage() {
                             <img src={qrUploadPreview} alt="QR preview"
                               style={{ width:"100%", maxHeight:180, objectFit:"contain", borderRadius:12, border:"1px solid #2a2a2a", background:"#161616" }} />
                             <button onClick={() => { setQrUploadFile(null); setQrUploadPreview(null); }}
-                              style={{ position:"absolute", top:8, right:8, background:"rgba(0,0,0,0.7)", border:"none", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"white" }}>
+                              style={{ position:"absolute", top:8, right:8, background:"rgba(0,0,0,0.7)", border:"none", borderRadius:6, width:28, height:28, display:"flex", alignItems:"center", justifyContent:"center", color:"white" }}>
                               <X size={14} />
                             </button>
                             <button onClick={() => qrInputRef.current?.click()}
@@ -1071,14 +1055,13 @@ export default function WalletsPage() {
                     </select>
                   </div>
 
-                  {/* Promo Code Selection (Common for both methods) */}
+                  {/* Promo Code Selection */}
                   <div style={{ marginTop:16, marginBottom:16, border:"1px solid #2a2a2a", borderRadius:12, padding:14, background:"#161616", textAlign:"left" }}>
                     <div style={{ display:"flex", alignItems:"center", gap:6, marginBottom:8 }}>
                       <Gift size={16} style={{ color:"#3b82f6" }} />
                       <span style={{ fontSize:13, fontWeight:700, color:"white" }}>Mã ưu đãi & Quà tặng</span>
                     </div>
                     
-                    {/* Input & Apply Button */}
                     <div style={{ display:"flex", gap:8, marginBottom:10 }}>
                       <input 
                         value={promoCode} 
@@ -1094,8 +1077,7 @@ export default function WalletsPage() {
                       </button>
                     </div>
 
-                    {/* Link to open Selector Popup */}
-                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+                    <div style={{ display:"flex", justifyBetween:"space-between", alignItems:"center" }}>
                       <button 
                         onClick={() => setShowPromoSelector(true)}
                         style={{ background:"none", border:"none", color:"#3b82f6", fontSize:12, fontWeight:600, cursor:"pointer", display:"flex", alignItems: "center", gap: 4, padding: 0 }}
@@ -1113,7 +1095,6 @@ export default function WalletsPage() {
                       )}
                     </div>
 
-                    {/* Applied Voucher Info */}
                     {appliedVoucher && (() => {
                       const discount = calculateDiscount(txForm.amount, appliedVoucher);
                       return (
@@ -1199,7 +1180,6 @@ export default function WalletsPage() {
                         </button>
                       </div>
                       
-                      {/* Category Selector inside popup */}
                       <div style={{ display:"flex", gap:6, marginBottom:16, overflowX:"auto", paddingBottom:6 }}>
                         {["Tất cả", "Chuyển tiền", "Mua sắm", "Rút tiền", "Referral", "Nạp tiền", "Hóa đơn"].map(cat => (
                           <button 
@@ -1217,7 +1197,6 @@ export default function WalletsPage() {
                         ))}
                       </div>
 
-                      {/* List of Vouchers */}
                       <div style={{ flex:1, overflowY:"auto", display:"flex", flexDirection:"column", gap:10 }}>
                         {voucherList.filter(v => activePromoTab === "Tất cả" || v.tag === activePromoTab || v.type === activePromoTab).map(v => {
                           const isApplicable = !v.minAmount || (Number(txForm.amount) || 0) >= v.minAmount;
@@ -1231,7 +1210,7 @@ export default function WalletsPage() {
                                 transition:"all 0.2s", textAlign:"left"
                               }}
                             >
-                              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"start" }}>
+                              <div style={{ display:"flex", justifyBetween:"space-between", alignItems:"start" }}>
                                 <div style={{ textAlign:"left" }}>
                                   <span style={{ fontSize:10, padding:"2px 6px", borderRadius:4, background:`${tagColors[v.tag]}18`, color:tagColors[v.tag], fontWeight:600 }}>{v.tag}</span>
                                   <h5 style={{ fontSize:13, fontWeight:700, color:"white", marginTop:6 }}>{v.title}</h5>
@@ -1275,7 +1254,7 @@ export default function WalletsPage() {
               {/* BANK */}
               {modal==="bank" && (
                 <div>
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyBetween:"space-between", marginBottom:20 }}>
                     <h3 style={{ fontSize:18, fontWeight:700 }}>🏦 Liên kết ngân hàng</h3>
                     <span style={{
                       fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:20,
@@ -1287,7 +1266,6 @@ export default function WalletsPage() {
                     </span>
                   </div>
 
-                  {/* Max limit warning */}
                   {linkedBanks.length >= MAX_BANKS ? (
                     <div style={{
                       background:"rgba(239,68,68,0.07)", border:"1px solid rgba(239,68,68,0.2)",
@@ -1304,7 +1282,7 @@ export default function WalletsPage() {
                       <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                         {linkedBanks.map(b => (
                           <div key={b.id} style={{
-                            display:"flex", alignItems:"center", justifyContent:"space-between",
+                            display:"flex", alignItems:"center", justifyBetween:"space-between",
                             background:"#161616", border:"1px solid #2a2a2a",
                             borderRadius:10, padding:"10px 14px"
                           }}>
@@ -1338,9 +1316,8 @@ export default function WalletsPage() {
                     </div>
                   ) : (
                     <>
-                      {/* Progress bar */}
                       <div style={{ marginBottom:16 }}>
-                        <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
+                        <div style={{ display:"flex", justifyBetween:"space-between", marginBottom:6 }}>
                           <span style={{ fontSize:11, color:"#71717a" }}>Số ngân hàng đã liên kết</span>
                           <span style={{ fontSize:11, color:"#3b82f6", fontWeight:700 }}>{linkedBanks.length}/{MAX_BANKS}</span>
                         </div>
@@ -1406,7 +1383,7 @@ export default function WalletsPage() {
                     { label:"Thời gian", value:selectedTx.time },
                     { label:"Ghi chú", value:selectedTx.note || "—" },
                   ].map(r => (
-                    <div key={r.label} style={{ display:"flex", justifyContent:"space-between", padding:"10px 0", borderBottom:"1px solid #1f1f1f" }}>
+                    <div key={r.label} style={{ display:"flex", justifyBetween:"space-between", padding:"10px 0", borderBottom:"1px solid #1f1f1f" }}>
                       <span style={{ fontSize:13, color:"#71717a" }}>{r.label}</span>
                       <span style={{ fontSize:13, fontWeight:600 }}>{r.value}</span>
                     </div>

@@ -1,7 +1,5 @@
-"use client";
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, Wallet, Mail, Lock, ArrowRight, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -32,9 +30,8 @@ const getMockUserEmailByName = (name) => {
   return null;
 };
 
-
 export default function LoginPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
@@ -68,7 +65,7 @@ export default function LoginPage() {
           name: admin.name,
           role: admin.role,
         }));
-        router.push("/admin");
+        navigate("/admin");
       } else {
         // Tài khoản User thông thường
         localStorage.removeItem("bw_admin_token");
@@ -168,7 +165,7 @@ export default function LoginPage() {
           }
         } catch(e) { /* silent */ }
 
-        router.push("/dashboard");
+        navigate("/dashboard");
       }
     }, 1500);
   };
@@ -286,7 +283,7 @@ export default function LoginPage() {
           <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>Đăng nhập</h2>
           <p style={{ color: "#71717a", marginBottom: 32, fontSize: 14 }}>
             Chưa có tài khoản?{" "}
-            <Link href="/register" style={{ color: "#e11d48", fontWeight: 600, textDecoration: "none" }}>
+            <Link to="/register" style={{ color: "#e11d48", fontWeight: 600, textDecoration: "none" }}>
               Đăng ký ngay
             </Link>
           </p>
@@ -360,7 +357,7 @@ export default function LoginPage() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Link href="#" style={{ color: "#e11d48", fontSize: 13, textDecoration: "none" }}>
+              <Link to="#" style={{ color: "#e11d48", fontSize: 13, textDecoration: "none" }}>
                 Quên mật khẩu?
               </Link>
             </div>

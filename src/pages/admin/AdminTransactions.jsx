@@ -1,4 +1,3 @@
-"use client";
 import { useState, useEffect } from "react";
 import { 
   Check, X, Search, Filter, ArrowDownLeft, ArrowUpRight, 
@@ -53,7 +52,7 @@ const parseTxTime = (timeStr) => {
   }
 };
 
-export default function AdminTransactionsPage() {
+export default function AdminTransactions() {
   const [txList, setTxList] = useState([]);
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterType, setFilterType] = useState("all");

@@ -1,11 +1,10 @@
-"use client";
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Wallet, Mail, RefreshCw, CheckCircle, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function VerifyOtpPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
@@ -56,7 +55,7 @@ export default function VerifyOtpPage() {
       setLoading(false);
       // Demo: bất kỳ code 6 số đều hợp lệ
       setSuccess(true);
-      setTimeout(() => router.push("/login"), 2000);
+      setTimeout(() => navigate("/login"), 2000);
     }, 1500);
   };
 
@@ -96,7 +95,7 @@ export default function VerifyOtpPage() {
           <>
             {/* Back button */}
             <button
-              onClick={() => router.back()}
+              onClick={() => navigate(-1)}
               style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", color: "#71717a", cursor: "pointer", fontSize: 14, marginBottom: 24 }}
             >
               <ArrowLeft size={16} /> Quay lại

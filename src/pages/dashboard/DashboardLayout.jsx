@@ -1,11 +1,9 @@
-"use client";
 import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
+import { useNavigate, useLocation, Link, Outlet } from "react-router-dom";
 import {
-  Wallet, LayoutDashboard, CreditCard, Gift, Settings,
-  Bell, ChevronDown, User, Shield, LogOut, Menu, X,
-  AlertTriangle, TrendingUp, CheckCircle, Check, Clock
+  Wallet, LayoutDashboard, CreditCard, Gift,
+  Bell, ChevronDown, User, Shield, LogOut, Menu,
+  AlertTriangle, CheckCircle, Check, Clock
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -15,9 +13,10 @@ const navItems = [
   { href: "/dashboard/offers", icon: Gift, label: "Ưu đãi" },
 ];
 
-export default function DashboardLayout({ children }) {
-  const router = useRouter();
-  const pathname = usePathname();
+export default function DashboardLayout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
   const [user, setUser] = useState(null);
   const [showNotif, setShowNotif] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -222,10 +221,10 @@ export default function DashboardLayout({ children }) {
     const userData = localStorage.getItem("bw_user");
     // Nếu không có token user nhưng có token admin, chuyển thẳng về admin panel
     if (!token && localStorage.getItem("bw_admin_token")) {
-      router.replace("/admin");
+      navigate("/admin", { replace: true });
       return;
     }
-    if (!token) { router.replace("/login"); return; }
+    if (!token) { navigate("/login", { replace: true }); return; }
     if (userData) setUser(JSON.parse(userData));
 
     const handleStorageChange = () => {
@@ -240,7 +239,7 @@ export default function DashboardLayout({ children }) {
       window.removeEventListener("kyc_updated", handleStorageChange);
       window.removeEventListener("balance_updated", handleStorageChange);
     };
-  }, [router, pathname]);
+  }, [navigate, pathname]);
 
   // Helper: chuẩn hoá trạng thái KYC
   const isKycVerified = user?.kyc === true || user?.kyc === "verified" || user?.kycStatus === "verified";
@@ -249,7 +248,7 @@ export default function DashboardLayout({ children }) {
   const handleLogout = () => {
     localStorage.removeItem("bw_token");
     localStorage.removeItem("bw_user");
-    router.push("/login");
+    navigate("/login");
   };
 
   const Sidebar = ({ mobile = false }) => (
@@ -275,7 +274,7 @@ export default function DashboardLayout({ children }) {
         {navItems.map(({ href, icon: Icon, label }) => {
           const active = pathname === href || (href !== "/dashboard" && pathname.startsWith(href));
           return (
-            <Link key={href} href={href} onClick={() => setSidebarOpen(false)} style={{ textDecoration: "none" }}>
+            <Link key={href} to={href} onClick={() => setSidebarOpen(false)} style={{ textDecoration: "none" }}>
               <div style={{
                 display: "flex", alignItems: "center", gap: 12,
                 padding: "11px 12px", borderRadius: 10, marginBottom: 4,
@@ -378,7 +377,7 @@ export default function DashboardLayout({ children }) {
             ) : isKycPending ? (
               // ⏳ Đang chờ duyệt
               <button
-                onClick={() => router.push("/dashboard/kyc")}
+                onClick={() => navigate("/dashboard/kyc")}
                 style={{
                   display: "flex", alignItems: "center", gap: 6,
                   background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.2)",
@@ -393,7 +392,7 @@ export default function DashboardLayout({ children }) {
             ) : (
               // ⚠️ Chưa KYC - hiện cảnh báo
               <button
-                onClick={() => router.push("/dashboard/kyc")}
+                onClick={() => navigate("/dashboard/kyc")}
                 style={{
                   display: "flex", alignItems: "center", gap: 6,
                   background: "rgba(245,158,11,0.1)", border: "1px solid rgba(245,158,11,0.3)",
@@ -441,7 +440,7 @@ export default function DashboardLayout({ children }) {
                     borderRadius: 14, boxShadow: "0 20px 60px rgba(0,0,0,0.5)", zIndex: 100, overflow: "hidden"
                   }}
                 >
-                  <div style={{ padding: "16px 20px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                  <div style={{ padding: "16px 20px 10px", display: "flex", alignItems: "center", justifyBetween: "space-between" }}>
                     <h3 style={{ fontSize: 14, fontWeight: 700 }}>Thông báo</h3>
                     {unreadCount > 0 && <span style={{ fontSize: 11, background: "rgba(225,29,72,0.15)", color: "#e11d48", padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>{unreadCount} mới</span>}
                   </div>
@@ -486,7 +485,6 @@ export default function DashboardLayout({ children }) {
                           }}
                           onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
                           onMouseLeave={(e) => { 
-                            // Lấy trạng thái read mới nhất của notification để set background tương ứng khi hover out
                             const latest = notifications.find(x => x.id === n.id);
                             e.currentTarget.style.background = (latest && !latest.read) ? "rgba(225,29,72,0.04)" : "transparent"; 
                           }}
@@ -553,7 +551,7 @@ export default function DashboardLayout({ children }) {
                         : { icon: Shield, label: "Xác thực KYC", href: "/dashboard/kyc", status: "none" },
                     { icon: User, label: "Thông tin cá nhân", href: "/dashboard/profile", status: "none" },
                   ].map(({ icon: Icon, label, href, status }) => (
-                    <Link key={href} href={href} style={{ textDecoration: "none" }} onClick={() => setShowUserMenu(false)}>
+                    <Link key={href} to={href} style={{ textDecoration: "none" }} onClick={() => setShowUserMenu(false)}>
                       <div style={{
                         display: "flex", alignItems: "center", gap: 10, padding: "11px 16px",
                         color: status === "verified" ? "#22c55e" : status === "pending" ? "#f59e0b" : "#a1a1aa", fontSize: 13, cursor: "pointer", transition: "all 0.2s"
@@ -598,7 +596,7 @@ export default function DashboardLayout({ children }) {
 
         {/* Main Content */}
         <main style={{ flex: 1, overflow: "auto", padding: "24px" }}>
-          {children}
+          <Outlet />
         </main>
       </div>
 

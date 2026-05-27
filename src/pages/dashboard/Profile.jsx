@@ -1,4 +1,3 @@
-"use client";
 import { useState } from "react";
 import { User, Camera, Phone, MapPin, Calendar, Save, Shield } from "lucide-react";
 import { motion } from "framer-motion";

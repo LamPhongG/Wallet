@@ -1,8 +1,6 @@
-"use client";
 import { useState, useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
-import Link from "next/link";
-import { Users, Settings, Newspaper, LayoutGrid, LogOut, Wallet, ChevronRight, Menu, Shield, ArrowRightLeft } from "lucide-react";
+import { useNavigate, useLocation, Link, Outlet } from "react-router-dom";
+import { Users, Settings, Newspaper, LayoutGrid, LogOut, Wallet, Menu, Shield, ArrowRightLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const adminNav = [
@@ -13,27 +11,27 @@ const adminNav = [
   { href:"/admin/media", icon:Newspaper, label:"Bài viết" },
 ];
 
-export default function AdminLayout({ children }) {
-  const router = useRouter();
-  const pathname = usePathname();
+export default function AdminLayout() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const pathname = location.pathname;
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [adminUser, setAdminUser] = useState(null);
 
   useEffect(() => {
-    // Kiểm tra token ADMIN riêng biệt (không dùng chung với user)
     if (!localStorage.getItem("bw_admin_token")) {
-      router.replace("/login");
+      navigate("/login", { replace: true });
       return;
     }
     const saved = localStorage.getItem("bw_admin");
     if (saved) setAdminUser(JSON.parse(saved));
-  }, [router]);
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("bw_admin_token");
     localStorage.removeItem("bw_admin");
-    router.push("/login");
+    navigate("/login");
   };
 
   const Sidebar = () => (
@@ -52,7 +50,7 @@ export default function AdminLayout({ children }) {
         {adminNav.map(({ href, icon:Icon, label }) => {
           const active = pathname === href;
           return (
-            <Link key={href} href={href} style={{ textDecoration:"none" }} onClick={() => setSidebarOpen(false)}>
+            <Link key={href} to={href} style={{ textDecoration:"none" }} onClick={() => setSidebarOpen(false)}>
               <div style={{
                 display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:10, marginBottom:2,
                 background: active ? "rgba(225,29,72,0.12)" : "transparent",
@@ -130,7 +128,6 @@ export default function AdminLayout({ children }) {
               </h2>
             </div>
             <span style={{ fontSize:11, background:"rgba(225,29,72,0.15)", color:"#e11d48", padding:"3px 10px", borderRadius:6, fontWeight:700 }}>ADMIN</span>
-            {/* Admin user info in header */}
             {adminUser && (
               <div className="hidden sm:flex" style={{ alignItems:"center", gap:8, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"5px 10px 5px 6px" }}>
                 <div style={{ width:24, height:24, borderRadius:"50%", background:"linear-gradient(135deg,#e11d48,#9f1239)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
@@ -158,7 +155,9 @@ export default function AdminLayout({ children }) {
               <span className="hidden sm:inline">Đăng xuất</span>
             </button>
           </header>
-          <main style={{ flex:1, overflow:"auto", padding:"20px" }}>{children}</main>
+          <main style={{ flex:1, overflow:"auto", padding:"20px" }}>
+            <Outlet />
+          </main>
         </div>
       </div>
 

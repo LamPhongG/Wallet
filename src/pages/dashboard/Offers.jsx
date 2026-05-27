@@ -1,6 +1,5 @@
-"use client";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Clock, ChevronRight, Flame } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -12,7 +11,7 @@ const tagColors = {
 };
 
 export default function OffersPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [activeTag, setActiveTag] = useState("Tất cả");
   const [vouchers, setVouchers] = useState([]);
 
@@ -21,7 +20,6 @@ export default function OffersPage() {
     if (saved) {
       try {
         const all = JSON.parse(saved);
-        // Chỉ hiển thị voucher đang Bật (active: true)
         setVouchers(all.filter(v => v.active !== false));
       } catch { setVouchers([]); }
     }
@@ -29,13 +27,13 @@ export default function OffersPage() {
 
   useEffect(() => {
     loadVouchers();
-    // Lắng nghe khi admin cập nhật voucher
     const handler = () => loadVouchers();
     window.addEventListener("bw_vouchers_updated", handler);
-    // Cũng lắng nghe storage event (khác tab)
-    window.addEventListener("storage", (e) => { if (e.key === STORAGE_KEY) loadVouchers(); });
+    const storageHandler = (e) => { if (e.key === STORAGE_KEY) loadVouchers(); };
+    window.addEventListener("storage", storageHandler);
     return () => {
       window.removeEventListener("bw_vouchers_updated", handler);
+      window.removeEventListener("storage", storageHandler);
     };
   }, []);
 
@@ -47,7 +45,7 @@ export default function OffersPage() {
     let modalType = "transfer";
     if (type === "Rút tiền") modalType = "withdraw";
     else if (type === "Nạp tiền") modalType = "deposit";
-    router.push(`/dashboard/wallets?promo=${v.code}&modal=${modalType}`);
+    navigate(`/dashboard/wallets?promo=${v.code}&modal=${modalType}`);
   };
 
   return (

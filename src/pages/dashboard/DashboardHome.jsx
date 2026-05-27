@@ -1,14 +1,14 @@
-"use client";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import {
   TrendingUp, TrendingDown, ArrowUpRight, ArrowDownLeft,
-  Wallet, RefreshCw, Sparkles, ChevronRight, Calendar,
-  DollarSign, Users, BarChart3, Newspaper, X, Send, Settings
+  Wallet, Sparkles, ChevronRight, Calendar,
+  BarChart3, Newspaper, X, Send, Settings
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, PieChart, Pie, Cell, Legend
+  ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
 
 const getUserBaseBalance = (email) => {
@@ -251,6 +251,17 @@ const formatTxDateAndTime = (timeStr) => {
   }
 };
 
+const getMockUserEmailByName = (name) => {
+  if (!name) return null;
+  const lower = name.toLowerCase();
+  if (lower.includes("nguyễn văn a")) return "nva@email.com";
+  if (lower.includes("trần thị b")) return "ttb@email.com";
+  if (lower.includes("lê văn c")) return "lvc@email.com";
+  if (lower.includes("phạm thị d")) return "ptd@email.com";
+  if (lower.includes("hoàng minh e")) return "hme@email.com";
+  return null;
+};
+
 const getMonthlyStats = (txs) => {
   const now = new Date();
   const currentMonth = now.getMonth();
@@ -270,12 +281,6 @@ const getMonthlyStats = (txs) => {
   
   return { monthlyIncome, monthlyExpense };
 };
-
-const newsData = [
-  { id: 1, title: "Ngân hàng Nhà nước điều chỉnh lãi suất tiết kiệm", time: "2 giờ trước", tag: "Kinh tế" },
-  { id: 2, title: "Thanh toán không tiền mặt tăng 40% trong năm 2025", time: "5 giờ trước", tag: "Fintech" },
-  { id: 3, title: "AI tài chính: xu hướng quản lý chi tiêu thông minh", time: "1 ngày trước", tag: "Công nghệ" },
-];
 
 const fmtCurrency = (n) => {
   const abs = Math.abs(n);
@@ -374,7 +379,6 @@ export default function DashboardPage() {
             const errData = await res.json().catch(() => ({}));
             lastErrorMessage = errData?.error?.message || `HTTP ${res.status}`;
             const errLower = lastErrorMessage.toLowerCase();
-            // Phát hiện lỗi key không hợp lệ / hết hạn dựa trên message cụ thể
             const isKeyError = res.status === 401
               || errLower.includes("api key not valid")
               || errLower.includes("api_key_invalid")
@@ -385,7 +389,6 @@ export default function DashboardPage() {
               keyInvalid = true;
               break;
             }
-            // status 400 không phải key error → có thể là model không tồn tại, thử model tiếp theo
           }
         } catch (e) {
           lastErrorMessage = e.message || "Network Error";
@@ -393,7 +396,6 @@ export default function DashboardPage() {
       }
 
       if (keyInvalid) {
-        // Key hết hạn → xóa và mở settings
         localStorage.removeItem("bw_gemini_api_key");
         setShowApiKeyInput(true);
         setApiKeyInput("");
@@ -948,9 +950,9 @@ export default function DashboardPage() {
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <h3 style={{ fontSize: 15, fontWeight: 700 }}>Giao dịch gần đây</h3>
-          <a href="/dashboard/wallets" style={{ fontSize: 13, color: "#e11d48", textDecoration: "none", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+          <Link to="/dashboard/wallets" style={{ fontSize: 13, color: "#e11d48", textDecoration: "none", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
             Xem tất cả <ChevronRight size={14} />
-          </a>
+          </Link>
         </div>
         {loading ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

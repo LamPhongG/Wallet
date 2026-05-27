@@ -1,12 +1,10 @@
-"use client";
 import { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Wallet, Mail, Lock, User, ArrowRight, CheckCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Eye, EyeOff, Wallet, Mail, Lock, ArrowRight, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function RegisterPage() {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "", confirmPassword: "" });
   const [showPass, setShowPass] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -32,7 +30,7 @@ export default function RegisterPage() {
     setTimeout(() => {
       setLoading(false);
       localStorage.setItem("bw_pending_email", form.email);
-      router.push("/verify-otp");
+      navigate("/verify-otp");
     }, 1500);
   };
 
@@ -188,7 +186,7 @@ export default function RegisterPage() {
 
         <p style={{ textAlign: "center", marginTop: 20, color: "#52525b", fontSize: 14 }}>
           Đã có tài khoản?{" "}
-          <Link href="/login" style={{ color: "#e11d48", fontWeight: 600, textDecoration: "none" }}>Đăng nhập</Link>
+          <Link to="/login" style={{ color: "#e11d48", fontWeight: 600, textDecoration: "none" }}>Đăng nhập</Link>
         </p>
       </motion.div>
     </div>

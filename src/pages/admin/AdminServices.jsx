@@ -1,4 +1,3 @@
-"use client";
 import { useState, useEffect } from "react";
 import { Plus, Pencil, Trash2, X, Tag, Percent, FolderOpen, Flame } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,7 +23,7 @@ const categories = ["Ăn uống","Di chuyển","Mua sắm","Giải trí","Hóa �
 
 const emptyForm = { code:"", title:"", desc:"", discount:"", type:"Chuyển tiền", exp:"", hot:false };
 
-export default function AdminServicesPage() {
+export default function AdminServices() {
   const [tab, setTab] = useState("voucher");
   const [vouchers, setVouchers] = useState([]);
   const [showModal, setShowModal] = useState(false);

@@ -1,5 +1,4 @@
-"use client";
-import { Users, CreditCard, ArrowUpRight, TrendingUp, Activity } from "lucide-react";
+import { Users, CreditCard, TrendingUp, Activity } from "lucide-react";
 import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
