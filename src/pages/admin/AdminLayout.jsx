@@ -37,12 +37,12 @@ export default function AdminLayout() {
   const Sidebar = () => (
     <aside style={{ width:220, background:"#080808", borderRight:"1px solid #1a1a1a", display:"flex", flexDirection:"column", height:"100%", padding:"20px 12px" }}>
       <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:32, paddingLeft:8 }}>
-        <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#e11d48,#9f1239)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+        <div style={{ width:32, height:32, borderRadius:8, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", display:"flex", alignItems:"center", justifyContent:"center" }}>
           <Wallet size={16} color="white" />
         </div>
         <div>
-          <span style={{ fontSize:15, fontWeight:800 }}>Black<span style={{ color:"#e11d48" }}>red</span></span>
-          <p style={{ fontSize:10, color:"#e11d48", fontWeight:600 }}>ADMIN</p>
+          <span style={{ fontSize:15, fontWeight:800 }}>Black<span style={{ color:"#2563eb" }}>red</span></span>
+          <p style={{ fontSize:10, color:"#2563eb", fontWeight:600 }}>ADMIN</p>
         </div>
       </div>
 
@@ -53,9 +53,9 @@ export default function AdminLayout() {
             <Link key={href} to={href} style={{ textDecoration:"none" }} onClick={() => setSidebarOpen(false)}>
               <div style={{
                 display:"flex", alignItems:"center", gap:10, padding:"10px 12px", borderRadius:10, marginBottom:2,
-                background: active ? "rgba(225,29,72,0.12)" : "transparent",
-                border: `1px solid ${active ? "rgba(225,29,72,0.2)" : "transparent"}`,
-                color: active ? "#e11d48" : "#71717a", transition:"all 0.2s", fontWeight: active ? 600 : 400
+                background: active ? "rgba(37,99,235,0.12)" : "transparent",
+                border: `1px solid ${active ? "rgba(37,99,235,0.2)" : "transparent"}`,
+                color: active ? "#2563eb" : "#71717a", transition:"all 0.2s", fontWeight: active ? 600 : 400
               }}
               onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "#a1a1aa"; }}}
               onMouseLeave={(e) => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#71717a"; }}}
@@ -72,12 +72,12 @@ export default function AdminLayout() {
         {adminUser && (
           <div style={{ padding:"10px 12px", marginBottom:4 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              <div style={{ width:30, height:30, borderRadius:"50%", background:"linear-gradient(135deg,#e11d48,#9f1239)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+              <div style={{ width:30, height:30, borderRadius:"50%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                 <Shield size={14} color="white" />
               </div>
               <div style={{ flex:1, minWidth:0 }}>
                 <p style={{ fontSize:12, fontWeight:700, overflow:"hidden", textOverflow:"ellipsis", whiteSpace:"nowrap" }}>{adminUser.name}</p>
-                <p style={{ fontSize:10, color:"#e11d48", fontWeight:600, textTransform:"uppercase" }}>{adminUser.role}</p>
+                <p style={{ fontSize:10, color:"#2563eb", fontWeight:600, textTransform:"uppercase" }}>{adminUser.role}</p>
               </div>
             </div>
           </div>
@@ -127,15 +127,15 @@ export default function AdminLayout() {
                 {adminNav.find(n => n.href === pathname)?.label || "Admin Panel"}
               </h2>
             </div>
-            <span style={{ fontSize:11, background:"rgba(225,29,72,0.15)", color:"#e11d48", padding:"3px 10px", borderRadius:6, fontWeight:700 }}>ADMIN</span>
+            <span style={{ fontSize:11, background:"rgba(37,99,235,0.15)", color:"#2563eb", padding:"3px 10px", borderRadius:6, fontWeight:700 }}>ADMIN</span>
             {adminUser && (
               <div className="hidden sm:flex" style={{ alignItems:"center", gap:8, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"5px 10px 5px 6px" }}>
-                <div style={{ width:24, height:24, borderRadius:"50%", background:"linear-gradient(135deg,#e11d48,#9f1239)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                <div style={{ width:24, height:24, borderRadius:"50%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                   <Shield size={12} color="white" />
                 </div>
                 <div>
                   <p style={{ fontSize:12, fontWeight:700, lineHeight:1 }}>{adminUser.name}</p>
-                  <p style={{ fontSize:10, color:"#e11d48", fontWeight:600, textTransform:"uppercase" }}>{adminUser.role}</p>
+                  <p style={{ fontSize:10, color:"#2563eb", fontWeight:600, textTransform:"uppercase" }}>{adminUser.role}</p>
                 </div>
               </div>
             )}

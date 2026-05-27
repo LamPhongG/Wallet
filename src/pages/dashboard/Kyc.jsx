@@ -100,7 +100,7 @@ export default function KycPage() {
         </motion.div>
         <h2 style={{ fontSize:22, fontWeight:800, marginBottom:8, color:"#22c55e" }}>Tài khoản đã xác minh</h2>
         <p style={{ color:"#71717a", fontSize:14, lineHeight:1.6 }}>
-          Chúc mừng! Tài khoản Blackred Wallet của bạn đã được hoàn tất xác thực danh tính (KYC).<br />
+          Chúc mừng! Tài khoản SmartWallet Wallet của bạn đã được hoàn tất xác thực danh tính (KYC).<br />
           Hạn mức giao dịch của bạn đã được nâng cấp lên tối đa và mở khóa đầy đủ tính năng nạp/rút tiền.
         </p>
       </div>
@@ -135,8 +135,8 @@ export default function KycPage() {
             <div style={{ display:"flex", alignItems:"center", gap:10, flexShrink:0 }}>
               <div style={{
                 width:32, height:32, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", fontWeight:700, fontSize:13,
-                background: step > s.id ? "#22c55e" : step === s.id ? "#e11d48" : "#1a1a1a",
-                border: `2px solid ${step > s.id ? "#22c55e" : step === s.id ? "#e11d48" : "#2a2a2a"}`,
+                background: step > s.id ? "#22c55e" : step === s.id ? "#2563eb" : "#1a1a1a",
+                border: `2px solid ${step > s.id ? "#22c55e" : step === s.id ? "#2563eb" : "#2a2a2a"}`,
                 color: step >= s.id ? "white" : "#52525b", transition:"all 0.3s"
               }}>
                 {step > s.id ? <CheckCircle size={16} /> : s.id}
@@ -168,12 +168,12 @@ export default function KycPage() {
               <input value={form[f.key]} onChange={e => setForm(p => ({...p,[f.key]:e.target.value}))}
                 type={f.type||"text"} placeholder={f.placeholder}
                 style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px", color:"white", fontSize:14, outline:"none" }}
-                onFocus={e => { e.target.style.borderColor="#e11d48"; }}
+                onFocus={e => { e.target.style.borderColor="#2563eb"; }}
                 onBlur={e => { e.target.style.borderColor="#2a2a2a"; }}
               />
             </div>
           ))}
-          <button onClick={handleSubmit} style={{ width:"100%", background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:8 }}>
+          <button onClick={handleSubmit} style={{ width:"100%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", gap:8, marginTop:8 }}>
             Tiếp theo <ArrowRight size={16} />
           </button>
         </motion.div>
@@ -217,7 +217,7 @@ export default function KycPage() {
             <button onClick={() => setStep(1)} style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", borderRadius:10, padding:"12px", fontWeight:600, fontSize:14, cursor:"pointer" }}>
               Quay lại
             </button>
-            <button onClick={handleSubmit} style={{ flex:2, background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+            <button onClick={handleSubmit} style={{ flex:2, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
               Gửi xác minh
             </button>
           </div>

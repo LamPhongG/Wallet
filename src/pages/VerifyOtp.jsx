@@ -70,7 +70,7 @@ export default function VerifyOtpPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#0a0a0a" }}>
       <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
-        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 700, height: 700, background: "radial-gradient(circle, rgba(225,29,72,0.07) 0%, transparent 70%)", borderRadius: "50%" }} />
+        <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 700, height: 700, background: "radial-gradient(circle, rgba(37,99,235,0.07) 0%, transparent 70%)", borderRadius: "50%" }} />
       </div>
 
       <motion.div
@@ -104,8 +104,8 @@ export default function VerifyOtpPage() {
             {/* Card */}
             <div style={{ background: "#111", border: "1px solid #1f1f1f", borderRadius: 20, padding: 40, textAlign: "center" }}>
               {/* Icon */}
-              <div style={{ width: 72, height: 72, background: "linear-gradient(135deg, rgba(225,29,72,0.2), rgba(159,18,57,0.1))", border: "1px solid rgba(225,29,72,0.2)", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
-                <Mail size={32} style={{ color: "#e11d48" }} />
+              <div style={{ width: 72, height: 72, background: "linear-gradient(135deg, rgba(37,99,235,0.2), rgba(29,78,216,0.1))", border: "1px solid rgba(37,99,235,0.2)", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 24px" }}>
+                <Mail size={32} style={{ color: "#2563eb" }} />
               </div>
 
               <h1 style={{ fontSize: 24, fontWeight: 800, marginBottom: 8 }}>Xác thực Email</h1>
@@ -132,11 +132,11 @@ export default function VerifyOtpPage() {
                     transition={{ delay: i * 0.07 }}
                     style={{
                       width: 52, height: 60, textAlign: "center", fontSize: 24, fontWeight: 700,
-                      background: digit ? "rgba(225,29,72,0.1)" : "#1a1a1a",
-                      border: `2px solid ${digit ? "#e11d48" : (error ? "#ef4444" : "#2a2a2a")}`,
+                      background: digit ? "rgba(37,99,235,0.1)" : "#1a1a1a",
+                      border: `2px solid ${digit ? "#2563eb" : (error ? "#ef4444" : "#2a2a2a")}`,
                       borderRadius: 12, color: "white", outline: "none", transition: "all 0.2s"
                     }}
-                    onFocus={(e) => { e.target.style.borderColor = "#e11d48"; e.target.style.boxShadow = "0 0 0 3px rgba(225,29,72,0.15)"; }}
+                    onFocus={(e) => { e.target.style.borderColor = "#2563eb"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.15)"; }}
                     onBlur={(e) => { e.target.style.boxShadow = "none"; if (!digit) e.target.style.borderColor = error ? "#ef4444" : "#2a2a2a"; }}
                   />
                 ))}
@@ -152,7 +152,7 @@ export default function VerifyOtpPage() {
                 disabled={loading}
                 style={{
                   width: "100%",
-                  background: loading ? "#3f3f46" : "linear-gradient(135deg, #e11d48, #9f1239)",
+                  background: loading ? "#3f3f46" : "linear-gradient(135deg, #2563eb, #1d4ed8)",
                   color: "white", border: "none", borderRadius: 10,
                   padding: "14px", fontWeight: 700, fontSize: 15,
                   cursor: loading ? "not-allowed" : "pointer",
@@ -170,14 +170,14 @@ export default function VerifyOtpPage() {
                 {canResend ? (
                   <button
                     onClick={handleResend}
-                    style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", color: "#e11d48", cursor: "pointer", fontWeight: 600, fontSize: 14 }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "none", border: "none", color: "#2563eb", cursor: "pointer", fontWeight: 600, fontSize: 14 }}
                   >
                     <RefreshCw size={14} /> Gửi lại mã OTP
                   </button>
                 ) : (
                   <span>
                     Gửi lại sau{" "}
-                    <span style={{ color: "#e11d48", fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ color: "#2563eb", fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>
                       {String(Math.floor(countdown / 60)).padStart(2, "0")}:{String(countdown % 60).padStart(2, "0")}
                     </span>
                   </span>

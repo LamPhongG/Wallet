@@ -262,10 +262,10 @@ export default function DashboardLayout() {
     }}>
       {/* Logo */}
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 36, paddingLeft: 8 }}>
-        <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #e11d48, #9f1239)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+        <div style={{ width: 36, height: 36, borderRadius: 10, background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
           <Wallet size={18} color="white" />
         </div>
-        <span style={{ fontSize: 18, fontWeight: 800 }}>Black<span style={{ color: "#e11d48" }}>red</span></span>
+        <span style={{ fontSize: 18, fontWeight: 800 }}>Black<span style={{ color: "#2563eb" }}>red</span></span>
       </div>
 
       {/* Nav items */}
@@ -278,9 +278,9 @@ export default function DashboardLayout() {
               <div style={{
                 display: "flex", alignItems: "center", gap: 12,
                 padding: "11px 12px", borderRadius: 10, marginBottom: 4,
-                background: active ? "rgba(225,29,72,0.12)" : "transparent",
-                border: active ? "1px solid rgba(225,29,72,0.2)" : "1px solid transparent",
-                color: active ? "#e11d48" : "#71717a",
+                background: active ? "rgba(37,99,235,0.12)" : "transparent",
+                border: active ? "1px solid rgba(37,99,235,0.2)" : "1px solid transparent",
+                color: active ? "#2563eb" : "#71717a",
                 transition: "all 0.2s", cursor: "pointer", fontWeight: active ? 600 : 400
               }}
               onMouseEnter={(e) => { if (!active) { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "#a1a1aa"; } }}
@@ -288,7 +288,7 @@ export default function DashboardLayout() {
               >
                 <Icon size={18} />
                 <span style={{ fontSize: 14 }}>{label}</span>
-                {active && <div style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: "#e11d48" }} />}
+                {active && <div style={{ marginLeft: "auto", width: 6, height: 6, borderRadius: "50%", background: "#2563eb" }} />}
               </div>
             </Link>
           );
@@ -299,7 +299,7 @@ export default function DashboardLayout() {
       {user && (
         <div style={{ padding: "12px", background: "#1a1a1a", borderRadius: 12, marginTop: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg, #e11d48, #9f1239)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
               <User size={16} color="white" />
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
@@ -357,7 +357,7 @@ export default function DashboardLayout() {
             <h2 style={{ fontSize: 16, fontWeight: 700, color: "#fff" }}>
               {pathname === "/dashboard" ? "Dashboard" :
                pathname.includes("wallets") ? "My Wallets" :
-               pathname.includes("offers") ? "Ưu đãi" : "Blackred Wallet"}
+               pathname.includes("offers") ? "Ưu đãi" : "SmartWallet Wallet"}
             </h2>
           </div>
 
@@ -421,7 +421,7 @@ export default function DashboardLayout() {
               {unreadCount > 0 && (
                 <div style={{
                   position: "absolute", top: 6, right: 6, width: 8, height: 8,
-                  background: "#e11d48", borderRadius: "50%",
+                  background: "#2563eb", borderRadius: "50%",
                   animation: "pulse-red 2s infinite"
                 }} />
               )}
@@ -442,7 +442,7 @@ export default function DashboardLayout() {
                 >
                   <div style={{ padding: "16px 20px 10px", display: "flex", alignItems: "center", justifyBetween: "space-between" }}>
                     <h3 style={{ fontSize: 14, fontWeight: 700 }}>Thông báo</h3>
-                    {unreadCount > 0 && <span style={{ fontSize: 11, background: "rgba(225,29,72,0.15)", color: "#e11d48", padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>{unreadCount} mới</span>}
+                    {unreadCount > 0 && <span style={{ fontSize: 11, background: "rgba(37,99,235,0.15)", color: "#2563eb", padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>{unreadCount} mới</span>}
                   </div>
 
                   {/* Filter Pills */}
@@ -457,9 +457,9 @@ export default function DashboardLayout() {
                         onClick={(e) => { e.stopPropagation(); setNotifFilter(f.id); }}
                         style={{
                           padding: "4px 10px", borderRadius: 20, fontSize: 11, fontWeight: 500,
-                          background: notifFilter === f.id ? "rgba(225,29,72,0.15)" : "#161616",
-                          border: `1px solid ${notifFilter === f.id ? "rgba(225,29,72,0.4)" : "#222"}`,
-                          color: notifFilter === f.id ? "#e11d48" : "#71717a",
+                          background: notifFilter === f.id ? "rgba(37,99,235,0.15)" : "#161616",
+                          border: `1px solid ${notifFilter === f.id ? "rgba(37,99,235,0.4)" : "#222"}`,
+                          color: notifFilter === f.id ? "#2563eb" : "#71717a",
                           cursor: "pointer", transition: "all 0.2s"
                         }}
                       >
@@ -480,17 +480,17 @@ export default function DashboardLayout() {
                           onClick={() => handleMarkAsRead(n.id)}
                           style={{
                             padding: "14px 20px", borderBottom: "1px solid #1a1a1a",
-                            background: !n.read ? "rgba(225,29,72,0.04)" : "transparent",
+                            background: !n.read ? "rgba(37,99,235,0.04)" : "transparent",
                             cursor: "pointer", transition: "background 0.2s"
                           }}
                           onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
                           onMouseLeave={(e) => { 
                             const latest = notifications.find(x => x.id === n.id);
-                            e.currentTarget.style.background = (latest && !latest.read) ? "rgba(225,29,72,0.04)" : "transparent"; 
+                            e.currentTarget.style.background = (latest && !latest.read) ? "rgba(37,99,235,0.04)" : "transparent"; 
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                            {!n.read && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#e11d48", marginTop: 6, flexShrink: 0 }} />}
+                            {!n.read && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#2563eb", marginTop: 6, flexShrink: 0 }} />}
                             <div style={{ flex: 1 }}>
                               <p style={{ fontSize: 13, fontWeight: 600, marginBottom: 2 }}>{n.title}</p>
                               <p style={{ fontSize: 12, color: "#71717a" }}>{n.desc}</p>
@@ -517,7 +517,7 @@ export default function DashboardLayout() {
                 cursor: "pointer"
               }}
             >
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg, #e11d48, #9f1239)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center" }}>
                 <User size={14} color="white" />
               </div>
               <span style={{ fontSize: 13, fontWeight: 500, color: "#e4e4e7" }} className="hidden sm:inline">

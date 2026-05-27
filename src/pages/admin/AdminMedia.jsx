@@ -134,7 +134,7 @@ export default function AdminMedia() {
           <h1 style={{ fontSize: 18, fontWeight: 800, marginBottom: 2 }}>Quản lý Bài viết</h1>
           <p style={{ color: "#71717a", fontSize: 13 }}>{posts.length} bài viết tin tức tài chính đang hoạt động</p>
         </div>
-        <button onClick={openAdd} style={{ display: "flex", alignItems: "center", gap: 6, background: "linear-gradient(135deg,#e11d48,#9f1239)", color: "white", border: "none", borderRadius: 8, padding: "9px 16px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
+        <button onClick={openAdd} style={{ display: "flex", alignItems: "center", gap: 6, background: "linear-gradient(135deg,#2563eb,#1d4ed8)", color: "white", border: "none", borderRadius: 8, padding: "9px 16px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>
           <Plus size={14} /> Viết bài mới
         </button>
       </div>
@@ -164,12 +164,12 @@ export default function AdminMedia() {
               <div style={{ display: "flex", flexDirection: "column", gap: 3, paddingRight: 10 }}>
                 <span style={{ fontSize: 13, fontWeight: 600, color: "white" }}>{p.title}</span>
                 {p.link && (
-                  <span style={{ fontSize: 10, color: "#e11d48", display: "flex", alignItems: "center", gap: 3 }}>
+                  <span style={{ fontSize: 10, color: "#2563eb", display: "flex", alignItems: "center", gap: 3 }}>
                     <LinkIcon size={8} /> Chuyển hướng: {p.link}
                   </span>
                 )}
               </div>
-              <span style={{ fontSize: 11, background: "rgba(225,29,72,0.12)", color: "#e11d48", padding: "3px 8px", borderRadius: 6, fontWeight: 600, display: "inline-block", width: "fit-content" }}>
+              <span style={{ fontSize: 11, background: "rgba(37,99,235,0.12)", color: "#2563eb", padding: "3px 8px", borderRadius: 6, fontWeight: 600, display: "inline-block", width: "fit-content" }}>
                 {p.tag}
               </span>
               <span style={{ fontSize: 12, color: "#71717a" }}>{p.time}</span>
@@ -258,7 +258,7 @@ export default function AdminMedia() {
 
                 <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
                   <button onClick={() => setShowModal(false)} style={{ flex: 1, background: "#1a1a1a", border: "1px solid #2a2a2a", color: "#a1a1aa", borderRadius: 8, padding: "11px", fontWeight: 600, fontSize: 13, cursor: "pointer" }}>Huỷ</button>
-                  <button onClick={handleSave} style={{ flex: 2, background: "linear-gradient(135deg,#e11d48,#9f1239)", color: "white", border: "none", borderRadius: 8, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
+                  <button onClick={handleSave} style={{ flex: 2, background: "linear-gradient(135deg,#2563eb,#1d4ed8)", color: "white", border: "none", borderRadius: 8, padding: "11px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}>
                     {editItem ? "Cập nhật" : "Đăng bài viết"}
                   </button>
                 </div>
@@ -283,7 +283,7 @@ export default function AdminMedia() {
                           <Newspaper size={32} style={{ color: "#2a2a2a" }} />
                         </div>
                       )}
-                      <span style={{ position: "absolute", top: 12, left: 12, fontSize: 10, background: "rgba(225,29,72,0.85)", backdropFilter: "blur(4px)", color: "white", padding: "3px 10px", borderRadius: 6, fontWeight: 700 }}>
+                      <span style={{ position: "absolute", top: 12, left: 12, fontSize: 10, background: "rgba(37,99,235,0.85)", backdropFilter: "blur(4px)", color: "white", padding: "3px 10px", borderRadius: 6, fontWeight: 700 }}>
                         {form.tag}
                       </span>
                     </div>

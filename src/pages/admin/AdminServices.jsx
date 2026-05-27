@@ -14,7 +14,7 @@ const DEFAULT_VOUCHERS = [
 ];
 
 const fees = [
-  { id:1, name:"Phí chuyển tiền nội bộ", value:"0 ₫",     note:"Miễn phí giữa các ví BRW" },
+  { id:1, name:"Phí chuyển tiền nội bộ", value:"0 ₫",     note:"Miễn phí giữa các ví SW" },
   { id:2, name:"Phí chuyển ngân hàng",   value:"5,000 ₫", note:"Áp dụng mỗi giao dịch" },
   { id:3, name:"Phí rút tiền",           value:"10,000 ₫",note:"Tối thiểu rút 50,000 ₫" },
 ];
@@ -72,7 +72,7 @@ export default function AdminServices() {
   const toggleActive   = (id) => persist(vouchers.map(v => v.id === id ? { ...v, active: !v.active } : v));
 
   const tabs = [{ v:"voucher", l:"Voucher", icon:Tag }, { v:"fee", l:"Phí giao dịch", icon:Percent }, { v:"category", l:"Danh mục", icon:FolderOpen }];
-  const tagColors = { "Chuyển tiền":"#e11d48","Mua sắm":"#3b82f6","Rút tiền":"#22c55e","Referral":"#8b5cf6","Nạp tiền":"#f59e0b","Hóa đơn":"#ec4899" };
+  const tagColors = { "Chuyển tiền":"#2563eb","Mua sắm":"#3b82f6","Rút tiền":"#22c55e","Referral":"#8b5cf6","Nạp tiền":"#f59e0b","Hóa đơn":"#ec4899" };
 
   return (
     <div style={{ maxWidth:900 }}>
@@ -82,7 +82,7 @@ export default function AdminServices() {
           <p style={{ color:"#71717a", fontSize:13 }}>Voucher, phí giao dịch và danh mục chi tiêu</p>
         </div>
         {tab === "voucher" && (
-          <button onClick={openAdd} style={{ display:"flex", alignItems:"center", gap:6, background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:8, padding:"9px 16px", fontWeight:600, fontSize:13, cursor:"pointer" }}>
+          <button onClick={openAdd} style={{ display:"flex", alignItems:"center", gap:6, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:8, padding:"9px 16px", fontWeight:600, fontSize:13, cursor:"pointer" }}>
             <Plus size={14} /> Thêm voucher
           </button>
         )}
@@ -93,9 +93,9 @@ export default function AdminServices() {
         {tabs.map(t => (
           <button key={t.v} onClick={() => setTab(t.v)} style={{
             display:"flex", alignItems:"center", gap:6, padding:"8px 16px", borderRadius:8, fontSize:13, fontWeight:500,
-            background: tab===t.v ? "rgba(225,29,72,0.15)" : "#1a1a1a",
-            border:`1px solid ${tab===t.v ? "rgba(225,29,72,0.3)" : "#2a2a2a"}`,
-            color: tab===t.v ? "#e11d48" : "#71717a", cursor:"pointer"
+            background: tab===t.v ? "rgba(37,99,235,0.15)" : "#1a1a1a",
+            border:`1px solid ${tab===t.v ? "rgba(37,99,235,0.3)" : "#2a2a2a"}`,
+            color: tab===t.v ? "#2563eb" : "#71717a", cursor:"pointer"
           }}>
             <t.icon size={14} />{t.l}
           </button>
@@ -114,8 +114,8 @@ export default function AdminServices() {
             <motion.div key={v.id} initial={{opacity:0}} animate={{opacity:1}} transition={{delay:i*0.05}}
               style={{ display:"grid", gridTemplateColumns:"1fr 90px 90px 110px 100px 80px 80px", padding:"13px 16px", borderBottom:"1px solid #1a1a1a", alignItems:"center", gap:4 }}>
               <div style={{ display:"flex", alignItems:"center", gap:6 }}>
-                <span style={{ fontSize:14, fontWeight:700, fontFamily:"monospace", color:"#e11d48" }}>{v.code}</span>
-                {v.hot && <Flame size={12} style={{ color:"#e11d48" }} />}
+                <span style={{ fontSize:14, fontWeight:700, fontFamily:"monospace", color:"#2563eb" }}>{v.code}</span>
+                {v.hot && <Flame size={12} style={{ color:"#2563eb" }} />}
               </div>
               <span style={{ fontSize:13, fontWeight:600 }}>{v.discount}</span>
               <span style={{ fontSize:11, padding:"3px 8px", borderRadius:6, background:`${tagColors[v.type] || "#3f3f46"}18`, color:tagColors[v.type] || "#a1a1aa", fontWeight:600, whiteSpace:"nowrap" }}>{v.type}</span>
@@ -154,7 +154,7 @@ export default function AdminServices() {
                 <p style={{ fontSize:12, color:"#52525b", marginTop:2 }}>{f.note}</p>
               </div>
               <div style={{ display:"flex", alignItems:"center", gap:12 }}>
-                <span style={{ fontSize:16, fontWeight:800, color:"#e11d48" }}>{f.value}</span>
+                <span style={{ fontSize:16, fontWeight:800, color:"#2563eb" }}>{f.value}</span>
                 <button style={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:6, padding:"6px 10px", color:"#a1a1aa", cursor:"pointer", fontSize:12, display:"flex", alignItems:"center", gap:4 }}>
                   <Pencil size={12} /> Sửa
                 </button>
@@ -170,7 +170,7 @@ export default function AdminServices() {
           <div style={{ display:"flex", gap:10, marginBottom:16 }}>
             <input value={newCat} onChange={e => setNewCat(e.target.value)} placeholder="Tên danh mục mới..."
               style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 14px", color:"white", fontSize:14, outline:"none" }} />
-            <button onClick={() => { if (newCat.trim()) { setCatList(c => [...c, newCat.trim()]); setNewCat(""); }}} style={{ background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:8, padding:"10px 16px", fontWeight:600, fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
+            <button onClick={() => { if (newCat.trim()) { setCatList(c => [...c, newCat.trim()]); setNewCat(""); }}} style={{ background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:8, padding:"10px 16px", fontWeight:600, fontSize:13, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
               <Plus size={14} /> Thêm
             </button>
           </div>
@@ -199,14 +199,14 @@ export default function AdminServices() {
 
               {/* Code */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Mã code <span style={{ color:"#e11d48" }}>*</span></label>
+                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Mã code <span style={{ color:"#2563eb" }}>*</span></label>
                 <input value={form.code} onChange={e => setForm(p => ({...p, code: e.target.value.toUpperCase()}))} placeholder="VD: BLACKRED50"
                   style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none", fontFamily:"monospace", letterSpacing:1 }} />
               </div>
 
               {/* Title */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Tiêu đề hiển thị <span style={{ color:"#e11d48" }}>*</span></label>
+                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Tiêu đề hiển thị <span style={{ color:"#2563eb" }}>*</span></label>
                 <input value={form.title} onChange={e => setForm(p => ({...p, title:e.target.value}))} placeholder="VD: Giảm 50K phí chuyển tiền"
                   style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
               </div>
@@ -220,7 +220,7 @@ export default function AdminServices() {
 
               {/* Discount */}
               <div style={{ marginBottom:14 }}>
-                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Giá trị giảm <span style={{ color:"#e11d48" }}>*</span></label>
+                <label style={{ fontSize:12, color:"#a1a1aa", display:"block", marginBottom:6 }}>Giá trị giảm <span style={{ color:"#2563eb" }}>*</span></label>
                 <input value={form.discount} onChange={e => setForm(p => ({...p, discount:e.target.value}))} placeholder="VD: 50K  hoặc  2%  hoặc  FREE"
                   style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, padding:"10px 12px", color:"white", fontSize:13, outline:"none" }} />
               </div>
@@ -249,9 +249,9 @@ export default function AdminServices() {
                   onClick={() => setForm(p => ({...p, hot:!p.hot}))}
                   style={{
                     display:"flex", alignItems:"center", gap:6, padding:"8px 14px", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer", border:"none",
-                    background: form.hot ? "rgba(225,29,72,0.15)" : "#1a1a1a",
-                    color: form.hot ? "#e11d48" : "#71717a",
-                    outline:`1px solid ${form.hot ? "rgba(225,29,72,0.35)" : "#2a2a2a"}`
+                    background: form.hot ? "rgba(37,99,235,0.15)" : "#1a1a1a",
+                    color: form.hot ? "#2563eb" : "#71717a",
+                    outline:`1px solid ${form.hot ? "rgba(37,99,235,0.35)" : "#2a2a2a"}`
                   }}>
                   <Flame size={13} /> {form.hot ? "HOT (đang bật)" : "Đánh dấu HOT"}
                 </button>
@@ -260,7 +260,7 @@ export default function AdminServices() {
 
               <div style={{ display:"flex", gap:10 }}>
                 <button onClick={() => setShowModal(false)} style={{ flex:1, background:"#1a1a1a", border:"1px solid #2a2a2a", color:"#a1a1aa", borderRadius:8, padding:"11px", fontWeight:600, fontSize:13, cursor:"pointer" }}>Huỷ</button>
-                <button onClick={handleSave} style={{ flex:2, background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:8, padding:"11px", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                <button onClick={handleSave} style={{ flex:2, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:8, padding:"11px", fontWeight:700, fontSize:13, cursor:"pointer" }}>
                   {editItem ? "Cập nhật" : "Thêm mới"}
                 </button>
               </div>

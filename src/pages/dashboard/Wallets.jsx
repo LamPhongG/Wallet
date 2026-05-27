@@ -20,7 +20,7 @@ const VOUCHERS_FALLBACK = [
 ];
 
 const tagColors = {
-  "Chuyển tiền":"#e11d48","Mua sắm":"#3b82f6","Rút tiền":"#22c55e",
+  "Chuyển tiền":"#2563eb","Mua sắm":"#3b82f6","Rút tiền":"#22c55e",
   "Referral":"#8b5cf6","Nạp tiền":"#f59e0b","Hóa đơn":"#ec4899"
 };
 
@@ -153,7 +153,7 @@ export default function WalletsPage() {
   const [linkedBanks, setLinkedBanks] = useState([]);
   const [selectedBankId, setSelectedBankId] = useState("");
   const [toast, setToast] = useState(null);
-  const [transferMethod, setTransferMethod] = useState("blackred"); // 'blackred' | 'bank'
+  const [transferMethod, setTransferMethod] = useState("smartwallet"); // 'smartwallet' | 'bank'
   const [bankTransferForm, setBankTransferForm] = useState({ bank: "", account: "", ownerName: "" });
   const [qrUploadFile, setQrUploadFile] = useState(null);
   const [qrUploadPreview, setQrUploadPreview] = useState(null);
@@ -370,7 +370,7 @@ export default function WalletsPage() {
       amount: Number(depositForm.amount),
       time: timeStr,
       status: "pending",
-      note: depositForm.note || "Nạp tiền ví Blackred",
+      note: depositForm.note || "Nạp tiền ví SmartWallet",
       userEmail: currentEmail
     };
 
@@ -479,7 +479,7 @@ export default function WalletsPage() {
     setTxForm({ amount:"", target:"", note:"", category:"" }); 
     setDepositForm({ amount:"", note:"" }); 
     setActiveDepositTx(null);
-    setTransferMethod("blackred");
+    setTransferMethod("smartwallet");
     setBankTransferForm({ bank: "", account: "", ownerName: "" });
     setQrUploadFile(null);
     setQrUploadPreview(null);
@@ -502,7 +502,7 @@ export default function WalletsPage() {
       showToast("Vui lòng chọn danh mục chuyển tiền!", "error");
       return;
     }
-    if (transferMethod === "blackred") {
+    if (transferMethod === "smartwallet") {
       if (!txForm.target) { showToast("Vui lòng nhập SĐT hoặc email người nhận!", "error"); return; }
       if (!txForm.amount || Number(txForm.amount) <= 0) { showToast("Vui lòng nhập số tiền hợp lệ!", "error"); return; }
       
@@ -542,12 +542,12 @@ export default function WalletsPage() {
     const newTx = {
       id: txId,
       type: "send",
-      name: transferMethod === "blackred" ? `Chuyển tới ${txForm.target}` : `Chuyển tới ${bankTransferForm.bank}`,
+      name: transferMethod === "smartwallet" ? `Chuyển tới ${txForm.target}` : `Chuyển tới ${bankTransferForm.bank}`,
       amount: finalAmount,
       time: timeStr,
       status: "pending",
-      note: txForm.note || (transferMethod === "blackred" 
-        ? `Chuyển ví Blackred tới ${txForm.target}${appliedVoucher ? ` (Áp dụng mã ${appliedVoucher.code} - Giảm ${fmtCurrency(discount)})` : ""}` 
+      note: txForm.note || (transferMethod === "smartwallet" 
+        ? `Chuyển ví SmartWallet tới ${txForm.target}${appliedVoucher ? ` (Áp dụng mã ${appliedVoucher.code} - Giảm ${fmtCurrency(discount)})` : ""}` 
         : `Chuyển khoản tới ${bankTransferForm.account} - ${bankTransferForm.bank}${appliedVoucher ? ` (Áp dụng mã ${appliedVoucher.code} - Giảm ${fmtCurrency(discount)})` : ""}`),
       userEmail: currentEmail3,
       category: txForm.category
@@ -560,7 +560,7 @@ export default function WalletsPage() {
     closeModal();
   };
 
-  const btnStyle = (color="#e11d48") => ({
+  const btnStyle = (color="#2563eb") => ({
     display:"flex", flexDirection:"column", alignItems:"center", gap:8,
     background:"transparent", border:"none", cursor:"pointer", padding:"12px 16px",
     borderRadius:12, transition:"all 0.2s"
@@ -593,9 +593,9 @@ export default function WalletsPage() {
       <motion.div initial={{opacity:0,y:-10}} animate={{opacity:1,y:0}}
         style={{
           background:"linear-gradient(135deg, #1a0508 0%, #0d0d0d 50%, #0a1020 100%)",
-          border:"1px solid rgba(225,29,72,0.2)", borderRadius:20, padding:28, position:"relative", overflow:"hidden"
+          border:"1px solid rgba(37,99,235,0.2)", borderRadius:20, padding:28, position:"relative", overflow:"hidden"
         }}>
-        <div style={{ position:"absolute", top:-50, right:-50, width:200, height:200, background:"radial-gradient(circle, rgba(225,29,72,0.12) 0%, transparent 70%)", borderRadius:"50%" }} />
+        <div style={{ position:"absolute", top:-50, right:-50, width:200, height:200, background:"radial-gradient(circle, rgba(37,99,235,0.12) 0%, transparent 70%)", borderRadius:"50%" }} />
         <p style={{ color:"#71717a", fontSize:13, marginBottom:8 }}>Số dư khả dụng</p>
         {loading
           ? <div className="skeleton" style={{ height:40, width:220, marginBottom:12 }} />
@@ -612,7 +612,7 @@ export default function WalletsPage() {
             { label:"Nạp tiền", icon:ArrowDownLeft, color:"#22c55e", modal:"deposit" },
             { label:"Rút tiền", icon:ArrowUpRight,  color:"#f59e0b", modal:"withdraw" },
             { label:"Chuyển tiền", icon:CreditCard, color:"#3b82f6", modal:"transfer" },
-            { label:"Mã QR", icon:QrCode,           color:"#e11d48", modal:"qr" },
+            { label:"Mã QR", icon:QrCode,           color:"#2563eb", modal:"qr" },
           ].map(({ label, icon:Icon, color, modal:m }) => (
             <button key={m} onClick={() => setModal(m)} style={btnStyle(color)}
               onMouseEnter={(e) => { e.currentTarget.style.background = `${color}15`; }}
@@ -675,9 +675,9 @@ export default function WalletsPage() {
             {[{v:"all",l:"Tất cả"},{v:"receive",l:"Nhận"},{v:"send",l:"Chuyển"}].map(t => (
               <button key={t.v} onClick={() => setTab(t.v)} style={{
                 padding:"8px 14px", borderRadius:8, fontSize:13, fontWeight:500,
-                background: tab===t.v ? "rgba(225,29,72,0.15)" : "#1a1a1a",
-                border:`1px solid ${tab===t.v ? "rgba(225,29,72,0.3)" : "#2a2a2a"}`,
-                color: tab===t.v ? "#e11d48" : "#71717a", cursor:"pointer"
+                background: tab===t.v ? "rgba(37,99,235,0.15)" : "#1a1a1a",
+                border:`1px solid ${tab===t.v ? "rgba(37,99,235,0.3)" : "#2a2a2a"}`,
+                color: tab===t.v ? "#2563eb" : "#71717a", cursor:"pointer"
               }}>{t.l}</button>
             ))}
           </div>
@@ -693,8 +693,8 @@ export default function WalletsPage() {
                 onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; }}
               >
-                <div style={{ width:40, height:40, borderRadius:12, flexShrink:0, background: tx.type==="receive" ? "rgba(34,197,94,0.12)" : "rgba(225,29,72,0.12)", display:"flex", alignItems:"center", justifyContent:"center", marginRight:14 }}>
-                  {tx.type==="receive" ? <ArrowDownLeft size={18} style={{ color:"#22c55e" }} /> : <ArrowUpRight size={18} style={{ color:"#e11d48" }} />}
+                <div style={{ width:40, height:40, borderRadius:12, flexShrink:0, background: tx.type==="receive" ? "rgba(34,197,94,0.12)" : "rgba(37,99,235,0.12)", display:"flex", alignItems:"center", justifyContent:"center", marginRight:14 }}>
+                  {tx.type==="receive" ? <ArrowDownLeft size={18} style={{ color:"#22c55e" }} /> : <ArrowUpRight size={18} style={{ color:"#2563eb" }} />}
                 </div>
                 <div style={{ flex:1 }}>
                   <div style={{ display:"flex", alignItems:"center", gap:6 }}>
@@ -708,7 +708,7 @@ export default function WalletsPage() {
                   <p style={{ fontSize:11, color:"#52525b" }}>{tx.id} • {tx.time}</p>
                 </div>
                 <div style={{ textAlign:"right" }}>
-                  <p style={{ fontSize:14, fontWeight:700, color: tx.type==="receive" ? "#22c55e" : "#e11d48" }}>
+                  <p style={{ fontSize:14, fontWeight:700, color: tx.type==="receive" ? "#22c55e" : "#2563eb" }}>
                     {tx.type==="receive" ? "+" : "-"}{fmtCurrency(tx.amount)}
                   </p>
                   <span style={{ fontSize:10, padding:"2px 7px", borderRadius:6, fontWeight:600,
@@ -747,7 +747,7 @@ export default function WalletsPage() {
                 <div>
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:6 }}>💳 Nạp tiền</h3>
                   <p style={{ color:"#52525b", fontSize:13, marginBottom:20 }}>
-                    Nạp tiền vào ví Blackred
+                    Nạp tiền vào ví SmartWallet
                   </p>
                   
                   <div style={{ marginBottom:16 }}>
@@ -767,7 +767,7 @@ export default function WalletsPage() {
                     <input value={depositForm.note} onChange={e => setDepositForm({...depositForm, note:e.target.value})} placeholder="Nội dung nạp tiền" style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"12px 16px", color:"white", fontSize:14, outline:"none" }} />
                   </div>
 
-                  <button onClick={handleConfirmDeposit} style={{ width:"100%", background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+                  <button onClick={handleConfirmDeposit} style={{ width:"100%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
                     Xác nhận nạp {depositForm.amount ? fmtCurrency(Number(depositForm.amount)) : ""}
                   </button>
                 </div>
@@ -783,7 +783,7 @@ export default function WalletsPage() {
 
                   <div style={{ display:"inline-block", background:"white", borderRadius:16, padding:16, marginBottom:20 }}>
                     <QRCode 
-                      value={`blackred://deposit?amount=${activeDepositTx.amount}&note=${encodeURIComponent(activeDepositTx.note)}&txId=${activeDepositTx.id}`} 
+                      value={`smartwallet://deposit?amount=${activeDepositTx.amount}&note=${encodeURIComponent(activeDepositTx.note)}&txId=${activeDepositTx.id}`} 
                       size={180} 
                       level="H" 
                     />
@@ -902,7 +902,7 @@ export default function WalletsPage() {
                         </div>
                       </div>
 
-                      <button onClick={handleConfirmWithdraw} style={{ width:"100%", background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+                      <button onClick={handleConfirmWithdraw} style={{ width:"100%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
                         Xác nhận rút {depositForm.amount ? fmtCurrency(Number(depositForm.amount)) : ""}
                       </button>
                     </>
@@ -921,7 +921,7 @@ export default function WalletsPage() {
                     <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:10 }}>Phương thức chuyển tiền</label>
                     <div style={{ display:"flex", gap:10 }}>
                       {[
-                        { id: "blackred", icon: Wallet, label: "Ví Blackred", desc: "Chuyển qua SĐT / Email", color: "#e11d48" },
+                        { id: "smartwallet", icon: Wallet, label: "Ví SmartWallet", desc: "Chuyển qua SĐT / Email", color: "#2563eb" },
                         { id: "bank",     icon: Building2, label: "Ngân hàng", desc: "Chuyển tới ngân hàng khác", color: "#3b82f6" },
                       ].map(m => {
                         const active = transferMethod === m.id;
@@ -946,11 +946,11 @@ export default function WalletsPage() {
                   </div>
 
                   {/* ---- BLACKRED WALLET ---- */}
-                  {transferMethod === "blackred" && (
+                  {transferMethod === "smartwallet" && (
                     <div>
-                      <div style={{ background:"rgba(225,29,72,0.06)", border:"1px solid rgba(225,29,72,0.15)", borderRadius:10, padding:"10px 14px", marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
-                        <Smartphone size={14} style={{ color:"#e11d48", flexShrink:0 }} />
-                        <p style={{ fontSize:12, color:"#a1a1aa", lineHeight:1.5 }}>Chuyển tiền trực tiếp tới tài khoản ví Blackred bằng số điện thoại hoặc email đăng ký.</p>
+                      <div style={{ background:"rgba(37,99,235,0.06)", border:"1px solid rgba(37,99,235,0.15)", borderRadius:10, padding:"10px 14px", marginBottom:16, display:"flex", alignItems:"center", gap:8 }}>
+                        <Smartphone size={14} style={{ color:"#2563eb", flexShrink:0 }} />
+                        <p style={{ fontSize:12, color:"#a1a1aa", lineHeight:1.5 }}>Chuyển tiền trực tiếp tới tài khoản ví SmartWallet bằng số điện thoại hoặc email đăng ký.</p>
                       </div>
                       <div style={{ marginBottom:14 }}>
                         <label style={{ fontSize:13, color:"#a1a1aa", display:"block", marginBottom:6 }}>SĐT / Email người nhận *</label>
@@ -1157,13 +1157,13 @@ export default function WalletsPage() {
                     const finalAmt = Math.max(0, (Number(txForm.amount) || 0) - discount);
                     return (
                       <button onClick={handleConfirmTransfer}
-                        style={{ width:"100%", background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+                        style={{ width:"100%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
                         💸 Xác nhận chuyển {fmtCurrency(finalAmt)} (Đã giảm)
                       </button>
                     );
                   })() : (
                     <button onClick={handleConfirmTransfer}
-                      style={{ width:"100%", background:"linear-gradient(135deg,#e11d48,#9f1239)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
+                      style={{ width:"100%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color:"white", border:"none", borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer" }}>
                       💸 Xác nhận chuyển {txForm.amount ? fmtCurrency(Number(txForm.amount)) : "tiền"}
                     </button>
                   )}
@@ -1242,9 +1242,9 @@ export default function WalletsPage() {
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:6 }}>📱 Mã QR của tôi</h3>
                   <p style={{ color:"#52525b", fontSize:13, marginBottom:24 }}>Cho người khác quét để chuyển tiền cho bạn</p>
                   <div style={{ display:"inline-block", background:"white", borderRadius:16, padding:16, marginBottom:20 }}>
-                    <QRCode value="blackred://user/demo_user_123" size={180} level="H" />
+                    <QRCode value="smartwallet://user/demo_user_123" size={180} level="H" />
                   </div>
-                  <p style={{ fontSize:13, color:"#a1a1aa", marginBottom:4 }}>ID: <strong style={{ color:"#e11d48" }}>BRW-DEMO-123</strong></p>
+                  <p style={{ fontSize:13, color:"#a1a1aa", marginBottom:4 }}>ID: <strong style={{ color:"#2563eb" }}>SW-DEMO-123</strong></p>
                   <button style={{ marginTop:12, background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"10px 24px", color:"#a1a1aa", cursor:"pointer", fontSize:13 }}>
                     Tải ảnh QR
                   </button>
@@ -1365,7 +1365,7 @@ export default function WalletsPage() {
                 <div>
                   <h3 style={{ fontSize:18, fontWeight:700, marginBottom:20 }}>Chi tiết giao dịch</h3>
                   <div style={{ background:"#1a1a1a", borderRadius:12, padding:20, marginBottom:20, textAlign:"center" }}>
-                    <p style={{ fontSize:32, fontWeight:900, color: selectedTx.type==="receive" ? "#22c55e" : "#e11d48" }}>
+                    <p style={{ fontSize:32, fontWeight:900, color: selectedTx.type==="receive" ? "#22c55e" : "#2563eb" }}>
                       {selectedTx.type==="receive" ? "+" : "-"}{fmtCurrency(selectedTx.amount)}
                     </p>
                     <span style={{ fontSize:12, padding:"4px 12px", borderRadius:8, fontWeight:600,

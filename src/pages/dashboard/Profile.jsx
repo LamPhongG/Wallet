@@ -17,7 +17,7 @@ export default function ProfilePage() {
         {/* Avatar */}
         <div style={{ display:"flex", alignItems:"center", gap:20, marginBottom:28, paddingBottom:24, borderBottom:"1px solid #1f1f1f" }}>
           <div style={{ position:"relative" }}>
-            <div style={{ width:72, height:72, borderRadius:"50%", background:"linear-gradient(135deg,#e11d48,#9f1239)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <div style={{ width:72, height:72, borderRadius:"50%", background:"linear-gradient(135deg,#2563eb,#1d4ed8)", display:"flex", alignItems:"center", justifyContent:"center" }}>
               <User size={30} color="white" />
             </div>
             <button style={{ position:"absolute", bottom:0, right:0, width:24, height:24, borderRadius:"50%", background:"#2a2a2a", border:"2px solid #111", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer" }}>
@@ -48,7 +48,7 @@ export default function ProfilePage() {
                 <f.icon size={15} style={{ position:"absolute", left:13, top:"50%", transform:"translateY(-50%)", color:"#52525b" }} />
                 <input value={form[f.key]} onChange={e => setForm({...form,[f.key]:e.target.value})} type={f.type}
                   style={{ width:"100%", background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:10, padding:"11px 14px 11px 38px", color:"white", fontSize:14, outline:"none" }}
-                  onFocus={e => { e.target.style.borderColor="#e11d48"; }}
+                  onFocus={e => { e.target.style.borderColor="#2563eb"; }}
                   onBlur={e => { e.target.style.borderColor="#2a2a2a"; }}
                 />
               </div>
@@ -60,7 +60,7 @@ export default function ProfilePage() {
           </div>
 
           <button onClick={handleSave} style={{
-            marginTop:8, width:"100%", background: saved ? "rgba(34,197,94,0.2)" : "linear-gradient(135deg,#e11d48,#9f1239)",
+            marginTop:8, width:"100%", background: saved ? "rgba(34,197,94,0.2)" : "linear-gradient(135deg,#2563eb,#1d4ed8)",
             border: saved ? "1px solid rgba(34,197,94,0.4)" : "none",
             color: saved ? "#22c55e" : "white",
             borderRadius:10, padding:"13px", fontWeight:700, fontSize:14, cursor:"pointer",

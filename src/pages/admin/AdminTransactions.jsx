@@ -305,8 +305,8 @@ export default function AdminTransactions() {
                 onClick={() => setFilterStatus(s.v)}
                 style={{
                   padding:"6px 12px", border:"none", borderRadius:8, fontSize:12, fontWeight:600, cursor:"pointer",
-                  background: filterStatus === s.v ? "rgba(225,29,72,0.15)" : "transparent",
-                  color: filterStatus === s.v ? "#e11d48" : "#71717a",
+                  background: filterStatus === s.v ? "rgba(37,99,235,0.15)" : "transparent",
+                  color: filterStatus === s.v ? "#2563eb" : "#71717a",
                   transition: "all 0.2s"
                 }}
               >

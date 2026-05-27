@@ -59,8 +59,8 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#0a0a0a" }}>
       {/* Background */}
       <div style={{ position: "fixed", inset: 0, zIndex: 0 }}>
-        <div style={{ position: "absolute", top: -100, right: -100, width: 600, height: 600, background: "radial-gradient(circle, rgba(225,29,72,0.08) 0%, transparent 70%)", borderRadius: "50%" }} />
-        <div style={{ position: "absolute", bottom: -100, left: -100, width: 500, height: 500, background: "radial-gradient(circle, rgba(159,18,57,0.06) 0%, transparent 70%)", borderRadius: "50%" }} />
+        <div style={{ position: "absolute", top: -100, right: -100, width: 600, height: 600, background: "radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%)", borderRadius: "50%" }} />
+        <div style={{ position: "absolute", bottom: -100, left: -100, width: 500, height: 500, background: "radial-gradient(circle, rgba(29,78,216,0.06) 0%, transparent 70%)", borderRadius: "50%" }} />
       </div>
 
       <motion.div
@@ -73,14 +73,14 @@ export default function RegisterPage() {
         <div style={{ textAlign: "center", marginBottom: 32 }}>
           <div style={{
             width: 56, height: 56, borderRadius: 16,
-            background: "linear-gradient(135deg, #e11d48, #9f1239)",
+            background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
             display: "flex", alignItems: "center", justifyContent: "center",
             margin: "0 auto 12px"
           }}>
             <Wallet size={26} color="white" />
           </div>
           <h1 style={{ fontSize: 26, fontWeight: 800 }}>
-            Black<span style={{ color: "#e11d48" }}>red</span> Wallet
+            Black<span style={{ color: "#2563eb" }}>red</span> Wallet
           </h1>
           <p style={{ color: "#71717a", fontSize: 14, marginTop: 4 }}>Tạo tài khoản mới</p>
         </div>
@@ -99,7 +99,7 @@ export default function RegisterPage() {
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   style={inputStyle(errors.email)}
-                  onFocus={(e) => { e.target.style.borderColor = "#e11d48"; e.target.style.boxShadow = "0 0 0 3px rgba(225,29,72,0.15)"; }}
+                  onFocus={(e) => { e.target.style.borderColor = "#2563eb"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.15)"; }}
                   onBlur={(e) => { e.target.style.borderColor = errors.email ? "#ef4444" : "#2a2a2a"; e.target.style.boxShadow = "none"; }}
                 />
               </div>
@@ -117,7 +117,7 @@ export default function RegisterPage() {
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   style={{ ...inputStyle(errors.password), paddingRight: 42 }}
-                  onFocus={(e) => { e.target.style.borderColor = "#e11d48"; }}
+                  onFocus={(e) => { e.target.style.borderColor = "#2563eb"; }}
                   onBlur={(e) => { e.target.style.borderColor = errors.password ? "#ef4444" : "#2a2a2a"; }}
                 />
                 <button type="button" onClick={() => setShowPass(!showPass)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#52525b" }}>
@@ -149,7 +149,7 @@ export default function RegisterPage() {
                   value={form.confirmPassword}
                   onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
                   style={{ ...inputStyle(errors.confirmPassword), paddingRight: 42 }}
-                  onFocus={(e) => { e.target.style.borderColor = "#e11d48"; }}
+                  onFocus={(e) => { e.target.style.borderColor = "#2563eb"; }}
                   onBlur={(e) => { e.target.style.borderColor = errors.confirmPassword ? "#ef4444" : "#2a2a2a"; }}
                 />
                 <button type="button" onClick={() => setShowConfirm(!showConfirm)} style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "#52525b" }}>
@@ -167,7 +167,7 @@ export default function RegisterPage() {
               disabled={loading}
               style={{
                 width: "100%",
-                background: loading ? "#3f3f46" : "linear-gradient(135deg, #e11d48, #9f1239)",
+                background: loading ? "#3f3f46" : "linear-gradient(135deg, #2563eb, #1d4ed8)",
                 color: "white", border: "none", borderRadius: 10,
                 padding: "14px", fontWeight: 700, fontSize: 15,
                 cursor: loading ? "not-allowed" : "pointer",
@@ -186,7 +186,7 @@ export default function RegisterPage() {
 
         <p style={{ textAlign: "center", marginTop: 20, color: "#52525b", fontSize: 14 }}>
           Đã có tài khoản?{" "}
-          <Link to="/login" style={{ color: "#e11d48", fontWeight: 600, textDecoration: "none" }}>Đăng nhập</Link>
+          <Link to="/login" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>Đăng nhập</Link>
         </p>
       </motion.div>
     </div>

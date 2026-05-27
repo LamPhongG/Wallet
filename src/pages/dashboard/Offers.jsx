@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 const STORAGE_KEY = "bw_admin_vouchers";
 
 const tagColors = {
-  "Chuyển tiền":"#e11d48","Mua sắm":"#3b82f6","Rút tiền":"#22c55e",
+  "Chuyển tiền":"#2563eb","Mua sắm":"#3b82f6","Rút tiền":"#22c55e",
   "Referral":"#8b5cf6","Nạp tiền":"#f59e0b","Hóa đơn":"#ec4899"
 };
 
@@ -52,7 +52,7 @@ export default function OffersPage() {
     <div style={{ maxWidth:900 }}>
       <div style={{ marginBottom:24 }}>
         <h1 style={{ fontSize:22, fontWeight:800, marginBottom:4 }}>🎁 Ưu đãi & Voucher</h1>
-        <p style={{ color:"#71717a", fontSize:14 }}>Các ưu đãi độc quyền dành riêng cho thành viên Blackred</p>
+        <p style={{ color:"#71717a", fontSize:14 }}>Các ưu đãi độc quyền dành riêng cho thành viên SmartWallet</p>
       </div>
 
       {/* Tags filter */}
@@ -60,9 +60,9 @@ export default function OffersPage() {
         {tags.map(t => (
           <button key={t} onClick={() => setActiveTag(t)} style={{
             padding:"6px 14px", borderRadius:20, fontSize:13, fontWeight:500,
-            background: activeTag===t ? "rgba(225,29,72,0.15)" : "#1a1a1a",
-            border:`1px solid ${activeTag===t ? "rgba(225,29,72,0.4)" : "#2a2a2a"}`,
-            color: activeTag===t ? "#e11d48" : "#71717a", cursor:"pointer", transition:"all 0.2s"
+            background: activeTag===t ? "rgba(37,99,235,0.15)" : "#1a1a1a",
+            border:`1px solid ${activeTag===t ? "rgba(37,99,235,0.4)" : "#2a2a2a"}`,
+            color: activeTag===t ? "#2563eb" : "#71717a", cursor:"pointer", transition:"all 0.2s"
           }}>{t}</button>
         ))}
       </div>
@@ -82,15 +82,15 @@ export default function OffersPage() {
               <motion.div key={v.id} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*0.07}}
                 onClick={() => handleUseVoucher(v)}
                 style={{
-                  background:"#111", border:`1px solid ${v.hot ? "rgba(225,29,72,0.25)" : "#1f1f1f"}`,
+                  background:"#111", border:`1px solid ${v.hot ? "rgba(37,99,235,0.25)" : "#1f1f1f"}`,
                   borderRadius:16, overflow:"hidden", cursor:"pointer", transition:"all 0.25s", position:"relative"
                 }}
                 whileHover={{ y:-4, boxShadow:"0 12px 32px rgba(0,0,0,0.4)" }}
               >
                 {v.hot && (
-                  <div style={{ position:"absolute", top:12, right:12, display:"flex", alignItems:"center", gap:4, background:"rgba(225,29,72,0.15)", border:"1px solid rgba(225,29,72,0.3)", borderRadius:6, padding:"3px 8px" }}>
-                    <Flame size={11} style={{ color:"#e11d48" }} />
-                    <span style={{ fontSize:10, fontWeight:700, color:"#e11d48" }}>HOT</span>
+                  <div style={{ position:"absolute", top:12, right:12, display:"flex", alignItems:"center", gap:4, background:"rgba(37,99,235,0.15)", border:"1px solid rgba(37,99,235,0.3)", borderRadius:6, padding:"3px 8px" }}>
+                    <Flame size={11} style={{ color:"#2563eb" }} />
+                    <span style={{ fontSize:10, fontWeight:700, color:"#2563eb" }}>HOT</span>
                   </div>
                 )}
                 {/* Discount badge */}

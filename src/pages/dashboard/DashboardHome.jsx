@@ -196,7 +196,7 @@ const getCategoryData = (txs, filter) => {
   });
   
   const colors = {
-    "Ăn uống": "#e11d48",
+    "Ăn uống": "#2563eb",
     "Di chuyển": "#f59e0b",
     "Mua sắm": "#3b82f6",
     "Giải trí": "#8b5cf6",
@@ -313,7 +313,7 @@ export default function DashboardPage() {
   const [selectedNews, setSelectedNews] = useState(null);
   const [chatInput, setChatInput] = useState("");
   const [chatMessages, setChatMessages] = useState([
-    { role: "ai", text: "Chào bạn! Tôi là trợ lý tài chính Blackred AI. Bạn cần tôi tư vấn gì về quản lý chi tiêu hay tối ưu hóa dòng tiền hôm nay?" }
+    { role: "ai", text: "Chào bạn! Tôi là trợ lý tài chính SmartWallet AI. Bạn cần tôi tư vấn gì về quản lý chi tiêu hay tối ưu hóa dòng tiền hôm nay?" }
   ]);
   const [aiTyping, setAiTyping] = useState(false);
   const [balance, setBalance] = useState(0);
@@ -335,7 +335,7 @@ export default function DashboardPage() {
         .map(c => `${c.name} (${c.value}%)`)
         .join(", ");
 
-      const prompt = `Bạn là trợ lý tư vấn tài chính cá nhân của ví điện tử Blackred Wallet. Bạn tên là Blackred AI. Hãy tư vấn cho người dùng thật chuyên nghiệp, lịch sự, ngắn gọn và hữu ích về các mẹo tiết kiệm tiền, tối ưu hóa ngân sách, quản lý chi tiêu. Số dư hiện tại của người dùng là ${balance.toLocaleString("vi-VN")} đ. Chi tiêu tháng này là ${currentMonthCategoryData.totalExpense.toLocaleString("vi-VN")} đ cho các khoản: ${categoryBreakdownStr}. Trả lời thân thiện, ngắn gọn bằng tiếng Việt.\n\nLịch sử trò chuyện:\n${newMsgList.map(m => `${m.role === 'user' ? 'Người dùng' : 'Blackred AI'}: ${m.text}`).join('\n')}\nBlackred AI:`;
+      const prompt = `Bạn là trợ lý tư vấn tài chính cá nhân của ví điện tử SmartWallet Wallet. Bạn tên là SmartWallet AI. Hãy tư vấn cho người dùng thật chuyên nghiệp, lịch sự, ngắn gọn và hữu ích về các mẹo tiết kiệm tiền, tối ưu hóa ngân sách, quản lý chi tiêu. Số dư hiện tại của người dùng là ${balance.toLocaleString("vi-VN")} đ. Chi tiêu tháng này là ${currentMonthCategoryData.totalExpense.toLocaleString("vi-VN")} đ cho các khoản: ${categoryBreakdownStr}. Trả lời thân thiện, ngắn gọn bằng tiếng Việt.\n\nLịch sử trò chuyện:\n${newMsgList.map(m => `${m.role === 'user' ? 'Người dùng' : 'SmartWallet AI'}: ${m.text}`).join('\n')}\nSmartWallet AI:`;
 
       let savedKey = localStorage.getItem("bw_gemini_api_key") || "";
 
@@ -477,7 +477,7 @@ export default function DashboardPage() {
   const { chartData: dynamicCategoryData, listData: categoryLegendData } = getCategoryData(transactions, timeFilterCategory);
 
   const stats = [
-    { label: "Số dư ví", value: fmtCleanCurrency(balance), change: "+12.5%", up: true, icon: Wallet, color: "#e11d48" },
+    { label: "Số dư ví", value: fmtCleanCurrency(balance), change: "+12.5%", up: true, icon: Wallet, color: "#2563eb" },
     { label: "Thu nhập tháng", value: fmtCleanCurrency(monthlyIncome), change: "+8.2%", up: true, icon: TrendingUp, color: "#22c55e" },
     { label: "Chi tiêu tháng", value: fmtCleanCurrency(monthlyExpense), change: "-3.1%", up: false, icon: TrendingDown, color: "#f59e0b" },
     { label: "Giao dịch", value: `${transactions.length} GD`, change: "+5", up: true, icon: BarChart3, color: "#3b82f6" },
@@ -559,9 +559,9 @@ export default function DashboardPage() {
               ].map(f => (
                 <button key={f.key} onClick={() => setTimeFilterMonth(f.key)} style={{
                   padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500,
-                  background: timeFilterMonth === f.key ? "rgba(225,29,72,0.15)" : "#1a1a1a",
-                  border: `1px solid ${timeFilterMonth === f.key ? "rgba(225,29,72,0.3)" : "#2a2a2a"}`,
-                  color: timeFilterMonth === f.key ? "#e11d48" : "#71717a", cursor: "pointer"
+                  background: timeFilterMonth === f.key ? "rgba(37,99,235,0.15)" : "#1a1a1a",
+                  border: `1px solid ${timeFilterMonth === f.key ? "rgba(37,99,235,0.3)" : "#2a2a2a"}`,
+                  color: timeFilterMonth === f.key ? "#2563eb" : "#71717a", cursor: "pointer"
                 }}>
                   {f.label}
                 </button>
@@ -579,8 +579,8 @@ export default function DashboardPage() {
                     <stop offset="100%" stopColor="#22c55e" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="expense" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#e11d48" stopOpacity={0.3} />
-                    <stop offset="100%" stopColor="#e11d48" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#2563eb" stopOpacity={0.3} />
+                    <stop offset="100%" stopColor="#2563eb" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f1f1f" />
@@ -592,7 +592,7 @@ export default function DashboardPage() {
                 }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Area type="monotone" dataKey="income" name="Thu nhập" stroke="#22c55e" strokeWidth={2} fill="url(#income)" />
-                <Area type="monotone" dataKey="expense" name="Chi tiêu" stroke="#e11d48" strokeWidth={2} fill="url(#expense)" />
+                <Area type="monotone" dataKey="expense" name="Chi tiêu" stroke="#2563eb" strokeWidth={2} fill="url(#expense)" />
               </AreaChart>
             </ResponsiveContainer>
           )}
@@ -616,9 +616,9 @@ export default function DashboardPage() {
               ].map(f => (
                 <button key={f.key} onClick={() => setTimeFilterCategory(f.key)} style={{
                   padding: "4px 10px", borderRadius: 6, fontSize: 12, fontWeight: 500,
-                  background: timeFilterCategory === f.key ? "rgba(225,29,72,0.15)" : "#1a1a1a",
-                  border: `1px solid ${timeFilterCategory === f.key ? "rgba(225,29,72,0.3)" : "#2a2a2a"}`,
-                  color: timeFilterCategory === f.key ? "#e11d48" : "#71717a", cursor: "pointer"
+                  background: timeFilterCategory === f.key ? "rgba(37,99,235,0.15)" : "#1a1a1a",
+                  border: `1px solid ${timeFilterCategory === f.key ? "rgba(37,99,235,0.3)" : "#2a2a2a"}`,
+                  color: timeFilterCategory === f.key ? "#2563eb" : "#71717a", cursor: "pointer"
                 }}>
                   {f.label}
                 </button>
@@ -889,7 +889,7 @@ export default function DashboardPage() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 16 }}>
-            <Newspaper size={18} style={{ color: "#e11d48" }} />
+            <Newspaper size={18} style={{ color: "#2563eb" }} />
             <h3 style={{ fontSize: 15, fontWeight: 700 }}>Tin tức tài chính</h3>
           </div>
           
@@ -924,7 +924,7 @@ export default function DashboardPage() {
                         )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <span style={{ fontSize: 9, background: "rgba(225,29,72,0.15)", color: "#e11d48", padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>{n.tag}</span>
+                        <span style={{ fontSize: 9, background: "rgba(37,99,235,0.15)", color: "#2563eb", padding: "2px 8px", borderRadius: 6, fontWeight: 600 }}>{n.tag}</span>
                         <p style={{ fontSize: 13, fontWeight: 500, marginTop: 4, lineHeight: 1.4, color: "#e4e4e7", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{n.title}</p>
                         <p style={{ fontSize: 11, color: "#52525b", marginTop: 4 }}>{n.time}</p>
                       </div>
@@ -950,7 +950,7 @@ export default function DashboardPage() {
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
           <h3 style={{ fontSize: 15, fontWeight: 700 }}>Giao dịch gần đây</h3>
-          <Link to="/dashboard/wallets" style={{ fontSize: 13, color: "#e11d48", textDecoration: "none", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
+          <Link to="/dashboard/wallets" style={{ fontSize: 13, color: "#2563eb", textDecoration: "none", fontWeight: 600, display: "flex", alignItems: "center", gap: 4 }}>
             Xem tất cả <ChevronRight size={14} />
           </Link>
         </div>
@@ -972,10 +972,10 @@ export default function DashboardPage() {
                 >
                   <div style={{
                     width: 40, height: 40, borderRadius: 12, flexShrink: 0,
-                    background: tx.type === "receive" ? "rgba(34,197,94,0.12)" : "rgba(225,29,72,0.12)",
+                    background: tx.type === "receive" ? "rgba(34,197,94,0.12)" : "rgba(37,99,235,0.12)",
                     display: "flex", alignItems: "center", justifyContent: "center", marginRight: 14
                   }}>
-                    {tx.type === "receive" ? <ArrowDownLeft size={18} style={{ color: "#22c55e" }} /> : <ArrowUpRight size={18} style={{ color: "#e11d48" }} />}
+                    {tx.type === "receive" ? <ArrowDownLeft size={18} style={{ color: "#22c55e" }} /> : <ArrowUpRight size={18} style={{ color: "#2563eb" }} />}
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <p style={{ fontSize: 14, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{tx.name}</p>
@@ -989,7 +989,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <div style={{ textAlign: "right", marginLeft: 10, flexShrink: 0 }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: tx.type === "receive" ? "#22c55e" : "#e11d48" }}>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: tx.type === "receive" ? "#22c55e" : "#2563eb" }}>
                       {fmtCurrency(tx.type === "receive" ? tx.amount : -tx.amount)}
                     </p>
                     <span style={{
@@ -1030,7 +1030,7 @@ export default function DashboardPage() {
                     <Newspaper size={48} style={{ color: "#222" }} />
                   </div>
                 )}
-                <span style={{ position: "absolute", top: 18, left: 18, fontSize: 11, background: "rgba(225,29,72,0.9)", color: "white", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>
+                <span style={{ position: "absolute", top: 18, left: 18, fontSize: 11, background: "rgba(37,99,235,0.9)", color: "white", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>
                   {selectedNews.tag}
                 </span>
                 
@@ -1050,7 +1050,7 @@ export default function DashboardPage() {
                   <Calendar size={13} />
                   <span>Đăng {selectedNews.time}</span>
                   <span>•</span>
-                  <span>Tin tức Blackred</span>
+                  <span>Tin tức SmartWallet</span>
                 </div>
 
                 <h3 style={{ fontSize: 18, fontWeight: 800, color: "white", lineHeight: 1.4, marginBottom: 16 }}>
@@ -1069,7 +1069,7 @@ export default function DashboardPage() {
 
                 <div style={{ marginTop: 24, paddingTop: 16, borderTop: "1px solid #1a1a1a", display: "flex", justifyContent: "flex-end" }}>
                   <button onClick={() => setSelectedNews(null)} 
-                    style={{ background: "linear-gradient(135deg,#e11d48,#9f1239)", color: "white", border: "none", borderRadius: 10, padding: "10px 24px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
+                    style={{ background: "linear-gradient(135deg,#2563eb,#1d4ed8)", color: "white", border: "none", borderRadius: 10, padding: "10px 24px", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
                   >
                     Đóng bài viết
                   </button>

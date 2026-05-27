@@ -4,8 +4,8 @@ import { Eye, EyeOff, Wallet, Mail, Lock, ArrowRight, Shield } from "lucide-reac
 import { motion } from "framer-motion";
 
 const ADMIN_ACCOUNTS = [
-  { email: "admin@blackred.com",   password: "Admin@123",  name: "Super Admin",  role: "superadmin" },
-  { email: "manager@blackred.com", password: "Manager@123", name: "Manager",      role: "manager" },
+  { email: "admin@smartwallet.com",   password: "Admin@123",  name: "Super Admin",  role: "superadmin" },
+  { email: "manager@smartwallet.com", password: "Manager@123", name: "Manager",      role: "manager" },
 ];
 
 const getUserBaseBalance = (email) => {
@@ -183,7 +183,7 @@ export default function LoginPage() {
         {/* Background grid */}
         <div style={{
           position: "absolute", inset: 0, opacity: 0.05,
-          backgroundImage: "linear-gradient(#e11d48 1px, transparent 1px), linear-gradient(90deg, #e11d48 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(#2563eb 1px, transparent 1px), linear-gradient(90deg, #2563eb 1px, transparent 1px)",
           backgroundSize: "60px 60px"
         }} />
         
@@ -191,7 +191,7 @@ export default function LoginPage() {
         <div style={{
           position: "absolute", top: "30%", left: "20%",
           width: 400, height: 400,
-          background: "radial-gradient(circle, rgba(225,29,72,0.15) 0%, transparent 70%)",
+          background: "radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%)",
           borderRadius: "50%"
         }} />
 
@@ -199,13 +199,13 @@ export default function LoginPage() {
         <div className="relative z-10 flex items-center gap-3">
           <div style={{
             width: 44, height: 44, borderRadius: 12,
-            background: "linear-gradient(135deg, #e11d48, #9f1239)",
+            background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
             display: "flex", alignItems: "center", justifyContent: "center"
           }}>
             <Wallet size={22} color="white" />
           </div>
           <span style={{ fontSize: 22, fontWeight: 800, letterSpacing: "-0.5px" }}>
-            Black<span style={{ color: "#e11d48" }}>red</span>
+            Black<span style={{ color: "#2563eb" }}>red</span>
           </span>
         </div>
 
@@ -219,7 +219,7 @@ export default function LoginPage() {
           >
             Quản lý tài chính
             <br />
-            <span style={{ color: "#e11d48" }}>thông minh hơn.</span>
+            <span style={{ color: "#2563eb" }}>thông minh hơn.</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -227,7 +227,7 @@ export default function LoginPage() {
             transition={{ delay: 0.5 }}
             style={{ color: "#71717a", fontSize: 16, lineHeight: 1.7, maxWidth: 400 }}
           >
-            Ví điện tử Blackred giúp bạn theo dõi chi tiêu, chuyển tiền tức thì, 
+            Ví điện tử SmartWallet giúp bạn theo dõi chi tiêu, chuyển tiền tức thì, 
             và nhận gợi ý tài chính thông minh từ AI.
           </motion.p>
 
@@ -253,7 +253,7 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10" style={{ color: "#3f3f46", fontSize: 13 }}>
-          © 2025 Blackred Wallet. All rights reserved.
+          © 2025 SmartWallet Wallet. All rights reserved.
         </div>
       </motion.div>
 
@@ -270,20 +270,20 @@ export default function LoginPage() {
           <div className="lg:hidden flex items-center gap-3 mb-10">
             <div style={{
               width: 40, height: 40, borderRadius: 10,
-              background: "linear-gradient(135deg, #e11d48, #9f1239)",
+              background: "linear-gradient(135deg, #2563eb, #1d4ed8)",
               display: "flex", alignItems: "center", justifyContent: "center"
             }}>
               <Wallet size={20} color="white" />
             </div>
             <span style={{ fontSize: 20, fontWeight: 800 }}>
-              Black<span style={{ color: "#e11d48" }}>red</span>
+              Black<span style={{ color: "#2563eb" }}>red</span>
             </span>
           </div>
 
           <h2 style={{ fontSize: 28, fontWeight: 800, marginBottom: 8 }}>Đăng nhập</h2>
           <p style={{ color: "#71717a", marginBottom: 32, fontSize: 14 }}>
             Chưa có tài khoản?{" "}
-            <Link to="/register" style={{ color: "#e11d48", fontWeight: 600, textDecoration: "none" }}>
+            <Link to="/register" style={{ color: "#2563eb", fontWeight: 600, textDecoration: "none" }}>
               Đăng ký ngay
             </Link>
           </p>
@@ -320,7 +320,7 @@ export default function LoginPage() {
                     borderRadius: 10, padding: "12px 16px 12px 42px",
                     color: "white", fontSize: 14, outline: "none", transition: "all 0.3s"
                   }}
-                  onFocus={(e) => { e.target.style.borderColor = "#e11d48"; e.target.style.boxShadow = "0 0 0 3px rgba(225,29,72,0.15)"; }}
+                  onFocus={(e) => { e.target.style.borderColor = "#2563eb"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.15)"; }}
                   onBlur={(e) => { e.target.style.borderColor = "#2a2a2a"; e.target.style.boxShadow = "none"; }}
                 />
               </div>
@@ -343,7 +343,7 @@ export default function LoginPage() {
                     borderRadius: 10, padding: "12px 42px 12px 42px",
                     color: "white", fontSize: 14, outline: "none", transition: "all 0.3s"
                   }}
-                  onFocus={(e) => { e.target.style.borderColor = "#e11d48"; e.target.style.boxShadow = "0 0 0 3px rgba(225,29,72,0.15)"; }}
+                  onFocus={(e) => { e.target.style.borderColor = "#2563eb"; e.target.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.15)"; }}
                   onBlur={(e) => { e.target.style.borderColor = "#2a2a2a"; e.target.style.boxShadow = "none"; }}
                 />
                 <button
@@ -357,7 +357,7 @@ export default function LoginPage() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Link to="#" style={{ color: "#e11d48", fontSize: 13, textDecoration: "none" }}>
+              <Link to="#" style={{ color: "#2563eb", fontSize: 13, textDecoration: "none" }}>
                 Quên mật khẩu?
               </Link>
             </div>
@@ -367,14 +367,14 @@ export default function LoginPage() {
               disabled={loading}
               style={{
                 width: "100%",
-                background: loading ? "#3f3f46" : "linear-gradient(135deg, #e11d48, #9f1239)",
+                background: loading ? "#3f3f46" : "linear-gradient(135deg, #2563eb, #1d4ed8)",
                 color: "white", border: "none", borderRadius: 10,
                 padding: "14px 24px", fontWeight: 700, fontSize: 15,
                 cursor: loading ? "not-allowed" : "pointer",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
                 transition: "all 0.3s", marginTop: 4
               }}
-              onMouseEnter={(e) => { if (!loading) e.target.style.boxShadow = "0 8px 25px rgba(225,29,72,0.4)"; }}
+              onMouseEnter={(e) => { if (!loading) e.target.style.boxShadow = "0 8px 25px rgba(37,99,235,0.4)"; }}
               onMouseLeave={(e) => { e.target.style.boxShadow = "none"; }}
             >
               {loading ? (
@@ -385,8 +385,8 @@ export default function LoginPage() {
             </button>
           </form>
 
-          <div style={{ marginTop: 32, padding: "16px", background: "rgba(225,29,72,0.05)", border: "1px solid rgba(225,29,72,0.15)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10 }}>
-            <Shield size={16} style={{ color: "#e11d48", flexShrink: 0 }} />
+          <div style={{ marginTop: 32, padding: "16px", background: "rgba(37,99,235,0.05)", border: "1px solid rgba(37,99,235,0.15)", borderRadius: 10, display: "flex", alignItems: "center", gap: 10 }}>
+            <Shield size={16} style={{ color: "#2563eb", flexShrink: 0 }} />
             <p style={{ fontSize: 12, color: "#71717a", lineHeight: 1.5 }}>
               Dữ liệu của bạn được mã hóa và bảo mật bởi tiêu chuẩn ngân hàng SSL/TLS 256-bit.
             </p>

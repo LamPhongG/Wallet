@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 const stats = [
-  { label:"Tổng Users", value:"1,248", change:"+24 tuần này", icon:Users, color:"#e11d48" },
+  { label:"Tổng Users", value:"1,248", change:"+24 tuần này", icon:Users, color:"#2563eb" },
   { label:"Giao dịch hôm nay", value:"342", change:"+12%", icon:Activity, color:"#22c55e" },
   { label:"Doanh thu tháng", value:"48.5M ₫", change:"+8.3%", icon:TrendingUp, color:"#3b82f6" },
   { label:"Ví đang hoạt động", value:"986", change:"78.9%", icon:CreditCard, color:"#f59e0b" },
@@ -19,7 +19,7 @@ export default function AdminPage() {
     <div style={{ display:"flex", flexDirection:"column", gap:20, maxWidth:1100 }}>
       <div>
         <h1 style={{ fontSize:20, fontWeight:800, marginBottom:4 }}>Tổng quan hệ thống</h1>
-        <p style={{ color:"#71717a", fontSize:13 }}>Blackred Wallet Admin Dashboard</p>
+        <p style={{ color:"#71717a", fontSize:13 }}>SmartWallet Wallet Admin Dashboard</p>
       </div>
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(200px, 1fr))", gap:14 }}>
@@ -47,7 +47,7 @@ export default function AdminPage() {
             <XAxis dataKey="day" tick={{ fill:"#71717a", fontSize:12 }} axisLine={false} tickLine={false} />
             <YAxis tick={{ fill:"#71717a", fontSize:11 }} axisLine={false} tickLine={false} />
             <Tooltip contentStyle={{ background:"#1a1a1a", border:"1px solid #2a2a2a", borderRadius:8, color:"white" }} />
-            <Bar dataKey="count" name="Giao dịch" fill="#e11d48" radius={[6,6,0,0]} opacity={0.85} />
+            <Bar dataKey="count" name="Giao dịch" fill="#2563eb" radius={[6,6,0,0]} opacity={0.85} />
           </BarChart>
         </ResponsiveContainer>
       </motion.div>

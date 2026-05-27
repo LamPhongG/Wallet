@@ -276,9 +276,9 @@ export default function AdminUsersPage() {
           {[{v:"all",l:"Tất cả"},{v:"verified",l:"Đã KYC"},{v:"pending",l:"Chờ duyệt"},{v:"none",l:"Chưa KYC"}].map(f => (
             <button key={f.v} onClick={() => setKycFilter(f.v)} style={{
               padding:"8px 12px", borderRadius:8, fontSize:12, fontWeight:500,
-              background: kycFilter===f.v ? "rgba(225,29,72,0.15)" : "#1a1a1a",
-              border:`1px solid ${kycFilter===f.v ? "rgba(225,29,72,0.3)" : "#2a2a2a"}`,
-              color: kycFilter===f.v ? "#e11d48" : "#71717a", cursor:"pointer"
+              background: kycFilter===f.v ? "rgba(37,99,235,0.15)" : "#1a1a1a",
+              border:`1px solid ${kycFilter===f.v ? "rgba(37,99,235,0.3)" : "#2a2a2a"}`,
+              color: kycFilter===f.v ? "#2563eb" : "#71717a", cursor:"pointer"
             }}>{f.l}</button>
           ))}
         </div>
@@ -347,24 +347,24 @@ export default function AdminUsersPage() {
               <div style={{ display:"flex", borderBottom:"1px solid #1a1a1a", marginBottom:20, gap:16 }}>
                 <button onClick={() => setModalTab("info")} style={{
                   background:"none", border:"none", padding:"8px 4px", fontSize:13, fontWeight:600,
-                  color: modalTab === "info" ? "#e11d48" : "#52525b", cursor:"pointer",
-                  borderBottom: modalTab === "info" ? "2px solid #e11d48" : "2px solid transparent",
+                  color: modalTab === "info" ? "#2563eb" : "#52525b", cursor:"pointer",
+                  borderBottom: modalTab === "info" ? "2px solid #2563eb" : "2px solid transparent",
                   display:"flex", alignItems:"center", gap:6, transition:"all 0.25s"
                 }}>
                   <User size={14} /> Thông tin chính
                 </button>
                 <button onClick={() => setModalTab("cccd")} style={{
                   background:"none", border:"none", padding:"8px 4px", fontSize:13, fontWeight:600,
-                  color: modalTab === "cccd" ? "#e11d48" : "#52525b", cursor:"pointer",
-                  borderBottom: modalTab === "cccd" ? "2px solid #e11d48" : "2px solid transparent",
+                  color: modalTab === "cccd" ? "#2563eb" : "#52525b", cursor:"pointer",
+                  borderBottom: modalTab === "cccd" ? "2px solid #2563eb" : "2px solid transparent",
                   display:"flex", alignItems:"center", gap:6, transition:"all 0.25s"
                 }}>
                   <CreditCard size={14} /> Hồ sơ CCCD
                 </button>
                 <button onClick={() => setModalTab("tx")} style={{
                   background:"none", border:"none", padding:"8px 4px", fontSize:13, fontWeight:600,
-                  color: modalTab === "tx" ? "#e11d48" : "#52525b", cursor:"pointer",
-                  borderBottom: modalTab === "tx" ? "2px solid #e11d48" : "2px solid transparent",
+                  color: modalTab === "tx" ? "#2563eb" : "#52525b", cursor:"pointer",
+                  borderBottom: modalTab === "tx" ? "2px solid #2563eb" : "2px solid transparent",
                   display:"flex", alignItems:"center", gap:6, transition:"all 0.25s"
                 }}>
                   <History size={14} /> Lịch sử GD
@@ -439,7 +439,7 @@ export default function AdminUsersPage() {
                                 position: "relative", overflow: "hidden"
                               }}>
                                 <User size={30} style={{ color: "#0d202e" }} />
-                                <div style={{ position: "absolute", bottom: 0, width: "100%", height: 3, background: "rgba(225,29,72,0.6)" }} />
+                                <div style={{ position: "absolute", bottom: 0, width: "100%", height: 3, background: "rgba(37,99,235,0.6)" }} />
                               </div>
 
                               {/* Card info */}
@@ -458,7 +458,7 @@ export default function AdminUsersPage() {
                             <div style={{
                               position: "absolute", bottom: 12, right: 12,
                               width: 24, height: 24, borderRadius: "50%",
-                              background: "radial-gradient(circle, #ffd700 0%, #00ffcc 50%, #e11d48 100%)",
+                              background: "radial-gradient(circle, #ffd700 0%, #00ffcc 50%, #2563eb 100%)",
                               opacity: 0.7, border: "1px solid rgba(255,255,255,0.4)"
                             }} />
 
