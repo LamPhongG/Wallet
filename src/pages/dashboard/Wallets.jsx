@@ -354,14 +354,19 @@ export default function WalletsPage() {
   }, [searchParams]);
 
   const handleConfirmDeposit = () => {
+    const bwUserRaw = localStorage.getItem("bw_user");
+    const parsedUser = bwUserRaw ? JSON.parse(bwUserRaw) : null;
+    if (parsedUser && parsedUser.walletStatus === "frozen") {
+      showToast("❄️ Ví của bạn đã bị đóng băng. Không thể thực hiện giao dịch nạp tiền!", "error");
+      return;
+    }
     if (!depositForm.amount || Number(depositForm.amount) <= 0) return;
     
     const txId = "TX" + Math.floor(100000 + Math.random() * 900000);
     const date = new Date();
     const timeStr = date.toLocaleTimeString("vi-VN", {hour: '2-digit', minute:'2-digit'}) + " " + date.toLocaleDateString("vi-VN");
     
-    const bwUserRaw = localStorage.getItem("bw_user");
-    const currentEmail = bwUserRaw ? JSON.parse(bwUserRaw).email : null;
+    const currentEmail = parsedUser ? parsedUser.email : null;
 
     const newTx = {
       id: txId,
@@ -415,6 +420,12 @@ export default function WalletsPage() {
   };
 
   const handleConfirmWithdraw = () => {
+    const bwUserRaw = localStorage.getItem("bw_user");
+    const parsedUser = bwUserRaw ? JSON.parse(bwUserRaw) : null;
+    if (parsedUser && parsedUser.walletStatus === "frozen") {
+      showToast("❄️ Ví của bạn đã bị đóng băng. Không thể thực hiện giao dịch rút tiền!", "error");
+      return;
+    }
     if (!depositForm.amount || Number(depositForm.amount) <= 0) {
       showToast("Vui lòng nhập số tiền hợp lệ để rút!", "error");
       return;
@@ -498,6 +509,12 @@ export default function WalletsPage() {
   };
 
   const handleConfirmTransfer = () => {
+    const bwUserRaw = localStorage.getItem("bw_user");
+    const parsedUser = bwUserRaw ? JSON.parse(bwUserRaw) : null;
+    if (parsedUser && parsedUser.walletStatus === "frozen") {
+      showToast("❄️ Ví của bạn đã bị đóng băng. Không thể thực hiện giao dịch chuyển tiền!", "error");
+      return;
+    }
     if (!txForm.category) {
       showToast("Vui lòng chọn danh mục chuyển tiền!", "error");
       return;
@@ -630,12 +647,17 @@ export default function WalletsPage() {
 
       <motion.div initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.15}}
         style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:16, padding:20, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+        <div 
+          onClick={() => setModal("linked_banks_list")}
+          style={{ display:"flex", alignItems:"center", gap:12, cursor:"pointer" }}
+          onMouseEnter={(e) => e.currentTarget.style.opacity = 0.8}
+          onMouseLeave={(e) => e.currentTarget.style.opacity = 1}
+        >
           <div style={{ width:40, height:40, borderRadius:10, background:"rgba(59,130,246,0.12)", display:"flex", alignItems:"center", justifyContent:"center" }}>
             <Building2 size={18} style={{ color:"#3b82f6" }} />
           </div>
           <div>
-            <p style={{ fontSize:14, fontWeight:600 }}>Liên kết ngân hàng</p>
+            <p style={{ fontSize:14, fontWeight:600, textDecoration:"underline", textDecorationStyle:"dotted" }}>Liên kết ngân hàng</p>
             <p style={{ fontSize:12, color: "var(--text-muted)" }}>
               {linkedBanks.length}/3 tài khoản đã liên kết
             </p>
@@ -1016,7 +1038,7 @@ export default function WalletsPage() {
                       <div style={{ marginBottom:12 }}>
                         <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Ngân hàng người nhận *</label>
                         <select value={bankTransferForm.bank} onChange={e => setBankTransferForm({...bankTransferForm, bank:e.target.value})}
-                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color: bankTransferForm.bank ? "white" : "#52525b", fontSize:14, outline:"none" }}>
+                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color: bankTransferForm.bank ? "#000000" : "#52525b", fontSize:14, outline:"none" }}>
                           <option value="">-- Chọn ngân hàng --</option>
                           {BANKS.map(b => <option key={b} value={b}>{b}</option>)}
                         </select>
@@ -1044,7 +1066,7 @@ export default function WalletsPage() {
                   <div style={{ marginBottom: 16, textAlign: "left" }}>
                     <label style={{ fontSize: 13, color: "var(--text-secondary)", display: "block", marginBottom: 6 }}>Danh mục chuyển tiền *</label>
                     <select value={txForm.category} onChange={e => setTxForm({...txForm, category: e.target.value})}
-                      style={{ width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 10, padding: "11px 14px", color: txForm.category ? "white" : "#52525b", fontSize: 14, outline: "none" }}>
+                      style={{ width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 10, padding: "11px 14px", color: txForm.category ? "#000000" : "#52525b", fontSize: 14, outline: "none" }}>
                       <option value="">-- Chọn danh mục --</option>
                       <option value="Mua sắm">🛒 Mua sắm</option>
                       <option value="Ăn uống">🍔 Ăn uống</option>
@@ -1077,7 +1099,7 @@ export default function WalletsPage() {
                       </button>
                     </div>
 
-                    <div style={{ display:"flex", justifyBetween:"space-between", alignItems:"center" }}>
+                    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center" }}>
                       <button 
                         onClick={() => setShowPromoSelector(true)}
                         style={{ background:"none", border:"none", color:"#3b82f6", fontSize:12, fontWeight:600, cursor:"pointer", display:"flex", alignItems: "center", gap: 4, padding: 0 }}
@@ -1210,7 +1232,7 @@ export default function WalletsPage() {
                                 transition:"all 0.2s", textAlign:"left"
                               }}
                             >
-                              <div style={{ display:"flex", justifyBetween:"space-between", alignItems:"start" }}>
+                              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"start" }}>
                                 <div style={{ textAlign:"left" }}>
                                   <span style={{ fontSize:10, padding:"2px 6px", borderRadius:4, background:`${tagColors[v.tag]}18`, color:tagColors[v.tag], fontWeight:600 }}>{v.tag}</span>
                                   <h5 style={{ fontSize:13, fontWeight:700, color: "#000000", marginTop:6 }}>{v.title}</h5>
@@ -1254,7 +1276,7 @@ export default function WalletsPage() {
               {/* BANK */}
               {modal==="bank" && (
                 <div>
-                  <div style={{ display:"flex", alignItems:"center", justifyBetween:"space-between", marginBottom:20 }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
                     <h3 style={{ fontSize:18, fontWeight:700 }}>🏦 Liên kết ngân hàng</h3>
                     <span style={{
                       fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:20,
@@ -1282,7 +1304,7 @@ export default function WalletsPage() {
                       <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                         {linkedBanks.map(b => (
                           <div key={b.id} style={{
-                            display:"flex", alignItems:"center", justifyBetween:"space-between",
+                            display:"flex", alignItems:"center", justifyContent:"space-between",
                             background: "var(--bg-card2)", border: "1px solid var(--border)",
                             borderRadius:10, padding:"10px 14px"
                           }}>
@@ -1317,7 +1339,7 @@ export default function WalletsPage() {
                   ) : (
                     <>
                       <div style={{ marginBottom:16 }}>
-                        <div style={{ display:"flex", justifyBetween:"space-between", marginBottom:6 }}>
+                        <div style={{ display:"flex", justifyContent:"space-between", marginBottom:6 }}>
                           <span style={{ fontSize:11, color: "var(--text-secondary)" }}>Số ngân hàng đã liên kết</span>
                           <span style={{ fontSize:11, color:"#3b82f6", fontWeight:700 }}>{linkedBanks.length}/{MAX_BANKS}</span>
                         </div>
@@ -1336,7 +1358,7 @@ export default function WalletsPage() {
                       <div style={{ marginBottom:14 }}>
                         <label style={{ fontSize:13, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Tên ngân hàng</label>
                         <select value={bankForm.bank} onChange={e => setBankForm({...bankForm,bank:e.target.value})}
-                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color: bankForm.bank ? "white" : "#52525b", fontSize:14, outline:"none" }}>
+                          style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:10, padding:"11px 14px", color: bankForm.bank ? "#000000" : "#52525b", fontSize:14, outline:"none" }}>
                           <option value="">-- Chọn ngân hàng --</option>
                           {BANKS.map(b => <option key={b} value={b}>{b}</option>)}
                         </select>
@@ -1356,6 +1378,99 @@ export default function WalletsPage() {
                         Liên kết ngân hàng
                       </button>
                     </>
+                  )}
+                </div>
+              )}
+
+              {/* LINKED BANKS LIST & UNLINK */}
+              {modal==="linked_banks_list" && (
+                <div>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
+                    <h3 style={{ fontSize:18, fontWeight:700 }}>🏦 Danh sách ngân hàng</h3>
+                    <span style={{
+                      fontSize:12, fontWeight:700, padding:"4px 10px", borderRadius:20,
+                      background: "rgba(59,130,246,0.12)", color: "#3b82f6",
+                      border: "1px solid rgba(59,130,246,0.25)"
+                    }}>
+                      {linkedBanks.length}/3 đã liên kết
+                    </span>
+                  </div>
+
+                  {linkedBanks.length === 0 ? (
+                    <div style={{ padding: "30px 16px", textAlign: "center", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 16 }}>
+                      <Building2 size={36} style={{ color: "var(--text-muted)", marginBottom: 12, margin: "0 auto" }} />
+                      <p style={{ fontSize:14, fontWeight:600, color: "var(--text-secondary)", marginBottom: 4 }}>Chưa liên kết ngân hàng nào</p>
+                      <p style={{ fontSize:12, color: "var(--text-muted)", marginBottom: 16 }}>Vui lòng thêm liên kết ngân hàng để nạp rút tiền dễ dàng.</p>
+                      <button
+                        onClick={() => setModal("bank")}
+                        style={{
+                          background: "linear-gradient(135deg,#3b82f6,#1d4ed8)", color: "#000000", border: "none",
+                          borderRadius: 8, padding: "8px 16px", fontWeight: 700, fontSize: 13, cursor: "pointer"
+                        }}
+                      >
+                        + Liên kết ngay
+                      </button>
+                    </div>
+                  ) : (
+                    <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+                      <p style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 6 }}>
+                        Danh sách các ngân hàng đã được liên kết với tài khoản ví của bạn:
+                      </p>
+                      {linkedBanks.map(b => (
+                        <div key={b.id} style={{
+                          display:"flex", alignItems:"center", justifyContent:"space-between",
+                          background: "var(--bg-card2)", border: "1px solid var(--border)",
+                          borderRadius:12, padding:"12px 16px"
+                        }}>
+                          <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+                            <div style={{ width: 36, height: 36, borderRadius: 8, background: "rgba(59,130,246,0.08)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              <Building2 size={16} style={{ color:"#3b82f6" }} />
+                            </div>
+                            <div style={{ textAlign:"left" }}>
+                              <p style={{ fontSize:13, fontWeight:700 }}>{b.bank}</p>
+                              <p style={{ fontSize:11, color: "var(--text-secondary)" }}>{b.account.replace(/.(?=.{4})/g,"*")} • {b.owner}</p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => {
+                              if (confirm(`Bạn có chắc chắn muốn huỷ liên kết với ngân hàng ${b.bank}?`)) {
+                                const updated = linkedBanks.filter(x => x.id !== b.id);
+                                setLinkedBanks(updated);
+                                const bankKey = userEmail ? `bw_linked_banks_${userEmail}` : "bw_linked_banks";
+                                localStorage.setItem(bankKey, JSON.stringify(updated));
+                                if (selectedBankId === b.id) setSelectedBankId(updated[0]?.id || "");
+                                showToast("Đã xoá liên kết ngân hàng!");
+                              }
+                            }}
+                            style={{
+                              background:"rgba(239,68,68,0.08)", border:"1px solid rgba(239,68,68,0.2)",
+                              borderRadius:8, padding:"6px 12px", color:"#ef4444",
+                              fontSize:12, fontWeight:700, cursor:"pointer", transition: "all 0.2s"
+                            }}
+                            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.15)"; }}
+                            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(239,68,68,0.08)"; }}
+                          >
+                            Huỷ liên kết
+                          </button>
+                        </div>
+                      ))}
+                      
+                      {linkedBanks.length < MAX_BANKS && (
+                        <button
+                          onClick={() => setModal("bank")}
+                          style={{
+                            width: "100%", background: "none", border: "1px dashed var(--border)",
+                            borderRadius: 12, padding: "12px", color: "#3b82f6", fontSize: 13,
+                            fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center",
+                            justifyContent: "center", gap: 6, marginTop: 8, transition: "all 0.2s"
+                          }}
+                          onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.04)"; e.currentTarget.style.borderColor = "#3b82f6"; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.borderColor = "var(--border)"; }}
+                        >
+                          + Thêm liên kết ngân hàng mới
+                        </button>
+                      )}
+                    </div>
                   )}
                 </div>
               )}
@@ -1383,7 +1498,7 @@ export default function WalletsPage() {
                     { label:"Thời gian", value:selectedTx.time },
                     { label:"Ghi chú", value:selectedTx.note || "—" },
                   ].map(r => (
-                    <div key={r.label} style={{ display:"flex", justifyBetween:"space-between", padding:"10px 0", borderBottom:"1px solid #1f1f1f" }}>
+                    <div key={r.label} style={{ display:"flex", justifyContent:"space-between", padding:"10px 0", borderBottom:"1px solid #1f1f1f" }}>
                       <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{r.label}</span>
                       <span style={{ fontSize:13, fontWeight:600 }}>{r.value}</span>
                     </div>

@@ -250,6 +250,41 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleToggleFreeze = (id) => {
+    const targetUser = users.find(u => u.id === id);
+    if (!targetUser) return;
+
+    const isCurrentlyFrozen = targetUser.walletStatus === "frozen";
+    const nextWalletStatus = isCurrentlyFrozen ? "active" : "frozen";
+
+    const updatedUsers = users.map(u => {
+      if (u.id === id) {
+        return { ...u, walletStatus: nextWalletStatus };
+      }
+      return u;
+    });
+    
+    setUsers(updatedUsers);
+    localStorage.setItem("bw_users", JSON.stringify(updatedUsers));
+
+    if (selectedUser && selectedUser.id === id) {
+      setSelectedUser(prev => ({ ...prev, walletStatus: nextWalletStatus }));
+    }
+
+    // Sync logged-in user object if they frozen their own profile in testing
+    const loggedInUserVal = localStorage.getItem("bw_user");
+    if (loggedInUserVal) {
+      const loggedInUser = JSON.parse(loggedInUserVal);
+      if (loggedInUser.email === targetUser.email) {
+        loggedInUser.walletStatus = nextWalletStatus;
+        localStorage.setItem("bw_user", JSON.stringify(loggedInUser));
+        window.dispatchEvent(new Event("kyc_updated"));
+      }
+    }
+
+    alert(`${nextWalletStatus === "frozen" ? "❄️ Đã đóng băng" : "🔓 Đã mở đóng băng"} ví của ${targetUser.name}.`);
+  };
+
   const filtered = users.filter(u => {
     const matchSearch = !search || u.name.toLowerCase().includes(search.toLowerCase()) || u.email.includes(search) || u.id.includes(search);
     const matchKyc = kycFilter === "all" || u.kyc === kycFilter;
@@ -374,7 +409,16 @@ export default function AdminUsersPage() {
               {/* Tab 1: Info */}
               {modalTab === "info" && (
                 <div>
-                  {Object.entries({ "ID":selectedUser.id, "Email":selectedUser.email, "SĐT":selectedUser.phone, "KYC":kycBadge[selectedUser.kyc].text, "Trạng thái":statusBadge[selectedUser.status].text, "Số dư":selectedUser.balance, "Ngày tham gia":selectedUser.joined }).map(([k,v]) => (
+                  {Object.entries({
+                    "ID": selectedUser.id,
+                    "Email": selectedUser.email,
+                    "SĐT": selectedUser.phone,
+                    "KYC": kycBadge[selectedUser.kyc].text,
+                    "Trạng thái tài khoản": statusBadge[selectedUser.status].text,
+                    "Trạng thái ví": selectedUser.walletStatus === "frozen" ? "❄️ Đóng băng" : "🟢 Hoạt động",
+                    "Số dư": selectedUser.balance,
+                    "Ngày tham gia": selectedUser.joined
+                  }).map(([k,v]) => (
                     <div key={k} style={{ display:"flex", justifyContent:"space-between", padding:"9px 0", borderBottom: "1px solid var(--border)" }}>
                       <span style={{ fontSize:13, color: "var(--text-secondary)" }}>{k}</span>
                       <span style={{ fontSize:13, fontWeight:600, color: "#000000" }}>{v}</span>
@@ -689,6 +733,23 @@ export default function AdminUsersPage() {
                   }}
                 >
                   {selectedUser.status === "active" ? "Khóa tài khoản" : "Mở khóa tài khoản"}
+                </button>
+                <button
+                  onClick={() => handleToggleFreeze(selectedUser.id)}
+                  style={{
+                    flex: 1,
+                    background: selectedUser.walletStatus === "frozen" ? "rgba(34,197,94,0.1)" : "rgba(59,130,246,0.1)",
+                    border: selectedUser.walletStatus === "frozen" ? "1px solid rgba(34,197,94,0.2)" : "1px solid rgba(59,130,246,0.2)",
+                    color: selectedUser.walletStatus === "frozen" ? "#22c55e" : "#3b82f6",
+                    borderRadius: 8,
+                    padding: "10px",
+                    fontWeight: 600,
+                    fontSize: 13,
+                    cursor: "pointer",
+                    transition: "all 0.2s"
+                  }}
+                >
+                  {selectedUser.walletStatus === "frozen" ? "🔓 Mở băng ví" : "❄️ Đóng băng ví"}
                 </button>
                 <button onClick={() => setSelectedUser(null)} style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius:8, padding:"10px", fontWeight:600, fontSize:13, cursor:"pointer" }}>
                   Đóng

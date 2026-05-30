@@ -18,6 +18,7 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminServices from "./pages/admin/AdminServices";
 import AdminTransactions from "./pages/admin/AdminTransactions";
 import AdminMedia from "./pages/admin/AdminMedia";
+import AdminSuspicious from "./pages/admin/AdminSuspicious";
 
 export default function App() {
   return (
@@ -43,6 +44,7 @@ export default function App() {
           <Route path="users" element={<AdminUsers />} />
           <Route path="services" element={<AdminServices />} />
           <Route path="transactions" element={<AdminTransactions />} />
+          <Route path="suspicious" element={<AdminSuspicious />} />
           <Route path="media" element={<AdminMedia />} />
         </Route>
 

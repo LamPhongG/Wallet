@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, Link, Outlet } from "react-router-dom";
-import { Users, Settings, Newspaper, LayoutGrid, LogOut, Wallet, Menu, Shield, ArrowRightLeft } from "lucide-react";
+import { Users, Settings, Newspaper, LayoutGrid, LogOut, Wallet, Menu, Shield, ArrowRightLeft, AlertTriangle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const adminNav = [
   { href:"/admin", icon:LayoutGrid, label:"Tổng quan" },
   { href:"/admin/users", icon:Users, label:"Quản lý User" },
   { href:"/admin/transactions", icon:ArrowRightLeft, label:"Giao dịch" },
+  { href:"/admin/suspicious", icon:AlertTriangle, label:"Bất thường" },
   { href:"/admin/services", icon:Settings, label:"Dịch vụ" },
   { href:"/admin/media", icon:Newspaper, label:"Bài viết" },
 ];

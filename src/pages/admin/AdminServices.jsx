@@ -32,6 +32,45 @@ export default function AdminServices() {
   const [newCat, setNewCat] = useState("");
   const [catList, setCatList] = useState(categories);
 
+  // Fee management states
+  const [feeList, setFeeList] = useState(() => {
+    try {
+      const saved = localStorage.getItem("bw_admin_fees");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) return parsed;
+      }
+    } catch (e) {
+      console.error("Failed to parse bw_admin_fees:", e);
+    }
+    return [
+      { id:1, name:"Phí chuyển tiền nội bộ", value:"0 ₫",     note:"Miễn phí giữa các ví SW" },
+      { id:2, name:"Phí chuyển ngân hàng",   value:"5,000 ₫", note:"Áp dụng mỗi giao dịch" },
+      { id:3, name:"Phí rút tiền",           value:"10,000 ₫",note:"Tối thiểu rút 50,000 ₫" },
+    ];
+  });
+  const [showFeeModal, setShowFeeModal] = useState(false);
+  const [editFeeItem, setEditFeeItem] = useState(null);
+  const [feeForm, setFeeForm] = useState({ name: "", value: "", note: "" });
+
+  const openEditFee = (fee) => {
+    setEditFeeItem(fee);
+    setFeeForm({ name: fee.name, value: fee.value, note: fee.note });
+    setShowFeeModal(true);
+  };
+
+  const handleSaveFee = () => {
+    if (!feeForm.name.trim() || !feeForm.value.trim()) {
+      alert("Vui lòng nhập đầy đủ: Tên loại phí, Giá trị phí!");
+      return;
+    }
+    const updated = feeList.map(f => f.id === editFeeItem.id ? { ...f, ...feeForm } : f);
+    setFeeList(updated);
+    localStorage.setItem("bw_admin_fees", JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent("bw_fees_updated"));
+    setShowFeeModal(false);
+  };
+
   // Load vouchers từ localStorage lần đầu (seed defaults nếu chưa có)
   useEffect(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
@@ -147,15 +186,18 @@ export default function AdminServices() {
       {/* FEE TAB */}
       {tab === "fee" && (
         <div style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:14, overflow:"hidden" }}>
-          {fees.map((f, i) => (
-            <div key={f.id} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px", borderBottom: i < fees.length-1 ? "1px solid #1a1a1a" : "none" }}>
+          {feeList.map((f, i) => (
+            <div key={f.id} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"16px 20px", borderBottom: i < feeList.length-1 ? "1px solid #1a1a1a" : "none" }}>
               <div>
                 <p style={{ fontSize:14, fontWeight:600 }}>{f.name}</p>
                 <p style={{ fontSize:12, color: "var(--text-muted)", marginTop:2 }}>{f.note}</p>
               </div>
               <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                 <span style={{ fontSize:16, fontWeight:800, color:"#2563eb" }}>{f.value}</span>
-                <button style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:6, padding:"6px 10px", color: "var(--text-secondary)", cursor:"pointer", fontSize:12, display:"flex", alignItems:"center", gap:4 }}>
+                <button 
+                  onClick={() => openEditFee(f)}
+                  style={{ background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:6, padding:"6px 10px", color: "var(--text-secondary)", cursor:"pointer", fontSize:12, display:"flex", alignItems:"center", gap:4 }}
+                >
                   <Pencil size={12} /> Sửa
                 </button>
               </div>
@@ -262,6 +304,48 @@ export default function AdminServices() {
                 <button onClick={() => setShowModal(false)} style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius:8, padding:"11px", fontWeight:600, fontSize:13, cursor:"pointer" }}>Huỷ</button>
                 <button onClick={handleSave} style={{ flex:2, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color: "#000000", border:"none", borderRadius:8, padding:"11px", fontWeight:700, fontSize:13, cursor:"pointer" }}>
                   {editItem ? "Cập nhật" : "Thêm mới"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* Modal edit transaction fee */}
+      <AnimatePresence>
+        {showFeeModal && (
+          <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} onClick={() => setShowFeeModal(false)}
+            style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.75)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
+            <motion.div initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} exit={{scale:0.9,opacity:0}} onClick={e => e.stopPropagation()}
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", borderRadius:18, padding:26, width:"100%", maxWidth:400, maxHeight:"90vh", overflowY:"auto" }}>
+              <h3 style={{ fontSize:16, fontWeight:700, marginBottom:18, display: "flex", alignItems: "center", gap: 6 }}>
+                <Percent size={18} style={{ color: "#2563eb" }} /> Cập nhật phí giao dịch
+              </h3>
+
+              {/* Fee Name */}
+              <div style={{ marginBottom:14 }}>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Tên loại phí <span style={{ color:"#2563eb" }}>*</span></label>
+                <input value={feeForm.name} onChange={e => setFeeForm(p => ({...p, name: e.target.value}))} placeholder="VD: Phí chuyển ngân hàng"
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color: "#000000", fontSize:13, outline:"none" }} />
+              </div>
+
+              {/* Fee Value */}
+              <div style={{ marginBottom:14 }}>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Giá trị phí <span style={{ color:"#2563eb" }}>*</span></label>
+                <input value={feeForm.value} onChange={e => setFeeForm(p => ({...p, value: e.target.value}))} placeholder="VD: 5,000 ₫ hoặc 2%"
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color: "#000000", fontSize:13, outline:"none" }} />
+              </div>
+
+              {/* Fee Note */}
+              <div style={{ marginBottom:20 }}>
+                <label style={{ fontSize:12, color: "var(--text-secondary)", display:"block", marginBottom:6 }}>Ghi chú / Mô tả</label>
+                <input value={feeForm.note} onChange={e => setFeeForm(p => ({...p, note: e.target.value}))} placeholder="VD: Áp dụng mỗi giao dịch"
+                  style={{ width:"100%", background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius:8, padding:"10px 12px", color: "#000000", fontSize:13, outline:"none" }} />
+              </div>
+
+              <div style={{ display:"flex", gap:10 }}>
+                <button onClick={() => setShowFeeModal(false)} style={{ flex:1, background: "var(--bg-card2)", border: "1px solid var(--border)", color: "var(--text-secondary)", borderRadius:8, padding:"11px", fontWeight:600, fontSize:13, cursor:"pointer" }}>Huỷ</button>
+                <button onClick={handleSaveFee} style={{ flex:2, background:"linear-gradient(135deg,#2563eb,#1d4ed8)", color: "#000000", border:"none", borderRadius:8, padding:"11px", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+                  Lưu thay đổi
                 </button>
               </div>
             </motion.div>

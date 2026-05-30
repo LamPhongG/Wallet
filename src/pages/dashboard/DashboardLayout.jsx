@@ -299,8 +299,12 @@ export default function DashboardLayout() {
       {user && (
         <div style={{ padding: "12px", background: "var(--bg-card2)", borderRadius: 12, marginTop: 16 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
-              <User size={16} color="white" />
+            <div style={{ width: 36, height: 36, borderRadius: "50%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden" }}>
+              {user.avatar ? (
+                <img src={user.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                <User size={16} color="white" />
+              )}
             </div>
             <div style={{ flex: 1, minWidth: 0 }}>
               <p style={{ fontSize: 13, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{user.name}</p>
@@ -440,7 +444,7 @@ export default function DashboardLayout() {
                     borderRadius: 14, boxShadow: "0 20px 60px rgba(0,0,0,0.5)", zIndex: 100, overflow: "hidden"
                   }}
                 >
-                  <div style={{ padding: "16px 20px 10px", display: "flex", alignItems: "center", justifyBetween: "space-between" }}>
+                  <div style={{ padding: "16px 20px 10px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <h3 style={{ fontSize: 14, fontWeight: 700 }}>Thông báo</h3>
                     {unreadCount > 0 && <span style={{ fontSize: 11, background: "rgba(37,99,235,0.15)", color: "#2563eb", padding: "2px 8px", borderRadius: 10, fontWeight: 600 }}>{unreadCount} mới</span>}
                   </div>
@@ -517,8 +521,12 @@ export default function DashboardLayout() {
                 cursor: "pointer"
               }}
             >
-              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <User size={14} color="white" />
+              <div style={{ width: 28, height: 28, borderRadius: "50%", background: "linear-gradient(135deg, #2563eb, #1d4ed8)", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                {user?.avatar ? (
+                  <img src={user.avatar} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <User size={14} color="white" />
+                )}
               </div>
               <span style={{ fontSize: 13, fontWeight: 500, color: "#000000" }} className="hidden sm:inline">
                 {user?.name || "User"}

@@ -91,18 +91,106 @@ export default function KycPage() {
     setSubmitted(true);
   };
 
-  if (user && user.kyc) {
+  if (user && (user.kyc === true || user.kyc === "verified" || user.kycStatus === "verified")) {
     return (
-      <div style={{ maxWidth:500, margin:"0 auto", textAlign:"center", paddingTop:40 }}>
-        <motion.div initial={{scale:0}} animate={{scale:1}} transition={{type:"spring", damping:15}}
-          style={{ width:80, height:80, background:"rgba(34,197,94,0.15)", borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", margin:"0 auto 20px" }}>
-          <CheckCircle size={36} style={{ color:"#22c55e" }} />
+      <div style={{ maxWidth: 560 }}>
+        <h1 style={{ fontSize: 20, fontWeight: 800, marginBottom: 4 }}>Xác thực danh tính (KYC)</h1>
+        <p style={{ color: "var(--text-secondary)", fontSize: 14, marginBottom: 24 }}>Tài khoản của bạn đã được xác minh chính thức bởi Ban quản trị</p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          style={{
+            background: "var(--bg-card)", border: "1px solid var(--border)",
+            borderRadius: 16, padding: 28, boxShadow: "0 10px 30px rgba(0,0,0,0.02)"
+          }}
+        >
+          {/* Status Badge */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 24, padding: "12px 16px", background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 10 }}>
+            <CheckCircle size={20} style={{ color: "#22c55e" }} />
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#22c55e" }}>Đã xác thực danh tính</p>
+              <p style={{ fontSize: 11, color: "var(--text-secondary)", marginTop: 2 }}>Toàn bộ hạn mức giao dịch đã được nâng cấp lên mức tối đa.</p>
+            </div>
+          </div>
+
+          {/* Full Information Table */}
+          <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 14, textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-secondary)" }}>Thông tin cá nhân đã xác minh</h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, marginBottom: 24 }}>
+            {[
+              { label: "Họ và tên", value: user.name || "Chưa cập nhật" },
+              { label: "Số CCCD / CMND", value: user.cccd || "Chưa cập nhật" },
+              { label: "Ngày sinh", value: user.dob || "Chưa cập nhật" },
+              { label: "Giới tính", value: user.gender || "Nam" },
+              { label: "Địa chỉ thường trú", value: user.address || "Hà Nội, Việt Nam" },
+            ].map((item, idx) => (
+              <div key={idx} style={{ display: "flex", justifyContent: "space-between", paddingBottom: 8, borderBottom: "1px solid var(--border)" }}>
+                <span style={{ fontSize: 13, color: "var(--text-secondary)" }}>{item.label}</span>
+                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--text-primary)" }}>{item.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Document images */}
+          <h3 style={{ fontSize: 14, fontWeight: 700, marginBottom: 12, textTransform: "uppercase", letterSpacing: "0.5px", color: "var(--text-secondary)" }}>Ảnh giấy tờ tùy thân</h3>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 28 }}>
+            <div>
+              <p style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 6 }}>Mặt trước CCCD</p>
+              <div style={{ height: 110, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: 12, overflow: "hidden" }}>
+                {form.frontImg ? (
+                  <img src={form.frontImg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <span>[Ảnh đã lưu]</span>
+                )}
+              </div>
+            </div>
+            <div>
+              <p style={{ fontSize: 12, color: "var(--text-secondary)", marginBottom: 6 }}>Mặt sau CCCD</p>
+              <div style={{ height: 110, background: "var(--bg-card2)", border: "1px solid var(--border)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--text-muted)", fontSize: 12, overflow: "hidden" }}>
+                {form.backImg ? (
+                  <img src={form.backImg} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                ) : (
+                  <span>[Ảnh đã lưu]</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Edit Button */}
+          <button
+            onClick={() => {
+              setForm({
+                fullname: user.name || "",
+                cccd: user.cccd || "",
+                dob: user.dob || "",
+                frontImg: null,
+                backImg: null
+              });
+              setStep(1);
+              setSubmitted(false);
+              
+              // Tạm thời reset trạng thái kyc về "none" để người dùng sửa đổi và gửi lại
+              const u = localStorage.getItem("bw_user");
+              if (u) {
+                const parsed = JSON.parse(u);
+                parsed.kyc = false;
+                parsed.kycStatus = "none";
+                localStorage.setItem("bw_user", JSON.stringify(parsed));
+                setUser(parsed);
+              }
+              window.dispatchEvent(new Event("kyc_updated"));
+            }}
+            style={{
+              width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)",
+              borderRadius: 10, padding: "12px", color: "var(--text-primary)", fontWeight: 700,
+              fontSize: 14, cursor: "pointer", transition: "all 0.2s"
+            }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = "var(--primary)"}
+            onMouseLeave={e => e.currentTarget.style.borderColor = "var(--border)"}
+          >
+            ✏️ Yêu cầu chỉnh sửa thông tin KYC
+          </button>
         </motion.div>
-        <h2 style={{ fontSize:22, fontWeight:800, marginBottom:8, color:"#22c55e" }}>Tài khoản đã xác minh</h2>
-        <p style={{ color: "var(--text-secondary)", fontSize:14, lineHeight:1.6 }}>
-          Chúc mừng! Tài khoản SmartWallet Wallet của bạn đã được hoàn tất xác thực danh tính (KYC).<br />
-          Hạn mức giao dịch của bạn đã được nâng cấp lên tối đa và mở khóa đầy đủ tính năng nạp/rút tiền.
-        </p>
       </div>
     );
   }

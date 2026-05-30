@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Wallet, Mail, Lock, ArrowRight, Shield } from "lucide-react";
-import { motion } from "framer-motion";
+import { Eye, EyeOff, Wallet, Mail, Lock, ArrowRight, Shield, X, CheckCircle, RefreshCw, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ADMIN_ACCOUNTS = [
   { email: "admin@smartwallet.com",   password: "Admin@123",  name: "Super Admin",  role: "superadmin" },
@@ -37,6 +37,128 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Forgot Password States
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotStep, setForgotStep] = useState(1); // 1: Email, 2: OTP & New Pass, 3: Success
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotOtp, setForgotOtp] = useState(["", "", "", "", "", ""]);
+  const [forgotNewPassword, setForgotNewPassword] = useState("");
+  const [forgotConfirmPassword, setForgotConfirmPassword] = useState("");
+  const [forgotShowPass, setForgotShowPass] = useState(false);
+  const [forgotShowConfirmPass, setForgotShowConfirmPass] = useState(false);
+  const [generatedOtpCode, setGeneratedOtpCode] = useState("");
+  const [forgotError, setForgotError] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotCountdown, setForgotCountdown] = useState(60);
+  const [forgotCanResend, setForgotCanResend] = useState(false);
+  const forgotOtpRefs = useRef([]);
+
+  useEffect(() => {
+    let timer;
+    if (showForgot && forgotStep === 2 && forgotCountdown > 0) {
+      timer = setTimeout(() => setForgotCountdown(c => c - 1), 1000);
+    } else if (forgotCountdown === 0) {
+      setForgotCanResend(true);
+    }
+    return () => clearTimeout(timer);
+  }, [showForgot, forgotStep, forgotCountdown]);
+
+  const handleForgotOtpChange = (index, value) => {
+    if (!/^\d*$/.test(value)) return;
+    const newOtp = [...forgotOtp];
+    newOtp[index] = value.slice(-1);
+    setForgotOtp(newOtp);
+    setForgotError("");
+    if (value && index < 5) forgotOtpRefs.current[index + 1]?.focus();
+  };
+
+  const handleForgotKeyDown = (index, e) => {
+    if (e.key === "Backspace" && !forgotOtp[index] && index > 0) {
+      forgotOtpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleSendForgotOtp = (e) => {
+    e.preventDefault();
+    setForgotError("");
+    if (!forgotEmail) {
+      setForgotError("Vui lòng nhập email.");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(forgotEmail)) {
+      setForgotError("Email không hợp lệ.");
+      return;
+    }
+    
+    setForgotLoading(true);
+    setTimeout(() => {
+      setForgotLoading(false);
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedOtpCode(code);
+      setForgotStep(2);
+      setForgotCountdown(60);
+      setForgotCanResend(false);
+      setForgotOtp(["", "", "", "", "", ""]);
+      setForgotNewPassword("");
+      setForgotConfirmPassword("");
+    }, 1000);
+  };
+
+  const handleResetPassword = (e) => {
+    e.preventDefault();
+    setForgotError("");
+    
+    const enteredOtp = forgotOtp.join("");
+    if (enteredOtp !== generatedOtpCode) {
+      setForgotError("Mã OTP không chính xác.");
+      return;
+    }
+    
+    if (!forgotNewPassword) {
+      setForgotError("Vui lòng nhập mật khẩu mới.");
+      return;
+    }
+    
+    if (forgotNewPassword.length < 8) {
+      setForgotError("Mật khẩu phải tối thiểu 8 ký tự.");
+      return;
+    }
+    
+    if (forgotNewPassword !== forgotConfirmPassword) {
+      setForgotError("Mật khẩu xác nhận không khớp.");
+      return;
+    }
+    
+    setForgotLoading(true);
+    setTimeout(() => {
+      setForgotLoading(false);
+      
+      const storedUsers = localStorage.getItem("bw_users");
+      let userList = storedUsers ? JSON.parse(storedUsers) : [];
+      let foundIdx = userList.findIndex(u => u.email === forgotEmail.toLowerCase());
+      
+      if (foundIdx !== -1) {
+        userList[foundIdx].password = forgotNewPassword;
+      } else {
+        // Auto-register this user in stored list if they are resetting password for a new account
+        userList.push({
+          id: "U" + Date.now(),
+          name: "Người dùng mới",
+          email: forgotEmail.toLowerCase(),
+          phone: "Chưa cập nhật",
+          kyc: "none",
+          status: "active",
+          balance: "0 ₫",
+          joined: new Date().toLocaleDateString("vi-VN"),
+          cccd: null, dob: null, gender: null, address: null,
+          password: forgotNewPassword
+        });
+      }
+      localStorage.setItem("bw_users", JSON.stringify(userList));
+      setForgotStep(3);
+    }, 1500);
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -78,6 +200,12 @@ export default function LoginPage() {
         if (storedUsers) {
           const userList = JSON.parse(storedUsers);
           userRecord = userList.find(u => u.email === email.toLowerCase());
+        }
+
+        // Kiểm tra mật khẩu nếu tài khoản đã tồn tại và có mật khẩu
+        if (userRecord && userRecord.password && userRecord.password !== password) {
+          setError("Mật khẩu không chính xác.");
+          return;
         }
 
         let sessionUser;
@@ -357,9 +485,22 @@ export default function LoginPage() {
             </div>
 
             <div style={{ display: "flex", justifyContent: "flex-end" }}>
-              <Link to="#" style={{ color: "#2563eb", fontSize: 13, textDecoration: "none" }}>
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setShowForgot(true);
+                  setForgotStep(1);
+                  setForgotEmail("");
+                  setForgotOtp(["", "", "", "", "", ""]);
+                  setForgotNewPassword("");
+                  setForgotConfirmPassword("");
+                  setForgotError("");
+                }}
+                style={{ color: "#2563eb", fontSize: 13, textDecoration: "none", cursor: "pointer" }}
+              >
                 Quên mật khẩu?
-              </Link>
+              </a>
             </div>
 
             <button
@@ -393,6 +534,250 @@ export default function LoginPage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Forgot Password Modal */}
+      <AnimatePresence>
+        {showForgot && (
+          <div style={{
+            position: "fixed", inset: 0, zIndex: 100,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "rgba(0, 0, 0, 0.4)", backdropFilter: "blur(6px)",
+            padding: 20
+          }}>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              style={{
+                width: "100%", maxWidth: 440,
+                background: "var(--bg-card)", border: "1px solid var(--border)",
+                borderRadius: 20, padding: 32, position: "relative",
+                boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
+              }}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setShowForgot(false)}
+                style={{
+                  position: "absolute", right: 20, top: 20,
+                  background: "none", border: "none", cursor: "pointer",
+                  color: "var(--text-muted)", transition: "color 0.2s"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = "var(--text-primary)"}
+                onMouseLeave={(e) => e.currentTarget.style.color = "var(--text-muted)"}
+              >
+                <X size={20} />
+              </button>
+
+              {forgotStep === 1 && (
+                <div>
+                  <div style={{ width: 56, height: 56, background: "rgba(37,99,235,0.08)", borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 20 }}>
+                    <Mail size={24} style={{ color: "var(--primary)" }} />
+                  </div>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: "var(--text-primary)", marginBottom: 8 }}>Quên mật khẩu?</h3>
+                  <p style={{ color: "var(--text-secondary)", fontSize: 13, lineHeight: 1.5, marginBottom: 24 }}>
+                    Nhập email tài khoản của bạn để nhận mã xác thực OTP thay đổi mật khẩu mới.
+                  </p>
+
+                  {forgotError && (
+                    <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 10, padding: "10px 14px", marginBottom: 16, color: "#ef4444", fontSize: 13 }}>
+                      {forgotError}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleSendForgotOtp} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                    <div>
+                      <label style={{ display: "block", fontSize: 12, fontWeight: 500, marginBottom: 8, color: "var(--text-secondary)" }}>Email đăng ký</label>
+                      <div style={{ position: "relative" }}>
+                        <Mail size={16} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+                        <input
+                          type="email"
+                          placeholder="example@email.com"
+                          value={forgotEmail}
+                          onChange={(e) => setForgotEmail(e.target.value)}
+                          style={{
+                            width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)",
+                            borderRadius: 10, padding: "12px 16px 12px 42px",
+                            color: "#000000", fontSize: 14, outline: "none"
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      style={{
+                        width: "100%", background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)",
+                        color: "white", border: "none", borderRadius: 10, padding: "12px", fontWeight: 700, fontSize: 14,
+                        cursor: forgotLoading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8
+                      }}
+                    >
+                      {forgotLoading ? (
+                        <div style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                      ) : "Gửi mã OTP"}
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {forgotStep === 2 && (
+                <div>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: "var(--text-primary)", marginBottom: 8 }}>Đặt lại mật khẩu</h3>
+                  <p style={{ color: "var(--text-secondary)", fontSize: 13, lineHeight: 1.5, marginBottom: 16 }}>
+                    Vui lòng nhập mã OTP đã được gửi và nhập mật khẩu mới của bạn bên dưới.
+                  </p>
+
+                  {/* Simulated OTP Notification Banner */}
+                  <div style={{
+                    background: "rgba(37,99,235,0.06)", border: "1px solid rgba(37,99,235,0.15)",
+                    borderRadius: 10, padding: "12px 16px", marginBottom: 16, display: "flex", flexDirection: "column", gap: 4
+                  }}>
+                    <span style={{ fontSize: 12, color: "var(--text-secondary)", fontWeight: 600 }}>🔑 Mã OTP thử nghiệm:</span>
+                    <span style={{ fontSize: 18, fontWeight: 800, color: "var(--primary)", letterSpacing: 2 }}>{generatedOtpCode}</span>
+                  </div>
+
+                  {forgotError && (
+                    <div style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 10, padding: "10px 14px", marginBottom: 16, color: "#ef4444", fontSize: 13 }}>
+                      {forgotError}
+                    </div>
+                  )}
+
+                  <form onSubmit={handleResetPassword} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                    {/* OTP Boxes */}
+                    <div>
+                      <label style={{ display: "block", fontSize: 12, fontWeight: 500, marginBottom: 8, color: "var(--text-secondary)" }}>Mã xác thực OTP</label>
+                      <div style={{ display: "flex", gap: 8, justifyContent: "center", marginBottom: 6 }}>
+                        {forgotOtp.map((digit, i) => (
+                          <input
+                            key={i}
+                            ref={el => forgotOtpRefs.current[i] = el}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            onChange={(e) => handleForgotOtpChange(i, e.target.value)}
+                            onKeyDown={(e) => handleForgotKeyDown(i, e)}
+                            style={{
+                              width: 44, height: 48, textAlign: "center", fontSize: 20, fontWeight: 700,
+                              background: digit ? "rgba(37,99,235,0.08)" : "var(--bg-card2)",
+                              border: `2px solid ${digit ? "var(--primary)" : "var(--border)"}`,
+                              borderRadius: 10, color: "#000000", outline: "none"
+                            }}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* New Password */}
+                    <div>
+                      <label style={{ display: "block", fontSize: 12, fontWeight: 500, marginBottom: 6, color: "var(--text-secondary)" }}>Mật khẩu mới</label>
+                      <div style={{ position: "relative" }}>
+                        <Lock size={15} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+                        <input
+                          type={forgotShowPass ? "text" : "password"}
+                          placeholder="Tối thiểu 8 ký tự"
+                          value={forgotNewPassword}
+                          onChange={(e) => setForgotNewPassword(e.target.value)}
+                          style={{
+                            width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)",
+                            borderRadius: 10, padding: "11px 42px 11px 42px", color: "#000000", fontSize: 13, outline: "none"
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForgotShowPass(!forgotShowPass)}
+                          style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
+                        >
+                          {forgotShowPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Confirm New Password */}
+                    <div>
+                      <label style={{ display: "block", fontSize: 12, fontWeight: 500, marginBottom: 6, color: "var(--text-secondary)" }}>Xác nhận mật khẩu mới</label>
+                      <div style={{ position: "relative" }}>
+                        <Lock size={15} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "var(--text-muted)" }} />
+                        <input
+                          type={forgotShowConfirmPass ? "text" : "password"}
+                          placeholder="Nhập lại mật khẩu"
+                          value={forgotConfirmPassword}
+                          onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                          style={{
+                            width: "100%", background: "var(--bg-card2)", border: "1px solid var(--border)",
+                            borderRadius: 10, padding: "11px 42px 11px 42px", color: "#000000", fontSize: 13, outline: "none"
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForgotShowConfirmPass(!forgotShowConfirmPass)}
+                          style={{ position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)" }}
+                        >
+                          {forgotShowConfirmPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Resend Area */}
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
+                      {forgotCanResend ? (
+                        <button
+                          type="button"
+                          onClick={handleSendForgotOtp}
+                          style={{ background: "none", border: "none", color: "var(--primary)", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
+                        >
+                          <RefreshCw size={12} /> Gửi lại mã
+                        </button>
+                      ) : (
+                        <span>Gửi lại mã sau {forgotCountdown}s</span>
+                      )}
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={forgotLoading}
+                      style={{
+                        width: "100%", background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)",
+                        color: "white", border: "none", borderRadius: 10, padding: "12px", fontWeight: 700, fontSize: 14,
+                        cursor: forgotLoading ? "not-allowed" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 8
+                      }}
+                    >
+                      {forgotLoading ? (
+                        <div style={{ width: 18, height: 18, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "white", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                      ) : "Đổi mật khẩu"}
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {forgotStep === 3 && (
+                <div style={{ textAlign: "center", padding: "16px 0" }}>
+                  <div style={{ width: 72, height: 72, background: "rgba(34,197,94,0.1)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px" }}>
+                    <CheckCircle size={36} style={{ color: "#22c55e" }} />
+                  </div>
+                  <h3 style={{ fontSize: 20, fontWeight: 800, color: "var(--text-primary)", marginBottom: 8 }}>Thành công!</h3>
+                  <p style={{ color: "var(--text-secondary)", fontSize: 13, lineHeight: 1.5, marginBottom: 24 }}>
+                    Mật khẩu của bạn đã được thay đổi thành công. Bạn có thể sử dụng mật khẩu mới này để đăng nhập ngay bây giờ.
+                  </p>
+
+                  <button
+                    onClick={() => setShowForgot(false)}
+                    style={{
+                      width: "100%", background: "linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%)",
+                      color: "white", border: "none", borderRadius: 10, padding: "12px", fontWeight: 700, fontSize: 14,
+                      cursor: "pointer"
+                    }}
+                  >
+                    Đăng nhập ngay
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

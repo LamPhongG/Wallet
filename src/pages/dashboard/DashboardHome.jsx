@@ -801,9 +801,9 @@ export default function DashboardPage() {
                         fontSize: 12,
                         lineHeight: 1.5,
                         alignSelf: msg.role === "user" ? "flex-end" : "flex-start",
-                        background: msg.role === "user" ? "rgba(139,92,246,0.15)" : "rgba(255,255,255,0.03)",
-                        border: "1px solid var(--border)",
-                        color: msg.role === "user" ? "var(--primary)" : "var(--text-primary)"
+                        background: msg.role === "user" ? "rgba(37,99,235,0.08)" : "#ffffff",
+                        border: msg.role === "user" ? "1px solid rgba(37,99,235,0.18)" : "1px solid rgba(37,99,235,0.12)",
+                        color: msg.role === "user" ? "#1e3a8a" : "#111827"
                       }}>
                         {msg.text}
                       </div>
@@ -814,14 +814,14 @@ export default function DashboardPage() {
                         padding: "8px 12px",
                         borderRadius: "14px 14px 14px 2px",
                         fontSize: 11,
-                        background: "rgba(255,255,255,0.02)",
-                        border: "1px dashed rgba(139,92,246,0.3)",
-                        color: "var(--primary)",
+                        background: "rgba(255,255,255,0.6)",
+                        border: "1px dashed rgba(37,99,235,0.3)",
+                        color: "#1e3a8a",
                         display: "flex",
                         alignItems: "center",
                         gap: 6
                       }}>
-                        <div className="pulse-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "#a78bfa" }} />
+                        <div className="pulse-dot" style={{ width: 6, height: 6, borderRadius: "50%", background: "#3b82f6" }} />
                         AI đang phân tích chi tiêu của bạn...
                       </div>
                     )}
@@ -836,11 +836,11 @@ export default function DashboardPage() {
                       placeholder="Hỏi trợ lý AI về quản lý chi tiêu..."
                       style={{
                         flex: 1,
-                        background: "var(--bg-card2)",
-                        border: "1px solid var(--border)",
+                        background: "#ffffff",
+                        border: "1px solid rgba(37,99,235,0.2)",
                         borderRadius: 8,
                         padding: "10px 12px",
-                        color: "white",
+                        color: "#111827",
                         fontSize: 12,
                         outline: "none"
                       }}
